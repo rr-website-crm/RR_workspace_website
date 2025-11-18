@@ -1,0 +1,98 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Create Job - CRM Portal{% endblock %}
+
+{% block content %}
+<div class="dashboard-header">
+    <h1 class="dashboard-title">Create New Job</h1>
+    <p class="dashboard-subtitle">Fill in the details to create a new job</p>
+</div>
+
+<div class="form-container" style="max-width: 900px; margin: 0 auto;">
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        
+        <div class="form-row">
+            <div class="form-group">
+                <label for="job_title" class="form-label required">Job Title</label>
+                <input type="text" id="job_title" name="job_title" class="form-control" required placeholder="Enter job title">
+            </div>
+            
+            <div class="form-group">
+                <label for="client_name" class="form-label required">Client Name</label>
+                <input type="text" id="client_name" name="client_name" class="form-control" required placeholder="Enter client name">
+            </div>
+        </div>
+        
+        <div class="form-row">
+            <div class="form-group">
+                <label for="job_type" class="form-label required">Job Type</label>
+                <select id="job_type" name="job_type" class="form-control form-select" required>
+                    <option value="">Select job type</option>
+                    <option value="content_writing">Content Writing</option>
+                    <option value="blog_post">Blog Post</option>
+                    <option value="website_content">Website Content</option>
+                    <option value="social_media">Social Media Content</option>
+                    <option value="other">Other</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="priority" class="form-label required">Priority</label>
+                <select id="priority" name="priority" class="form-control form-select" required>
+                    <option value="">Select priority</option>
+                    <option value="low">Low</option>
+                    <option value="medium">Medium</option>
+                    <option value="high">High</option>
+                    <option value="urgent">Urgent</option>
+                </select>
+            </div>
+        </div>
+        
+        <div class="form-row">
+            <div class="form-group">
+                <label for="deadline" class="form-label required">Deadline</label>
+                <input type="date" id="deadline" name="deadline" class="form-control" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="word_count" class="form-label">Word Count</label>
+                <input type="number" id="word_count" name="word_count" class="form-control" placeholder="Enter word count">
+            </div>
+        </div>
+        
+        <div class="form-group">
+            <label for="description" class="form-label required">Job Description</label>
+            <textarea id="description" name="description" class="form-control" rows="6" required placeholder="Enter detailed job description"></textarea>
+        </div>
+        
+        <div class="form-group">
+            <label for="special_instructions" class="form-label">Special Instructions</label>
+            <textarea id="special_instructions" name="special_instructions" class="form-control" rows="4" placeholder="Any special instructions or requirements"></textarea>
+        </div>
+        
+        <div class="form-group">
+            <label for="attachments" class="form-label">Attachments</label>
+            <input type="file" id="attachments" name="attachments" class="form-control" multiple>
+            <small style="color: var(--text-color); opacity: 0.7; display: block; margin-top: 0.5rem;">Upload relevant files (Max 10MB per file)</small>
+        </div>
+        
+        <div class="btn-group" style="justify-content: flex-end;">
+            <a href="{% url 'marketing_dashboard' %}" class="btn btn-outline">Cancel</a>
+            <button type="submit" class="btn btn-primary">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <polyline points="20 6 9 17 4 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                Create Job
+            </button>
+        </div>
+    </form>
+</div>
+
+<style>
+    .form-container {
+        animation: fadeInUp 0.5s ease-out;
+    }
+</style>
+{% endblock %}

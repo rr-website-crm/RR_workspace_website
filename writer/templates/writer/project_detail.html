@@ -1,0 +1,312 @@
+<!-- writer/templates/writer/project_detail.html -->
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Project Details - {{ project.job_id }}{% endblock %}
+
+{% block content %}
+<div class="dashboard-header">
+    <div style="display: flex; justify-content: space-between; align-items: center;">
+        <div>
+            <h1 class="dashboard-title">Project Details</h1>
+            <p class="dashboard-subtitle">Job ID: {{ project.job_id }}</p>
+        </div>
+        <a href="{% url 'all_projects' %}" class="btn btn-outline">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M19 12H5M12 19l-7-7 7-7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            Back to Projects
+        </a>
+    </div>
+</div>
+
+<!-- Project Info Card -->
+<div class="card" style="margin-bottom: var(--spacing-lg);">
+    <div class="card-header">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+            <h2 class="card-title">Project Information</h2>
+            {% if project.status == 'pending' %}
+            <span class="status-tag status-pending">Pending</span>
+            {% elif project.status == 'in_progress' %}
+            <span class="status-tag status-in-progress">In Progress</span>
+            {% elif project.status == 'completed' %}
+            <span class="status-tag status-completed">Completed</span>
+            {% elif project.status == 'hold' %}
+            <span class="status-tag status-hold">Hold</span>
+            {% elif project.status == 'issues' %}
+            <span class="status-tag status-cancelled">Issues</span>
+            {% endif %}
+        </div>
+    </div>
+    <div class="card-body">
+        <div class="form-row">
+            <div class="form-group">
+                <label class="form-label">Job ID</label>
+                <div style="padding: 12px; background-color: rgba(255,255,255,0.05); border-radius: var(--radius-md); font-weight: 600; color: var(--primary);">
+                    {{ project.job_id }}
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">Status</label>
+                <div style="padding: 12px; background-color: rgba(255,255,255,0.05); border-radius: var(--radius-md); font-weight: 600;">
+                    {{ project.get_status_display }}
+                </div>
+            </div>
+        </div>
+        
+        <div class="form-group">
+            <label class="form-label">Topic</label>
+            <div style="padding: 12px; background-color: rgba(255,255,255,0.05); border-radius: var(--radius-md);">
+                {{ project.topic }}
+            </div>
+        </div>
+        
+        <div class="form-row">
+            <div class="form-group">
+                <label class="form-label">Word Count</label>
+                <div style="padding: 12px; background-color: rgba(255,255,255,0.05); border-radius: var(--radius-md); font-weight: 600;">
+                    {{ project.word_count }} words
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">Deadline</label>
+                <div style="padding: 12px; background-color: rgba(255,255,255,0.05); border-radius: var(--radius-md); font-weight: 600; {% if project.is_overdue %}color: #F44336;{% endif %}">
+                    {{ project.deadline|date:"d M Y, h:i A" }}
+                    {% if project.is_overdue %}
+                    <span style="color: #F44336; font-size: 12px; margin-left: 8px;">(Overdue)</span>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">Referencing Style</label>
+                <div style="padding: 12px; background-color: rgba(255,255,255,0.05); border-radius: var(--radius-md); font-weight: 600; text-transform: uppercase;">
+                    {{ project.get_referencing_display }}
+                </div>
+            </div>
+        </div>
+        
+        {% if project.description %}
+        <div class="form-group">
+            <label class="form-label">Description</label>
+            <div style="padding: 12px; background-color: rgba(255,255,255,0.05); border-radius: var(--radius-md); white-space: pre-wrap;">
+                {{ project.description }}
+            </div>
+        </div>
+        {% endif %}
+        
+        {% if project.special_instructions %}
+        <div class="form-group">
+            <label class="form-label">Special Instructions</label>
+            <div style="padding: 12px; background-color: rgba(255,255,255,0.05); border-radius: var(--radius-md); white-space: pre-wrap;">
+                {{ project.special_instructions }}
+            </div>
+        </div>
+        {% endif %}
+        
+        {% if project.attachments %}
+        <div class="form-group">
+            <label class="form-label">Attachments</label>
+            <a href="{{ project.attachments.url }}" class="btn btn-outline" download>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M21 15V19C21 19.5304 20.7893 20.0391 20.4142 20.4142C20.0391 20.7893 19.5304 21 19 21H5C4.46957 21 3.96086 20.7893 3.58579 20.4142C3.21071 20.0391 3 19.5304 3 19V15" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <polyline points="7 10 12 15 17 10" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <line x1="12" y1="15" x2="12" y2="3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                Download Attachments
+            </a>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Action Buttons -->
+<div class="card" style="margin-bottom: var(--spacing-lg);">
+    <div class="card-header">
+        <h2 class="card-title">Actions</h2>
+    </div>
+    <div class="card-body">
+        <div class="btn-group">
+            {% if project.status == 'pending' %}
+            <form method="POST" action="{% url 'start_project' project.id %}" style="display: inline;">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-primary">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/>
+                        <polygon points="10 8 16 12 10 16 10 8" fill="currentColor"/>
+                    </svg>
+                    Start Project
+                </button>
+            </form>
+            {% endif %}
+            
+            {% if project.status == 'in_progress' %}
+            <button onclick="openModal('submitModal')" class="btn btn-primary">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <polyline points="20 6 9 17 4 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                Submit Project
+            </button>
+            {% endif %}
+            
+            {% if project.status not in ['completed', 'closed'] %}
+            <button onclick="openModal('issueModal')" class="btn btn-secondary">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/>
+                    <line x1="12" y1="8" x2="12" y2="12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                    <line x1="12" y1="16" x2="12.01" y2="16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                </svg>
+                Report Issue
+            </button>
+            
+            <button onclick="openModal('holdModal')" class="btn btn-outline">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <rect x="9" y="9" width="6" height="6" stroke="currentColor" stroke-width="2"/>
+                </svg>
+                Request Hold
+            </button>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<!-- Comments Section -->
+<div class="card">
+    <div class="card-header">
+        <h2 class="card-title">Comments ({{ comments.count }})</h2>
+    </div>
+    <div class="card-body">
+        <!-- Add Comment Form -->
+        <form method="POST" action="{% url 'add_comment' project.id %}" style="margin-bottom: var(--spacing-lg);">
+            {% csrf_token %}
+            <div class="form-group">
+                <label class="form-label">Add a Comment</label>
+                <textarea name="comment" class="form-control" rows="3" placeholder="Write your comment here..." required></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <line x1="22" y1="2" x2="11" y2="13" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <polygon points="22 2 15 22 11 13 2 9 22 2" fill="currentColor"/>
+                </svg>
+                Post Comment
+            </button>
+        </form>
+        
+        <!-- Comments List -->
+        <div style="display: flex; flex-direction: column; gap: var(--spacing-md);">
+            {% for comment in comments %}
+            <div style="padding: var(--spacing-md); background-color: rgba(255,255,255,0.05); border-radius: var(--radius-md); border-left: 4px solid var(--primary);">
+                <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                    <span style="font-weight: 600; color: var(--primary);">{{ comment.user.get_full_name }}</span>
+                    <span style="font-size: 13px; opacity: 0.7;">{{ comment.created_at|date:"d M Y, h:i A" }}</span>
+                </div>
+                <p style="margin: 0; white-space: pre-wrap;">{{ comment.comment }}</p>
+            </div>
+            {% empty %}
+            <p style="text-align: center; opacity: 0.6; padding: 2rem;">No comments yet. Be the first to comment!</p>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<!-- Submit Project Modal -->
+<div class="modal-overlay" id="submitModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3 class="modal-title">Submit Project</h3>
+            <button class="modal-close" onclick="closeModal('submitModal')">&times;</button>
+        </div>
+        <form method="POST" action="{% url 'submit_project' project.id %}" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="form-group">
+                <label class="form-label required">Upload Submission File</label>
+                <input type="file" name="submission_file" class="form-control" required accept=".pdf,.doc,.docx,.txt">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Submission Notes</label>
+                <textarea name="submission_notes" class="form-control" rows="4" placeholder="Any notes about your submission..."></textarea>
+            </div>
+            <div class="btn-group">
+                <button type="submit" class="btn btn-primary">Submit Project</button>
+                <button type="button" class="btn btn-outline" onclick="closeModal('submitModal')">Cancel</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Report Issue Modal -->
+<div class="modal-overlay" id="issueModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3 class="modal-title">Report Issue</h3>
+            <button class="modal-close" onclick="closeModal('issueModal')">&times;</button>
+        </div>
+        <form method="POST" action="{% url 'report_issue' project.id %}">
+            {% csrf_token %}
+            <div class="form-group">
+                <label class="form-label required">Issue Type</label>
+                <select name="issue_type" class="form-control form-select" required>
+                    <option value="">Select Type</option>
+                    <option value="technical">Technical Issue</option>
+                    <option value="clarification">Need Clarification</option>
+                    <option value="resources">Missing Resources</option>
+                    <option value="deadline">Deadline Extension</option>
+                    <option value="other">Other</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label class="form-label required">Title</label>
+                <input type="text" name="title" class="form-control" placeholder="Brief title of the issue" required>
+            </div>
+            <div class="form-group">
+                <label class="form-label required">Description</label>
+                <textarea name="description" class="form-control" rows="4" placeholder="Describe the issue in detail..." required></textarea>
+            </div>
+            <div class="btn-group">
+                <button type="submit" class="btn btn-primary">Report Issue</button>
+                <button type="button" class="btn btn-outline" onclick="closeModal('issueModal')">Cancel</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Request Hold Modal -->
+<div class="modal-overlay" id="holdModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3 class="modal-title">Request Hold</h3>
+            <button class="modal-close" onclick="closeModal('holdModal')">&times;</button>
+        </div>
+        <form method="POST" action="{% url 'request_hold' project.id %}">
+            {% csrf_token %}
+            <div class="form-group">
+                <label class="form-label required">Reason for Hold</label>
+                <textarea name="reason" class="form-control" rows="4" placeholder="Explain why you need to put this project on hold..." required></textarea>
+            </div>
+            <div class="btn-group">
+                <button type="submit" class="btn btn-primary">Request Hold</button>
+                <button type="button" class="btn btn-outline" onclick="closeModal('holdModal')">Cancel</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<style>
+    .card {
+        animation: fadeInUp 0.5s ease-out;
+    }
+    
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+</style>
+{% endblock %}

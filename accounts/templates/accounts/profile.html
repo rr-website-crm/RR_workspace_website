@@ -1,0 +1,149 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Profile - CRM Portal{% endblock %}
+
+{% block content %}
+<div class="dashboard-header fade-in">
+    <h1 class="dashboard-title">My Profile</h1>
+    <p class="dashboard-subtitle">Manage your account settings and preferences</p>
+</div>
+
+<div class="card-grid">
+    <div class="card" style="grid-column: span 2;">
+        <div class="card-header">
+            <h2 class="card-title">Personal Information</h2>
+        </div>
+        <div class="card-body">
+            <form id="profileForm">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label required">First Name</label>
+                        <input type="text" class="form-control" value="{{ user.first_name }}" placeholder="First name" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label required">Last Name</label>
+                        <input type="text" class="form-control" value="{{ user.last_name }}" placeholder="Last name" required>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label required">Email</label>
+                        <input type="email" class="form-control" value="{{ user.email }}" placeholder="email@example.com" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Phone</label>
+                        <input type="tel" class="form-control" value="{{ user.phone }}" placeholder="+1 234 567 8900">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Department</label>
+                    <select class="form-control form-select">
+                        <option value="">Select Department</option>
+                        <option value="sales" {% if user.department == 'sales' %}selected{% endif %}>Sales</option>
+                        <option value="operations" {% if user.department == 'operations' %}selected{% endif %}>Operations</option>
+                        <option value="support" {% if user.department == 'support' %}selected{% endif %}>Support</option>
+                        <option value="hr" {% if user.department == 'hr' %}selected{% endif %}>Human Resources</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Bio</label>
+                    <textarea class="form-control" rows="4" placeholder="Tell us about yourself...">{{ user.bio }}</textarea>
+                </div>
+
+                <div class="btn-group">
+                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                    <button type="button" class="btn btn-outline">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header">
+            <h2 class="card-title">Profile Picture</h2>
+        </div>
+        <div class="card-body" style="text-align: center;">
+            <img src="{% if user.profile_image %}{{ user.profile_image.url }}{% else %}https://ui-avatars.com/api/?name={{ user.get_full_name|urlencode }}&background=random&color=fff&size=200{% endif %}" 
+                 alt="Profile" 
+                 style="width: 150px; height: 150px; border-radius: 50%; object-fit: cover; margin-bottom: 20px; border: 4px solid var(--primary);">
+            
+            <input type="file" id="profileImageInput" accept="image/*" style="display: none;">
+            <button class="btn btn-primary" onclick="document.getElementById('profileImageInput').click()">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M23 19C23 19.5304 22.7893 20.0391 22.4142 20.4142C22.0391 20.7893 21.5304 21 21 21H3C2.46957 21 1.96086 20.7893 1.58579 20.4142C1.21071 20.0391 1 19.5304 1 19V8C1 7.46957 1.21071 6.96086 1.58579 6.58579C1.96086 6.21071 2.46957 6 3 6H7L9 3H15L17 6H21C21.5304 6 22.0391 6.21071 22.4142 6.58579C22.7893 6.96086 23 7.46957 23 8V19Z" stroke="white" stroke-width="2"/>
+                    <circle cx="12" cy="13" r="4" stroke="white" stroke-width="2"/>
+                </svg>
+                Upload New Photo
+            </button>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header">
+            <h2 class="card-title">Change Password</h2>
+        </div>
+        <div class="card-body">
+            <form id="passwordForm">
+                <div class="form-group">
+                    <label class="form-label required">Current Password</label>
+                    <input type="password" class="form-control" placeholder="••••••••" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label required">New Password</label>
+                    <input type="password" class="form-control" placeholder="••••••••" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label required">Confirm New Password</label>
+                    <input type="password" class="form-control" placeholder="••••••••" required>
+                </div>
+                <button type="submit" class="btn btn-secondary" style="width: 100%;">Update Password</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header">
+            <h2 class="card-title">Account Statistics</h2>
+        </div>
+        <div class="card-body">
+            <div style="display: flex; flex-direction: column; gap: 16px;">
+                <div style="display: flex; justify-content: space-between; padding: 12px; background: rgba(255,255,255,0.05); border-radius: 8px;">
+                    <span>Member Since</span>
+                    <strong>{{ user.date_joined|date:"M d, Y" }}</strong>
+                </div>
+                <div style="display: flex; justify-content: space-between; padding: 12px; background: rgba(255,255,255,0.05); border-radius: 8px;">
+                    <span>Last Login</span>
+                    <strong>{{ user.last_login|date:"M d, Y H:i" }}</strong>
+                </div>
+                <div style="display: flex; justify-content: space-between; padding: 12px; background: rgba(255,255,255,0.05); border-radius: 8px;">
+                    <span>Role</span>
+                    <strong style="text-transform: capitalize;">{{ user.role }}</strong>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.getElementById('profileForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        showNotification('Profile updated successfully!', 'success');
+    });
+
+    document.getElementById('passwordForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        showNotification('Password changed successfully!', 'success');
+        this.reset();
+    });
+
+    document.getElementById('profileImageInput').addEventListener('change', function(e) {
+        if (e.target.files && e.target.files[0]) {
+            showNotification('Profile picture updated!', 'success');
+        }
+    });
+</script>
+{% endblock %}

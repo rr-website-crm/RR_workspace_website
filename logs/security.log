@@ -1,0 +1,146 @@
+WARNING 2025-11-14 14:09:37,985 middleware Unauthorized access attempt to /favicon.ico from IP: 127.0.0.1
+WARNING 2025-11-14 14:12:12,611 middleware Unauthorized access attempt to /favicon.ico from IP: 127.0.0.1
+WARNING 2025-11-14 14:12:26,096 middleware Unauthorized access attempt to /favicon.ico from IP: 127.0.0.1
+WARNING 2025-11-14 14:16:49,260 middleware Unauthorized access attempt to /favicon.ico from IP: 127.0.0.1
+WARNING 2025-11-14 14:17:10,016 middleware Unauthorized access attempt to /favicon.ico from IP: 127.0.0.1
+WARNING 2025-11-14 15:03:44,610 middleware Unauthorized access attempt to /favicon.ico from IP: 127.0.0.1
+WARNING 2025-11-14 15:04:32,100 middleware Unauthorized access attempt to /favicon.ico from IP: 127.0.0.1
+WARNING 2025-11-14 15:04:52,483 middleware Unauthorized access attempt to /favicon.ico from IP: 127.0.0.1
+WARNING 2025-11-14 15:05:02,947 middleware Unauthorized access attempt to /favicon.ico from IP: 127.0.0.1
+WARNING 2025-11-14 15:05:45,016 middleware Unauthorized access attempt to /favicon.ico from IP: 127.0.0.1
+WARNING 2025-11-14 15:05:56,039 middleware Unauthorized access attempt to /favicon.ico from IP: 127.0.0.1
+WARNING 2025-11-14 15:06:06,442 middleware Unauthorized access attempt to /favicon.ico from IP: 127.0.0.1
+WARNING 2025-11-14 15:06:08,280 middleware Unauthorized access attempt to /favicon.ico from IP: 127.0.0.1
+WARNING 2025-11-14 15:06:09,450 middleware Unauthorized access attempt to /favicon.ico from IP: 127.0.0.1
+WARNING 2025-11-14 15:06:17,315 middleware Unauthorized access attempt to /favicon.ico from IP: 127.0.0.1
+WARNING 2025-11-14 15:06:18,122 middleware Unauthorized access attempt to /favicon.ico from IP: 127.0.0.1
+WARNING 2025-11-14 15:06:18,315 middleware Unauthorized access attempt to /favicon.ico from IP: 127.0.0.1
+WARNING 2025-11-14 15:06:18,490 middleware Unauthorized access attempt to /favicon.ico from IP: 127.0.0.1
+WARNING 2025-11-14 15:06:32,326 middleware Unauthorized access attempt to /favicon.ico from IP: 127.0.0.1
+WARNING 2025-11-14 15:06:34,886 middleware Unauthorized access attempt to /favicon.ico from IP: 127.0.0.1
+WARNING 2025-11-14 15:06:35,643 middleware Unauthorized access attempt to /favicon.ico from IP: 127.0.0.1
+WARNING 2025-11-14 15:06:36,223 middleware Unauthorized access attempt to /favicon.ico from IP: 127.0.0.1
+WARNING 2025-11-14 15:06:36,750 middleware Unauthorized access attempt to /favicon.ico from IP: 127.0.0.1
+WARNING 2025-11-14 15:06:56,694 middleware Unauthorized access attempt to /favicon.ico from IP: 127.0.0.1
+WARNING 2025-11-14 15:06:58,493 middleware Unauthorized access attempt to /favicon.ico from IP: 127.0.0.1
+WARNING 2025-11-14 15:07:01,192 middleware Unauthorized access attempt to /favicon.ico from IP: 127.0.0.1
+WARNING 2025-11-14 15:07:02,369 middleware Unauthorized access attempt to /favicon.ico from IP: 127.0.0.1
+WARNING 2025-11-14 15:37:57,976 middleware Unauthorized access attempt to /favicon.ico from IP: 127.0.0.1
+WARNING 2025-11-14 15:38:01,574 middleware Unauthorized access attempt to /favicon.ico from IP: 127.0.0.1
+WARNING 2025-11-14 15:38:21,556 middleware Unauthorized access attempt to /favicon.ico from IP: 127.0.0.1
+WARNING 2025-11-14 15:41:03,317 middleware Unauthorized access attempt to /favicon.ico from IP: 127.0.0.1
+WARNING 2025-11-14 15:41:25,244 middleware Unauthorized access attempt to /favicon.ico from IP: 127.0.0.1
+WARNING 2025-11-14 15:43:04,204 middleware Unauthorized access attempt to /favicon.ico from IP: 127.0.0.1
+WARNING 2025-11-14 15:44:47,052 middleware Unauthorized access attempt to /favicon.ico from IP: 127.0.0.1
+ERROR 2025-11-14 15:46:09,303 views Error during logout for srija@gmail.com: 
+ERROR 2025-11-14 15:49:25,964 views Error during logout for srija@gmail.com: 
+ERROR 2025-11-14 15:56:20,245 views Error during logout for ratan@gmail.com: 
+ERROR 2025-11-14 17:43:35,704 views Error during logout for admin@gmail.com: 
+ERROR 2025-11-14 17:44:12,987 views Registration error for rita@gmail.com: 
+ERROR 2025-11-14 17:49:11,914 views Registration error for rita@gmail.com: 
+WARNING 2025-11-14 17:49:12,285 middleware Unauthorized access attempt to /favicon.ico from IP: 127.0.0.1
+WARNING 2025-11-14 17:49:19,616 middleware Unauthorized access attempt to /favicon.ico from IP: 127.0.0.1
+WARNING 2025-11-14 17:49:26,879 views Failed login attempt for: admin@gmail.com from IP: 127.0.0.1
+WARNING 2025-11-14 17:49:26,954 middleware Unauthorized access attempt to /favicon.ico from IP: 127.0.0.1
+ERROR 2025-11-14 17:50:20,523 views Error during logout for admin@gmail.com: 
+ERROR 2025-11-14 17:50:51,603 views Registration error for rita@gmail.com: 
+ERROR 2025-11-14 17:59:17,799 views Registration error for rita@gmail.com: 
+WARNING 2025-11-14 17:59:18,166 middleware Unauthorized access attempt to /favicon.ico from IP: 127.0.0.1
+ERROR 2025-11-14 17:59:41,482 views Registration error for rita@gmail.com: 
+WARNING 2025-11-14 17:59:41,554 middleware Unauthorized access attempt to /favicon.ico from IP: 127.0.0.1
+WARNING 2025-11-14 17:59:57,228 middleware Unauthorized access attempt to /favicon.ico from IP: 127.0.0.1
+WARNING 2025-11-14 17:59:57,522 middleware Unauthorized access attempt to /favicon.ico from IP: 127.0.0.1
+WARNING 2025-11-14 17:59:57,716 middleware Unauthorized access attempt to /favicon.ico from IP: 127.0.0.1
+WARNING 2025-11-14 17:59:57,854 middleware Unauthorized access attempt to /favicon.ico from IP: 127.0.0.1
+WARNING 2025-11-14 17:59:57,910 middleware Unauthorized access attempt to /favicon.ico from IP: 127.0.0.1
+WARNING 2025-11-14 18:00:03,449 middleware Unauthorized access attempt to / from IP: 127.0.0.1
+WARNING 2025-11-14 18:00:03,525 middleware Unauthorized access attempt to /favicon.ico from IP: 127.0.0.1
+WARNING 2025-11-14 18:00:06,491 middleware Unauthorized access attempt to /favicon.ico from IP: 127.0.0.1
+ERROR 2025-11-14 18:00:35,344 views Registration error for rita@gmail.com: 
+WARNING 2025-11-14 18:00:35,417 middleware Unauthorized access attempt to /favicon.ico from IP: 127.0.0.1
+WARNING 2025-11-14 18:00:46,954 middleware Unauthorized access attempt to / from IP: 127.0.0.1
+WARNING 2025-11-14 18:00:47,151 middleware Unauthorized access attempt to /favicon.ico from IP: 127.0.0.1
+WARNING 2025-11-14 18:01:04,558 middleware Unauthorized access attempt to /favicon.ico from IP: 127.0.0.1
+ERROR 2025-11-14 18:01:26,722 views Registration error for rita@gmail.com: 
+WARNING 2025-11-14 18:01:26,800 middleware Unauthorized access attempt to /favicon.ico from IP: 127.0.0.1
+WARNING 2025-11-14 18:10:52,612 middleware Unauthorized access attempt to / from IP: 127.0.0.1
+WARNING 2025-11-14 18:10:52,836 middleware Unauthorized access attempt to /favicon.ico from IP: 127.0.0.1
+WARNING 2025-11-14 18:10:54,689 middleware Unauthorized access attempt to /favicon.ico from IP: 127.0.0.1
+WARNING 2025-11-14 18:11:40,466 middleware Unauthorized access attempt to /favicon.ico from IP: 127.0.0.1
+WARNING 2025-11-14 18:32:55,531 middleware Unauthorized access attempt to /dashboard/ from IP: 127.0.0.1
+WARNING 2025-11-14 18:33:10,131 middleware Unauthorized access attempt to /dashboard/ from IP: 127.0.0.1
+WARNING 2025-11-14 18:33:10,617 middleware Unauthorized access attempt to /favicon.ico from IP: 127.0.0.1
+WARNING 2025-11-14 18:33:51,911 middleware Unauthorized access attempt to /dashboard/ from IP: 127.0.0.1
+WARNING 2025-11-15 11:05:20,579 middleware Unauthorized access attempt to /favicon.ico from IP: 127.0.0.1
+ERROR 2025-11-15 11:27:13,935 views Error during logout for admin@gmail.com: 
+ERROR 2025-11-15 11:30:41,508 views Error during logout for admin@gmail.com: 
+WARNING 2025-11-15 11:30:44,905 middleware Unauthorized access attempt to / from IP: 127.0.0.1
+WARNING 2025-11-15 11:40:14,514 middleware Unauthorized access attempt to / from IP: 127.0.0.1
+ERROR 2025-11-15 11:45:51,338 views Error during logout for admin@gmail.com: 
+ERROR 2025-11-15 11:47:50,922 views Error during logout for admin@gmail.com: 
+ERROR 2025-11-15 12:21:21,142 views Error during logout for admin@gmail.com: 
+ERROR 2025-11-15 12:27:30,712 views Error during logout for admin@gmail.com: 
+WARNING 2025-11-15 12:27:30,790 middleware Unauthorized access attempt to /favicon.ico from IP: 127.0.0.1
+WARNING 2025-11-15 12:30:26,161 middleware Unauthorized access attempt to / from IP: 127.0.0.1
+WARNING 2025-11-15 12:30:26,732 middleware Unauthorized access attempt to /favicon.ico from IP: 127.0.0.1
+WARNING 2025-11-15 12:34:10,362 middleware Unauthorized access attempt to /superadmin/manage-users/ from IP: 127.0.0.1
+WARNING 2025-11-15 12:34:11,440 middleware Unauthorized access attempt to /favicon.ico from IP: 127.0.0.1
+WARNING 2025-11-15 12:36:26,692 views Failed login attempt for: srija@gmail.com from IP: 127.0.0.1
+WARNING 2025-11-15 12:36:27,090 middleware Unauthorized access attempt to /favicon.ico from IP: 127.0.0.1
+ERROR 2025-11-15 13:33:10,020 views Error during logout for srija@gmail.com: 
+WARNING 2025-11-15 13:33:57,768 middleware Unauthorized access attempt to / from IP: 127.0.0.1
+ERROR 2025-11-15 13:34:55,362 views Error during logout for srija@gmail.com: 
+ERROR 2025-11-15 14:06:38,402 views Error during logout for srija@gmail.com: 
+WARNING 2025-11-15 15:07:51,146 middleware Unauthorized access attempt to /accounts/logout/ from IP: 127.0.0.1
+ERROR 2025-11-15 15:14:55,616 views Error during logout for srija@gmail.com: 
+ERROR 2025-11-15 15:15:28,437 views Error during logout for srija@gmail.com: 
+ERROR 2025-11-15 15:19:39,969 views Error during logout for srija@gmail.com: 
+WARNING 2025-11-15 15:43:30,223 middleware Unauthorized access attempt to / from IP: 127.0.0.1
+WARNING 2025-11-15 16:08:53,073 middleware Unauthorized access attempt to / from IP: 127.0.0.1
+WARNING 2025-11-15 17:04:07,667 middleware Unauthorized access attempt to /allocator/dashboard/ from IP: 127.0.0.1
+WARNING 2025-11-17 10:38:47,771 middleware Unauthorized access attempt to /favicon.ico from IP: 127.0.0.1
+ERROR 2025-11-17 10:39:54,834 views Error during logout for admin@gmail.com: 
+WARNING 2025-11-17 10:39:54,915 middleware Unauthorized access attempt to /favicon.ico from IP: 127.0.0.1
+WARNING 2025-11-17 10:40:34,821 middleware Unauthorized access attempt to /dashboard/ from IP: 127.0.0.1
+WARNING 2025-11-17 10:40:35,464 middleware Unauthorized access attempt to /favicon.ico from IP: 127.0.0.1
+WARNING 2025-11-17 10:40:43,275 views Failed login attempt for: admin@gmail.com from IP: 127.0.0.1
+WARNING 2025-11-17 10:40:43,307 middleware Unauthorized access attempt to /favicon.ico from IP: 127.0.0.1
+ERROR 2025-11-17 10:41:41,090 views Error during logout for srija@gmail.com: 
+WARNING 2025-11-17 10:41:41,191 middleware Unauthorized access attempt to /favicon.ico from IP: 127.0.0.1
+ERROR 2025-11-17 11:35:56,656 views Error during logout for ratan@gmail.com: 
+ERROR 2025-11-17 11:37:50,432 views Error during logout for rita@gmail.com: 
+ERROR 2025-11-17 11:40:14,966 views Error during logout for aritra@gmail.com: 
+ERROR 2025-11-17 11:40:30,294 views Error during logout for admin@gmail.com: 
+ERROR 2025-11-17 12:17:27,020 views Error during logout for admin@gmail.com: 
+ERROR 2025-11-17 12:17:51,189 views Error during logout for admin@gmail.com: 
+ERROR 2025-11-17 12:55:26,671 views Error during logout for srija@gmail.com: 
+ERROR 2025-11-17 13:08:00,615 views Error during logout for admin@gmail.com: 
+ERROR 2025-11-17 13:19:43,996 views Error during logout for payel@gmail.com: 
+WARNING 2025-11-17 13:37:01,229 middleware User agent change detected for user: payel@gmail.com
+WARNING 2025-11-17 13:37:01,229 middleware Potential session hijacking detected for user: payel@gmail.com
+WARNING 2025-11-17 13:37:01,268 middleware Unauthorized access attempt to /.well-known/appspecific/com.chrome.devtools.json from IP: 127.0.0.1
+WARNING 2025-11-17 13:37:25,403 middleware User agent change detected for user: payel@gmail.com
+WARNING 2025-11-17 13:37:25,403 middleware Potential session hijacking detected for user: payel@gmail.com
+WARNING 2025-11-17 13:37:28,028 middleware Unauthorized access attempt to /process/dashboard/ from IP: 127.0.0.1
+WARNING 2025-11-17 13:37:28,069 middleware Unauthorized access attempt to /.well-known/appspecific/com.chrome.devtools.json from IP: 127.0.0.1
+WARNING 2025-11-17 13:38:08,178 middleware User agent change detected for user: payel@gmail.com
+WARNING 2025-11-17 13:38:08,178 middleware Potential session hijacking detected for user: payel@gmail.com
+WARNING 2025-11-17 13:38:08,213 middleware Unauthorized access attempt to /.well-known/appspecific/com.chrome.devtools.json from IP: 127.0.0.1
+WARNING 2025-11-17 15:17:02,180 middleware Unauthorized access attempt to / from IP: 127.0.0.1
+WARNING 2025-11-17 15:17:05,583 middleware Unauthorized access attempt to /favicon.ico from IP: 127.0.0.1
+WARNING 2025-11-17 15:17:14,621 middleware Unauthorized access attempt to /favicon.ico from IP: 127.0.0.1
+ERROR 2025-11-17 15:20:11,732 views Error during logout for admin@gmail.com: 
+WARNING 2025-11-17 15:20:12,958 middleware Unauthorized access attempt to /favicon.ico from IP: 127.0.0.1
+WARNING 2025-11-17 15:20:17,773 middleware Unauthorized access attempt to /favicon.ico from IP: 127.0.0.1
+WARNING 2025-11-17 15:21:45,219 middleware Unauthorized access attempt to /favicon.ico from IP: 127.0.0.1
+WARNING 2025-11-17 15:22:03,004 middleware Unauthorized access attempt to /favicon.ico from IP: 127.0.0.1
+WARNING 2025-11-17 15:22:15,359 views Failed login attempt for: admin@gmail.com from IP: 127.0.0.1
+WARNING 2025-11-17 15:22:15,397 middleware Unauthorized access attempt to /favicon.ico from IP: 127.0.0.1
+WARNING 2025-11-17 16:41:31,477 middleware Unauthorized access attempt to /favicon.ico from IP: 127.0.0.1
+WARNING 2025-11-17 16:41:40,342 middleware Unauthorized access attempt to / from IP: 127.0.0.1
+WARNING 2025-11-17 16:41:41,066 middleware Unauthorized access attempt to /favicon.ico from IP: 127.0.0.1
+WARNING 2025-11-17 16:41:45,016 middleware Unauthorized access attempt to /favicon.ico from IP: 127.0.0.1
+WARNING 2025-11-17 16:41:47,858 middleware Unauthorized access attempt to /favicon.ico from IP: 127.0.0.1
+WARNING 2025-11-17 18:07:36,289 middleware Unauthorized access attempt to /accounts/logout/ from IP: 127.0.0.1
+WARNING 2025-11-17 18:07:39,278 middleware Unauthorized access attempt to /favicon.ico from IP: 127.0.0.1
+WARNING 2025-11-17 18:07:41,970 middleware Unauthorized access attempt to /favicon.ico from IP: 127.0.0.1

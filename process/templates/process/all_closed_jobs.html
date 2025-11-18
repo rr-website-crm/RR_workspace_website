@@ -1,0 +1,129 @@
+<!-- process/templates/process/all_closed_jobs.html -->
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}All Closed Jobs - Process{% endblock %}
+
+{% block content %}
+<div class="dashboard-header">
+    <h1 class="dashboard-title">Welcome, {{ user.get_full_name }}!</h1>
+    <p class="dashboard-subtitle">Process Team Dashboard</p>
+</div>
+
+<!-- Stats Overview -->
+<div class="stats-grid">
+    <div class="stat-card">
+        <div class="stat-value">{{ total_closed_jobs }}</div>
+        <div class="stat-label">Total Closed Jobs</div>
+    </div>
+    <div class="stat-card" style="background: linear-gradient(135deg, var(--accent) 0%, var(--secondary) 100%);">
+        <div class="stat-value">{{ jobs.paginator.count }}</div>
+        <div class="stat-label">Jobs This Page</div>
+    </div>
+</div>
+
+<!-- Jobs Table -->
+<div class="table-container">
+    <table class="data-table">
+        <thead>
+            <tr>
+                <th>Job ID</th>
+                <th>Topic</th>
+                <th>Word Count</th>
+                <th>Deadline</th>
+                <th>Referencing</th>
+                <th>Status</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for job in jobs %}
+            <tr>
+                <td>
+                    <span style="font-family: monospace; font-weight: 600; color: var(--primary);">
+                        {{ job.job_id }}
+                    </span>
+                </td>
+                <td>{{ job.topic|truncatewords:8 }}</td>
+                <td>{{ job.word_count }}</td>
+                <td>{{ job.deadline|date:"d/m/Y H:i" }}</td>
+                <td>{{ job.referencing }}</td>
+                <td>
+                    {% if job.status == 'submitted' %}
+                    <span class="status-tag status-completed">Submitted</span>
+                    {% elif job.status == 'completed' %}
+                    <span class="status-tag status-completed">Completed</span>
+                    {% else %}
+                    <span class="status-tag">{{ job.get_status_display }}</span>
+                    {% endif %}
+                </td>
+                <td>
+                    <a href="{% url 'view_job' job.job_id %}" class="btn btn-primary" style="padding: 8px 16px; font-size: 13px;">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="margin-right: 4px;">
+                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                        View
+                    </a>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="7" class="text-center" style="padding: 2rem;">
+                    <p style="font-size: 1.1rem; opacity: 0.7;">No closed jobs found.</p>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<!-- Pagination -->
+{% if jobs.has_other_pages %}
+<div style="display: flex; justify-content: center; align-items: center; gap: 1rem; margin-top: 2rem;">
+    {% if jobs.has_previous %}
+    <a href="?page=1" class="btn btn-outline" style="padding: 8px 16px;">First</a>
+    <a href="?page={{ jobs.previous_page_number }}" class="btn btn-outline" style="padding: 8px 16px;">Previous</a>
+    {% endif %}
+    
+    <span style="color: var(--text-color); font-weight: 500;">
+        Page {{ jobs.number }} of {{ jobs.paginator.num_pages }}
+    </span>
+    
+    {% if jobs.has_next %}
+    <a href="?page={{ jobs.next_page_number }}" class="btn btn-outline" style="padding: 8px 16px;">Next</a>
+    <a href="?page={{ jobs.paginator.num_pages }}" class="btn btn-outline" style="padding: 8px 16px;">Last</a>
+    {% endif %}
+</div>
+{% endif %}
+
+<style>
+.stat-card {
+    animation: fadeInUp 0.5s ease-out;
+}
+
+.stat-card:nth-child(2) {
+    animation-delay: 0.1s;
+}
+
+.data-table tbody tr {
+    animation: fadeIn 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+</style>
+{% endblock %}

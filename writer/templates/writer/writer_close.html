@@ -1,0 +1,100 @@
+<!-- writer/templates/writer/writer_close.html -->
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Completed Projects - Writer{% endblock %}
+
+{% block content %}
+<div class="dashboard-header">
+    <h1 class="dashboard-title">Completed Projects</h1>
+    <p class="dashboard-subtitle">Your successfully completed projects</p>
+</div>
+
+<div class="card">
+    <div class="card-header">
+        <h2 class="card-title">Closed/Completed Projects ({{ closed_projects.count }})</h2>
+    </div>
+    <div class="card-body">
+        <div class="table-container">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Job ID</th>
+                        <th>Topic</th>
+                        <th>Word Count</th>
+                        <th>Submitted On</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for project in closed_projects %}
+                    <tr>
+                        <td>
+                            <span style="font-weight: 600; color: var(--primary);">
+                                {{ project.job_id|slice:":10" }}***
+                            </span>
+                        </td>
+                        <td>
+                            <span style="filter: blur(4px); max-width: 200px; display: inline-block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+                                {{ project.topic|slice:":40" }}...
+                            </span>
+                        </td>
+                        <td>
+                            <span style="filter: blur(3px); font-weight: 600;">
+                                {{ project.word_count }} words
+                            </span>
+                        </td>
+                        <td>
+                            {% if project.completed_at %}
+                            {{ project.completed_at|date:"d M Y, h:i A" }}
+                            {% else %}
+                            <span style="opacity: 0.5;">-</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if project.status == 'completed' %}
+                            <span class="status-tag status-completed">Completed</span>
+                            {% elif project.status == 'closed' %}
+                            <span class="status-tag status-allocated">Closed</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <a href="{% url 'project_detail' project.id %}" class="btn btn-primary" style="padding: 6px 16px; font-size: 13px;">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M1 12C1 12 5 4 12 4C19 4 23 12 23 12C23 12 19 20 12 20C5 20 1 12 1 12Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                    <circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                                View
+                            </a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="6" class="text-center" style="padding: 3rem;">
+                            <div style="opacity: 0.6;">
+                                <svg width="64" height="64" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="margin-bottom: 1rem; opacity: 0.3;">
+                                    <polyline points="20 6 9 17 4 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                                <p style="font-size: 18px; font-weight: 600; margin-bottom: 0.5rem;">No Completed Projects</p>
+                                <p style="font-size: 14px;">Complete your first project to see it here!</p>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<style>
+    .data-table tbody tr:hover {
+        background-color: rgba(183, 153, 255, 0.1);
+    }
+    
+    .data-table tbody tr {
+        transition: all 0.3s ease;
+    }
+</style>
+{% endblock %}
