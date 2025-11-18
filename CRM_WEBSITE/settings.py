@@ -239,3 +239,11 @@ LOGGING = {
 # Create logs directory if it doesn't exist
 LOGS_DIR = BASE_DIR / 'logs'
 LOGS_DIR.mkdir(exist_ok=True)
+
+
+
+## Google Authentication Settings
+GOOGLE_SERVICE_ACCOUNT_FILE = os.path.join(BASE_DIR, 'rr-website-478606-8d60b4309fbb.json')
+GOOGLE_CALENDAR_ID = 'paulritabrata2@gmail.com'
+
+

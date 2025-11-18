@@ -19,4 +19,13 @@ urlpatterns = [
     
     # API Endpoints
     path('role-details/<str:role>/', views.role_details, name='role_details'),
+
+    # Master Input
+    path('master-input/', views.master_input, name='master_input'),
+    
+    # Holiday Master
+    path('holiday-master/', views.holiday_master, name='holiday_master'),
+    path('holiday-master/create/', views.create_holiday, name='create_holiday'),
+    path('holiday-master/<int:holiday_id>/edit/', views.edit_holiday, name='edit_holiday'),
+    path('holiday-master/delete/<int:holiday_id>/', views.delete_holiday, name='delete_holiday'),
 ]

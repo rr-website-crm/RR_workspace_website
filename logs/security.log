@@ -144,3 +144,12 @@ WARNING 2025-11-17 16:41:47,858 middleware Unauthorized access attempt to /favic
 WARNING 2025-11-17 18:07:36,289 middleware Unauthorized access attempt to /accounts/logout/ from IP: 127.0.0.1
 WARNING 2025-11-17 18:07:39,278 middleware Unauthorized access attempt to /favicon.ico from IP: 127.0.0.1
 WARNING 2025-11-17 18:07:41,970 middleware Unauthorized access attempt to /favicon.ico from IP: 127.0.0.1
+WARNING 2025-11-18 11:48:01,845 middleware Unauthorized access attempt to / from IP: 127.0.0.1
+WARNING 2025-11-18 11:48:05,193 middleware Unauthorized access attempt to /favicon.ico from IP: 127.0.0.1
+WARNING 2025-11-18 14:02:02,362 middleware Unauthorized access attempt to /dashboard/ from IP: 127.0.0.1
+WARNING 2025-11-18 14:02:05,842 middleware Unauthorized access attempt to /favicon.ico from IP: 127.0.0.1
+ERROR 2025-11-18 14:02:34,767 views Error during logout for admin@gmail.com: 
+WARNING 2025-11-18 14:03:13,394 middleware Unauthorized access attempt to /favicon.ico from IP: 127.0.0.1
+WARNING 2025-11-18 15:23:10,981 middleware Unauthorized access attempt to /superadmin/holiday-master/ from IP: 127.0.0.1
+WARNING 2025-11-18 15:23:11,610 middleware Unauthorized access attempt to /favicon.ico from IP: 127.0.0.1
+WARNING 2025-11-18 18:26:20,467 middleware Unauthorized access attempt to /favicon.ico from IP: 127.0.0.1

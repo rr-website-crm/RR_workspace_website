@@ -1,325 +1,3 @@
-# from django.shortcuts import render, redirect, get_object_or_404
-# from django.contrib.auth.decorators import login_required
-# from django.contrib import messages
-# from django.utils import timezone
-# from django.http import JsonResponse
-# from django.db import transaction
-# from accounts.models import CustomUser, LoginLog
-# import logging
-
-# logger = logging.getLogger('superadmin')
-
-
-# def superadmin_required(view_func):
-#     """Decorator to check if user is superadmin"""
-#     def wrapper(request, *args, **kwargs):
-#         if not request.user.is_authenticated:
-#             messages.error(request, 'Please login to access this page.')
-#             return redirect('login')
-#         if request.user.role != 'superadmin':
-#             messages.error(request, 'You do not have permission to access this page.')
-#             return redirect('home_dashboard')
-#         return view_func(request, *args, **kwargs)
-#     return wrapper
-
-
-# @login_required
-# @superadmin_required
-# def superadmin_dashboard(request):
-#     """SuperAdmin Dashboard (Djongo-safe implementation)"""
-
-#     # Safely initialise values
-#     total_users = 0
-#     pending_approvals = 0
-#     total_approved = 0
-#     role_data = []
-#     total_active = 0
-
-#     try:
-#         # Basic counts (these are simple queries and should be safe)
-#         total_users = CustomUser.objects.filter(is_approved=True).exclude(role='user').count()
-#         pending_approvals = CustomUser.objects.filter(is_approved=False, approval_status='pending').count()
-#         total_approved = CustomUser.objects.filter(is_approved=True).count()
-
-#         # Get today's active users by role (avoid complex DB aggregation for Djongo)
-#         today = timezone.now().date()
-#         logs = LoginLog.objects.filter(
-#             login_time__date=today,
-#             is_active=True
-#         ).select_related('user')
-
-#         # Python-level grouping (MongoDB-friendly)
-#         role_count_map = {}
-#         for log in logs:
-#             try:
-#                 role = log.user.role or 'user'
-#             except Exception:
-#                 # If select_related failed for any reason, skip this log entry
-#                 continue
-#             if role == 'user':
-#                 # skip generic 'user' role if you don't want to show it
-#                 continue
-#             role_count_map[role] = role_count_map.get(role, 0) + 1
-
-#         # Build role_data list for template
-#         role_data = [{'role': r, 'count': c} for r, c in role_count_map.items()]
-#         total_active = sum(role_count_map.values())
-
-#     except Exception as e:
-#         # Log error but keep dashboard rendering (prevents 500 on DB driver errors)
-#         logger.exception("Error while preparing superadmin dashboard data: %s", e)
-#         # values remain default (0 / empty) so template will show zeros/empty state
-
-#     context = {
-#         'total_users': total_users,
-#         'total_active': total_active,
-#         'pending_approvals': pending_approvals,
-#         'total_approved': total_approved,
-#         'role_active_counts': role_data,
-#     }
-
-#     return render(request, 'superadmin_dashboard.html', context)
-
-
-# @login_required
-# @superadmin_required
-# def role_details(request, role):
-#     """Get role-specific active users for today"""
-
-#     users_data = []
-#     try:
-#         today = timezone.now().date()
-#         # Fetch today's login logs for the role
-#         login_logs = LoginLog.objects.filter(
-#             user__role=role,
-#             login_time__date=today,
-#             is_active=True
-#         ).select_related('user').order_by('login_time')
-
-#         for log in login_logs:
-#             users_data.append({
-#                 'employee_id': log.employee_id or 'N/A',
-#                 'name': log.user.get_full_name(),
-#                 'email': log.user.email,
-#                 'login_time': log.login_time.strftime('%I:%M %p')
-#             })
-
-#     except Exception as e:
-#         logger.exception("Error fetching role details for %s: %s", role, e)
-#         # return empty list in error case
-
-#     return JsonResponse({'users': users_data})
-
-
-# @login_required
-# @superadmin_required
-# def manage_users(request):
-#     """Manage all users"""
-#     users = []
-#     total_users = 0
-#     pending_count = 0
-#     approved_count = 0
-
-#     try:
-#         users_qs = CustomUser.objects.filter(is_approved=True).exclude(role='user').order_by('-date_joined')
-#         users = users_qs
-#         total_users = users_qs.count()
-#         pending_count = CustomUser.objects.filter(is_approved=False, approval_status='pending').count()
-#         approved_count = total_users
-#     except Exception as e:
-#         logger.exception("Error fetching manage users data: %s", e)
-
-#     context = {
-#         'users': users,
-#         'total_users': total_users,
-#         'pending_count': pending_count,
-#         'approved_count': approved_count,
-#     }
-
-#     return render(request, 'manage_users.html', context)
-
-
-# @login_required
-# @superadmin_required
-# def update_user_role(request, user_id):
-#     """Update user role"""
-#     if request.method == 'POST':
-#         user = get_object_or_404(CustomUser, id=user_id)
-#         new_role = request.POST.get('role')
-
-#         if new_role in dict(CustomUser.ROLE_CHOICES).keys():
-#             old_role = user.role
-#             user.role = new_role
-#             user.save()
-
-#             logger.info(f"User {user.email} role updated from {old_role} to {new_role} by {request.user.email}")
-#             messages.success(request, f'User role updated successfully to {new_role}.')
-#         else:
-#             messages.error(request, 'Invalid role selected.')
-
-#     return redirect('manage_users')
-
-
-# @login_required
-# @superadmin_required
-# def update_user_category(request, user_id):
-#     """Update user category/department"""
-#     if request.method == 'POST':
-#         user = get_object_or_404(CustomUser, id=user_id)
-#         category = request.POST.get('category')
-
-#         user.department = category
-#         user.save()
-
-#         logger.info(f"User {user.email} category updated to {category} by {request.user.email}")
-#         messages.success(request, 'User category updated successfully.')
-
-#     return redirect('manage_users')
-
-
-# @login_required
-# @superadmin_required
-# def update_user_level(request, user_id):
-#     """Update user level"""
-#     if request.method == 'POST':
-#         user = get_object_or_404(CustomUser, id=user_id)
-#         try:
-#             level = int(request.POST.get('level', 0))
-#             if 0 <= level <= 5:
-#                 user.level = level
-#                 user.save()
-
-#                 logger.info(f"User {user.email} level updated to {level} by {request.user.email}")
-#                 messages.success(request, 'User level updated successfully.')
-#             else:
-#                 messages.error(request, 'Level must be between 0 and 5.')
-#         except ValueError:
-#             messages.error(request, 'Invalid level value.')
-
-#     return redirect('manage_users')
-
-
-# @login_required
-# @superadmin_required
-# def toggle_user_status(request, user_id):
-#     """Toggle user active status"""
-#     if request.method == 'POST':
-#         user = get_object_or_404(CustomUser, id=user_id)
-#         user.is_active = not user.is_active
-#         user.save()
-
-#         status = 'activated' if user.is_active else 'deactivated'
-#         logger.info(f"User {user.email} {status} by {request.user.email}")
-#         messages.success(request, f'User has been {status} successfully.')
-
-#     return redirect('manage_users')
-
-
-# @login_required
-# @superadmin_required
-# def edit_user(request, user_id):
-#     """Edit user profile"""
-#     user = get_object_or_404(CustomUser, id=user_id)
-
-#     if request.method == 'POST':
-#         # Update user details
-#         user.first_name = request.POST.get('first_name', user.first_name)
-#         user.last_name = request.POST.get('last_name', user.last_name)
-#         user.email = request.POST.get('email', user.email)
-#         user.whatsapp_number = request.POST.get('whatsapp_number', user.whatsapp_number)
-#         user.role = request.POST.get('role', user.role)
-
-#         try:
-#             level = int(request.POST.get('level', 0))
-#             if 0 <= level <= 5:
-#                 user.level = level
-#         except ValueError:
-#             pass
-
-#         user.save()
-
-#         logger.info(f"User {user.email} profile updated by {request.user.email}")
-#         messages.success(request, 'User profile updated successfully.')
-#         return redirect('manage_users')
-
-#     context = {
-#         'edit_user': user,
-#     }
-
-#     return render(request, 'edit_user.html', context)
-
-
-# @login_required
-# @superadmin_required
-# def pending_items(request):
-#     """Pending approvals page"""
-#     pending_users = []
-#     try:
-#         pending_users_qs = list(CustomUser.objects
-#         .filter(is_approved=False, approval_status='pending')
-#         .order_by('date_joined'))
-#         pending_users = pending_users_qs
-#         pending_total = len(pending_users_qs)
-
-#     except Exception as e:
-#         logger.exception("Error fetching pending users: %s", e)
-
-#     context = {
-#         'pending_users': pending_users,
-#     }
-
-#     return render(request, 'pending_items.html', context)
-
-
-# @login_required
-# @superadmin_required
-# def approve_user(request, user_id):
-#     """Approve user registration"""
-#     if request.method == 'POST':
-#         user = get_object_or_404(CustomUser, id=user_id)
-#         role = request.POST.get('role')
-
-#         if not role or role not in dict(CustomUser.ROLE_CHOICES).keys():
-#             messages.error(request, 'Please select a valid role.')
-#             return redirect('pending_items')
-
-#         if role == 'user':
-#             messages.error(request, 'Cannot approve with "user" role. Please select a specific role.')
-#             return redirect('pending_items')
-
-#         with transaction.atomic():
-#             user.role = role
-#             user.is_approved = True
-#             user.approval_status = 'approved'
-#             user.level = 0  # Initial level
-#             user.save()
-
-#         logger.info(f"User {user.email} approved with role {role} by {request.user.email}")
-#         messages.success(request, f'User approved successfully as {role}.')
-
-#     return redirect('pending_items')
-
-
-# @login_required
-# @superadmin_required
-# def reject_user(request, user_id):
-#     """Reject user registration"""
-#     if request.method == 'POST':
-#         user = get_object_or_404(CustomUser, id=user_id)
-
-#         with transaction.atomic():
-#             user.is_approved = False
-#             user.approval_status = 'rejected'
-#             user.save()
-
-#         logger.info(f"User {user.email} rejected by {request.user.email}")
-#         messages.warning(request, 'User registration has been rejected.')
-
-#     return redirect('pending_items')
-
-
-
-
 # superadminpanel/views.py
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
@@ -331,6 +9,10 @@ from accounts.models import CustomUser, LoginLog
 from accounts.services import log_activity_event
 import logging
 from datetime import datetime, time
+
+from .models import Holiday
+from .services.google_calendar_service import GoogleCalendarService
+from datetime import datetime, timedelta
 
 logger = logging.getLogger('superadmin')
 
@@ -890,3 +572,373 @@ def reject_user(request, user_id):
         )
         messages.warning(request, 'User registration has been rejected.')
     return redirect('pending_items')
+
+
+
+
+
+@login_required
+@superadmin_required
+def master_input(request):
+    """Master Input Dashboard"""
+    return render(request, 'master_input.html')
+
+
+@login_required
+@superadmin_required
+def holiday_master(request):
+    """Holiday Master - List all holidays"""
+    try:
+        raw_holidays = list(Holiday.objects.all().order_by('-created_at'))
+        holidays = [
+            holiday for holiday in raw_holidays
+            if not getattr(holiday, 'is_deleted', False)
+        ]
+
+        context = {
+            'holidays': holidays,
+            'total_holidays': len(holidays),
+        }
+
+        return render(request, 'holiday_master.html', context)
+        
+    except Exception as e:
+        logger.exception(f"Error loading holiday master: {str(e)}")
+        messages.error(request, 'Error loading holidays.')
+        return render(request, 'holiday_master.html', {'holidays': []})
+
+
+@login_required
+@superadmin_required
+def create_holiday(request):
+    """Create a new holiday"""
+    if request.method == 'POST':
+        try:
+            # Get form data
+            holiday_name = request.POST.get('holiday_name', '').strip()
+            holiday_type = request.POST.get('holiday_type', 'full_day')
+            date_type = request.POST.get('date_type', 'single')
+            description = request.POST.get('description', '').strip()
+            
+            # Validation
+            if not holiday_name:
+                messages.error(request, 'Holiday name is required.')
+                return redirect('holiday_master')
+            
+            # Create holiday object
+            with transaction.atomic():
+                holiday = Holiday()
+                holiday.holiday_name = holiday_name
+                holiday.holiday_type = holiday_type
+                holiday.date_type = date_type
+                holiday.description = description
+                holiday.created_by = request.user
+                holiday.created_at = timezone.now()
+                
+                # Handle dates based on type
+                if date_type == 'single':
+                    date_str = request.POST.get('date')
+                    if not date_str:
+                        messages.error(request, 'Date is required.')
+                        return redirect('holiday_master')
+                    
+                    holiday.date = datetime.strptime(date_str, '%Y-%m-%d').date()
+                    start_date = holiday.date
+                    end_date = holiday.date
+                    
+                else:  # consecutive
+                    from_date_str = request.POST.get('from_date')
+                    to_date_str = request.POST.get('to_date')
+                    
+                    if not from_date_str or not to_date_str:
+                        messages.error(request, 'From date and To date are required.')
+                        return redirect('holiday_master')
+                    
+                    holiday.from_date = datetime.strptime(from_date_str, '%Y-%m-%d').date()
+                    holiday.to_date = datetime.strptime(to_date_str, '%Y-%m-%d').date()
+                    
+                    if holiday.from_date > holiday.to_date:
+                        messages.error(request, 'From date must be before To date.')
+                        return redirect('holiday_master')
+                    
+                    start_date = holiday.from_date
+                    end_date = holiday.to_date
+                
+                # Save to database first
+                holiday.save()
+                
+                # Log activity
+                log_activity_event(
+                    'holiday.created_at',
+                    subject_user=None,
+                    performed_by=request.user,
+                    metadata={
+                        'holiday_id': holiday.id,
+                        'holiday_name': holiday_name,
+                        'date_type': date_type,
+                    },
+                )
+                
+                # Sync to Google Calendar
+                holiday.google_calendar_sync_started_at = timezone.now()
+                holiday.save(update_fields=['google_calendar_sync_started_at'])
+                
+                log_activity_event(
+                    'holiday.google_calendar_sync_started_at',
+                    subject_user=None,
+                    performed_by=None,
+                    metadata={'holiday_id': holiday.id, 'performed_by': 'system'},
+                )
+                
+                try:
+                    calendar_service = GoogleCalendarService()
+                    event_id = calendar_service.create_event(
+                        holiday_name=holiday_name,
+                        start_date=start_date,
+                        end_date=end_date,
+                        description=description,
+                        holiday_type=holiday_type
+                    )
+                    
+                    if event_id:
+                        holiday.google_calendar_event_id = event_id
+                        holiday.is_synced_to_calendar = True
+                        holiday.google_calendar_synced_at = timezone.now()
+                        holiday.save(update_fields=[
+                            'google_calendar_event_id',
+                            'is_synced_to_calendar',
+                            'google_calendar_synced_at'
+                        ])
+                        
+                        log_activity_event(
+                            'holiday.google_calendar_synced_at',
+                            subject_user=None,
+                            performed_by=None,
+                            metadata={
+                                'holiday_id': holiday.id,
+                                'event_id': event_id,
+                                'performed_by': 'system',
+                            },
+                        )
+                        
+                        logger.info(f"Holiday '{holiday_name}' created and synced to Google Calendar")
+                        messages.success(request, f'Holiday "{holiday_name}" created and synced to Google Calendar!')
+                    else:
+                        holiday.google_calendar_sync_failed_at = timezone.now()
+                        holiday.save(update_fields=['google_calendar_sync_failed_at'])
+                        
+                        log_activity_event(
+                            'holiday.google_calendar_sync_failed_at',
+                            subject_user=None,
+                            performed_by=None,
+                            metadata={
+                                'holiday_id': holiday.id,
+                                'error': 'Failed to create calendar event',
+                                'performed_by': 'system',
+                            },
+                        )
+                        
+                        logger.warning(f"Holiday created but failed to sync to Google Calendar")
+                        messages.warning(request, f'Holiday "{holiday_name}" created but failed to sync to Google Calendar.')
+                        
+                except Exception as calendar_error:
+                    holiday.google_calendar_sync_failed_at = timezone.now()
+                    holiday.save(update_fields=['google_calendar_sync_failed_at'])
+                    
+                    log_activity_event(
+                        'holiday.google_calendar_sync_failed_at',
+                        subject_user=None,
+                        performed_by=None,
+                        metadata={
+                            'holiday_id': holiday.id,
+                            'error': str(calendar_error),
+                            'performed_by': 'system',
+                        },
+                    )
+                    
+                    logger.error(f"Google Calendar sync error: {str(calendar_error)}")
+                    messages.warning(request, f'Holiday "{holiday_name}" created but Google Calendar sync failed.')
+            
+            return redirect('holiday_master')
+            
+        except Exception as e:
+            logger.exception(f"Error creating holiday: {str(e)}")
+            messages.error(request, 'An error occurred while creating the holiday.')
+            return redirect('holiday_master')
+    
+    return redirect('holiday_master')
+
+
+@login_required
+@superadmin_required
+def edit_holiday(request, holiday_id):
+    """Update an existing holiday"""
+    if request.method != 'POST':
+        return redirect('holiday_master')
+
+    holiday = next(
+        (
+            item for item in Holiday.objects.all()
+            if item.id == holiday_id and not getattr(item, 'is_deleted', False)
+        ),
+        None
+    )
+
+    if not holiday:
+        messages.error(request, 'Holiday not found.')
+        return redirect('holiday_master')
+
+    try:
+        holiday_name = request.POST.get('holiday_name', '').strip()
+        holiday_type = request.POST.get('holiday_type', 'full_day')
+        date_type = request.POST.get('date_type', 'single')
+        description = request.POST.get('description', '').strip()
+
+        if not holiday_name:
+            messages.error(request, 'Holiday name is required.')
+            return redirect('holiday_master')
+
+        if date_type == 'single':
+            date_str = request.POST.get('date')
+            if not date_str:
+                messages.error(request, 'Date is required for single-day holiday.')
+                return redirect('holiday_master')
+            start_date = datetime.strptime(date_str, '%Y-%m-%d').date()
+            end_date = start_date
+        else:
+            from_date_str = request.POST.get('from_date')
+            to_date_str = request.POST.get('to_date')
+            if not from_date_str or not to_date_str:
+                messages.error(request, 'Both From and To dates are required for consecutive holidays.')
+                return redirect('holiday_master')
+            start_date = datetime.strptime(from_date_str, '%Y-%m-%d').date()
+            end_date = datetime.strptime(to_date_str, '%Y-%m-%d').date()
+            if start_date > end_date:
+                messages.error(request, 'From date must be before To date.')
+                return redirect('holiday_master')
+
+        with transaction.atomic():
+            holiday.holiday_name = holiday_name
+            holiday.holiday_type = holiday_type
+            holiday.date_type = date_type
+            holiday.description = description
+            holiday.updated_by = request.user
+            holiday.updated_at = timezone.now()
+
+            if date_type == 'single':
+                holiday.date = start_date
+                holiday.from_date = None
+                holiday.to_date = None
+            else:
+                holiday.date = None
+                holiday.from_date = start_date
+                holiday.to_date = end_date
+
+            holiday.google_calendar_sync_started_at = timezone.now()
+            holiday.google_calendar_sync_failed_at = None
+            holiday.save()
+
+            log_activity_event(
+                'holiday.updated_at',
+                subject_user=None,
+                performed_by=request.user,
+                metadata={
+                    'holiday_id': holiday.id,
+                    'holiday_name': holiday.holiday_name,
+                },
+            )
+
+            try:
+                calendar_service = GoogleCalendarService()
+                if holiday.google_calendar_event_id:
+                    sync_ok = calendar_service.update_event(
+                        holiday.google_calendar_event_id,
+                        holiday_name,
+                        start_date,
+                        end_date,
+                        description=description,
+                        holiday_type=holiday_type,
+                    )
+                else:
+                    event_id = calendar_service.create_event(
+                        holiday_name=holiday_name,
+                        start_date=start_date,
+                        end_date=end_date,
+                        description=description,
+                        holiday_type=holiday_type,
+                    )
+                    sync_ok = bool(event_id)
+                    if event_id:
+                        holiday.google_calendar_event_id = event_id
+
+                if sync_ok:
+                    holiday.is_synced_to_calendar = True
+                    holiday.google_calendar_synced_at = timezone.now()
+                    holiday.save(update_fields=['is_synced_to_calendar', 'google_calendar_synced_at', 'google_calendar_event_id'])
+                else:
+                    holiday.is_synced_to_calendar = False
+                    holiday.google_calendar_sync_failed_at = timezone.now()
+                    holiday.save(update_fields=['is_synced_to_calendar', 'google_calendar_sync_failed_at'])
+                    logger.warning("Holiday updated but failed to sync to Google Calendar.")
+
+            except Exception as calendar_error:
+                holiday.is_synced_to_calendar = False
+                holiday.google_calendar_sync_failed_at = timezone.now()
+                holiday.save(update_fields=['is_synced_to_calendar', 'google_calendar_sync_failed_at'])
+                logger.error(f"Google Calendar sync error during update: {str(calendar_error)}")
+
+        messages.success(request, f'Holiday "{holiday.holiday_name}" updated successfully.')
+
+    except Exception as e:
+        logger.exception(f"Error updating holiday: {str(e)}")
+        messages.error(request, 'An error occurred while updating the holiday.')
+
+    return redirect('holiday_master')
+
+
+@login_required
+@superadmin_required
+def delete_holiday(request, holiday_id):
+    """Permanently delete a holiday"""
+    if request.method != 'POST':
+        return redirect('holiday_master')
+
+    holiday = Holiday.objects.filter(id=holiday_id).first()
+
+    if not holiday:
+        messages.error(request, 'Holiday not found.')
+        return redirect('holiday_master')
+
+    holiday_id_ref = holiday.id
+    holiday_name_ref = holiday.holiday_name
+    calendar_event_id = holiday.google_calendar_event_id
+
+    try:
+        with transaction.atomic():
+            if calendar_event_id:
+                try:
+                    calendar_service = GoogleCalendarService()
+                    calendar_service.delete_event(calendar_event_id)
+                    logger.info(f"Holiday deleted from Google Calendar: {holiday_name_ref}")
+                except Exception as calendar_error:
+                    logger.error(f"Error deleting from Google Calendar: {str(calendar_error)}")
+
+            holiday.delete()
+
+            log_activity_event(
+                'holiday.deleted',
+                subject_user=None,
+                performed_by=request.user,
+                metadata={
+                    'holiday_id': holiday_id_ref,
+                    'holiday_name': holiday_name_ref,
+                },
+            )
+
+        messages.success(request, f'Holiday "{holiday_name_ref}" deleted successfully.')
+
+    except Exception as e:
+        logger.exception(f"Error deleting holiday: {str(e)}")
+        messages.error(request, 'An error occurred while deleting the holiday.')
+
+    return redirect('holiday_master')

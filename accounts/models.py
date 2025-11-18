@@ -474,3 +474,53 @@ class ActivityLog(models.Model):
 
     def __str__(self):
         return f"{self.event_key} - {self.created_at:%Y-%m-%d %H:%M:%S}"
+
+
+
+class ActivityLog(models.Model):
+    """Stores lifecycle and superadmin actions in MongoDB."""
+
+    CATEGORY_USER = 'user_lifecycle'
+    CATEGORY_SUPERADMIN = 'superadmin'
+    CATEGORY_EMPLOYEE = 'employee_id'
+    CATEGORY_HOLIDAY = 'holiday_master'
+    CATEGORY_GENERAL = 'general'
+
+    CATEGORY_CHOICES = [
+        (CATEGORY_USER, 'User Lifecycle'),
+        (CATEGORY_SUPERADMIN, 'Superadmin / Manage Users'),
+        (CATEGORY_EMPLOYEE, 'Employee ID'),
+        (CATEGORY_HOLIDAY, 'Holiday Master'),
+        (CATEGORY_GENERAL, 'General'),
+    ]
+
+    event_key = models.CharField(max_length=64, db_index=True)
+    category = models.CharField(
+        max_length=32,
+        choices=CATEGORY_CHOICES,
+        default=CATEGORY_GENERAL,
+        db_index=True,
+    )
+    subject_user = models.ForeignKey(
+        CustomUser,
+        related_name='subject_activity_logs',
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+    )
+    performed_by = models.ForeignKey(
+        CustomUser,
+        related_name='performed_activity_logs',
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+    )
+    metadata = models.JSONField(default=dict, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        db_table = 'activity_logs'
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return f"{self.event_key} - {self.created_at:%Y-%m-%d %H:%M:%S}"

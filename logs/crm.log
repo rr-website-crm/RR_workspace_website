@@ -13379,3 +13379,446 @@ INFO 2025-11-17 18:09:41,828 basehttp "GET /superadmin/edit-user/2/ HTTP/1.1" 20
 WARNING 2025-11-17 18:09:41,859 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
 INFO 2025-11-17 18:09:45,479 basehttp "GET /superadmin/manage-users/ HTTP/1.1" 200 27693
 WARNING 2025-11-17 18:09:45,509 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
+INFO 2025-11-18 11:47:42,932 autoreload Watching for file changes with StatReloader
+INFO 2025-11-18 11:47:58,038 autoreload C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\superadminpanel\admin.py changed, reloading.
+INFO 2025-11-18 11:47:58,980 autoreload Watching for file changes with StatReloader
+WARNING 2025-11-18 11:48:01,845 middleware Unauthorized access attempt to / from IP: 127.0.0.1
+INFO 2025-11-18 11:48:01,846 basehttp "GET / HTTP/1.1" 302 0
+INFO 2025-11-18 11:48:01,939 basehttp "GET /accounts/login/ HTTP/1.1" 200 7338
+INFO 2025-11-18 11:48:01,974 basehttp "GET /static/css/base.css HTTP/1.1" 304 0
+INFO 2025-11-18 11:48:01,976 basehttp "GET /static/css/style.css HTTP/1.1" 304 0
+WARNING 2025-11-18 11:48:05,193 middleware Unauthorized access attempt to /favicon.ico from IP: 127.0.0.1
+INFO 2025-11-18 11:48:05,194 basehttp "GET /favicon.ico HTTP/1.1" 302 0
+INFO 2025-11-18 11:48:05,202 basehttp "GET /accounts/login/ HTTP/1.1" 200 7338
+INFO 2025-11-18 11:48:13,559 views Successful login for user: admin@gmail.com from IP: 127.0.0.1
+INFO 2025-11-18 11:48:13,598 basehttp "POST /accounts/login/ HTTP/1.1" 302 0
+INFO 2025-11-18 11:48:17,803 basehttp "GET /dashboard/ HTTP/1.1" 200 18357
+WARNING 2025-11-18 11:48:18,006 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
+INFO 2025-11-18 11:48:18,386 basehttp "GET /media/logo.png HTTP/1.1" 200 1275213
+INFO 2025-11-18 11:48:21,712 basehttp "GET /superadmin/dashboard/ HTTP/1.1" 200 22638
+WARNING 2025-11-18 11:48:21,753 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
+INFO 2025-11-18 12:08:34,882 basehttp "GET /accounts/login/ HTTP/1.1" 302 0
+INFO 2025-11-18 12:08:35,421 basehttp "GET /dashboard/ HTTP/1.1" 200 18357
+WARNING 2025-11-18 12:08:35,528 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
+INFO 2025-11-18 12:09:13,480 autoreload C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\superadminpanel\views.py changed, reloading.
+INFO 2025-11-18 12:09:15,063 autoreload Watching for file changes with StatReloader
+INFO 2025-11-18 12:09:16,713 autoreload C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\superadminpanel\views.py changed, reloading.
+INFO 2025-11-18 12:09:18,065 autoreload Watching for file changes with StatReloader
+INFO 2025-11-18 12:13:42,395 basehttp "GET /superadmin/dashboard/ HTTP/1.1" 200 22638
+WARNING 2025-11-18 12:13:42,449 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
+INFO 2025-11-18 12:13:54,838 basehttp "GET /superadmin/dashboard/ HTTP/1.1" 200 22638
+WARNING 2025-11-18 12:13:54,895 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
+INFO 2025-11-18 12:13:54,978 basehttp "GET /static/css/base.css HTTP/1.1" 200 26393
+INFO 2025-11-18 12:13:55,284 basehttp "GET /media/logo.png HTTP/1.1" 200 1275213
+INFO 2025-11-18 12:13:55,840 basehttp "GET /media/logo.png HTTP/1.1" 200 1275213
+INFO 2025-11-18 12:14:20,060 basehttp "GET /superadmin/dashboard/ HTTP/1.1" 200 23746
+INFO 2025-11-18 12:14:20,106 basehttp "GET /static/css/base.css HTTP/1.1" 200 26393
+WARNING 2025-11-18 12:14:20,110 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
+INFO 2025-11-18 12:14:20,539 basehttp "GET /media/logo.png HTTP/1.1" 200 1275213
+INFO 2025-11-18 12:14:21,043 basehttp "GET /media/logo.png HTTP/1.1" 200 1275213
+INFO 2025-11-18 12:54:34,814 autoreload C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\superadminpanel\models.py changed, reloading.
+INFO 2025-11-18 12:54:36,620 autoreload Watching for file changes with StatReloader
+INFO 2025-11-18 12:55:51,964 autoreload C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\superadminpanel\views.py changed, reloading.
+INFO 2025-11-18 12:55:53,764 autoreload Watching for file changes with StatReloader
+INFO 2025-11-18 12:59:57,366 autoreload C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\CRM_WEBSITE\settings.py changed, reloading.
+INFO 2025-11-18 12:59:58,390 autoreload Watching for file changes with StatReloader
+INFO 2025-11-18 13:00:04,240 autoreload C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\CRM_WEBSITE\settings.py changed, reloading.
+INFO 2025-11-18 13:00:05,319 autoreload Watching for file changes with StatReloader
+INFO 2025-11-18 13:00:07,955 autoreload C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\CRM_WEBSITE\settings.py changed, reloading.
+INFO 2025-11-18 13:04:10,176 autoreload Watching for file changes with StatReloader
+INFO 2025-11-18 14:02:01,633 autoreload Watching for file changes with StatReloader
+WARNING 2025-11-18 14:02:02,362 middleware Unauthorized access attempt to /dashboard/ from IP: 127.0.0.1
+INFO 2025-11-18 14:02:02,363 basehttp "GET /dashboard/ HTTP/1.1" 302 0
+INFO 2025-11-18 14:02:02,394 basehttp "GET /accounts/login/ HTTP/1.1" 200 7656
+INFO 2025-11-18 14:02:02,544 basehttp "GET /static/css/base.css HTTP/1.1" 200 26393
+WARNING 2025-11-18 14:02:05,842 middleware Unauthorized access attempt to /favicon.ico from IP: 127.0.0.1
+INFO 2025-11-18 14:02:05,843 basehttp "GET /favicon.ico HTTP/1.1" 302 0
+INFO 2025-11-18 14:02:05,876 basehttp "GET /accounts/login/ HTTP/1.1" 200 7338
+INFO 2025-11-18 14:02:14,035 views Successful login for user: admin@gmail.com from IP: 127.0.0.1
+INFO 2025-11-18 14:02:14,068 basehttp "POST /accounts/login/ HTTP/1.1" 302 0
+INFO 2025-11-18 14:02:14,471 basehttp "GET /dashboard/ HTTP/1.1" 200 19179
+WARNING 2025-11-18 14:02:14,536 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
+INFO 2025-11-18 14:02:14,824 basehttp "GET /media/logo.png HTTP/1.1" 200 1275213
+INFO 2025-11-18 14:02:17,858 basehttp "GET /superadmin/dashboard/ HTTP/1.1" 200 23460
+WARNING 2025-11-18 14:02:17,932 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
+INFO 2025-11-18 14:02:21,008 basehttp "GET /superadmin/role-details/superadmin/ HTTP/1.1" 200 133
+ERROR 2025-11-18 14:02:24,341 log Internal Server Error: /superadmin/master-input/
+Traceback (most recent call last):
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\template\backends\django.py", line 61, in render
+    return self.template.render(context)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\template\base.py", line 170, in render
+    return self._render(context)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\template\base.py", line 162, in _render
+    return self.nodelist.render(context)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\template\base.py", line 938, in render
+    bit = node.render_annotated(context)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\template\base.py", line 905, in render_annotated
+    return self.render(context)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\template\loader_tags.py", line 127, in render
+    compiled_parent = self.get_parent(context)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\template\loader_tags.py", line 124, in get_parent
+    return self.find_template(parent, context)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\template\loader_tags.py", line 103, in find_template
+    template, origin = context.template.engine.find_template(
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\template\engine.py", line 129, in find_template
+    raise TemplateDoesNotExist(name, tried=tried)
+django.template.exceptions.TemplateDoesNotExist: partials/base.html
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\core\handlers\exception.py", line 47, in inner
+    response = get_response(request)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\core\handlers\base.py", line 181, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\contrib\auth\decorators.py", line 21, in _wrapped_view
+    return view_func(request, *args, **kwargs)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\superadminpanel\views.py", line 39, in wrapper
+    return view_func(request, *args, **kwargs)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\superadminpanel\views.py", line 584, in master_input
+    return render(request, 'master_input.html')
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\shortcuts.py", line 19, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\template\loader.py", line 62, in render_to_string
+    return template.render(context, request)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\template\backends\django.py", line 63, in render
+    reraise(exc, self.backend)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\template\backends\django.py", line 84, in reraise
+    raise new from exc
+django.template.exceptions.TemplateDoesNotExist: partials/base.html
+ERROR 2025-11-18 14:02:24,345 basehttp "GET /superadmin/master-input/ HTTP/1.1" 500 153264
+WARNING 2025-11-18 14:02:25,345 log Not Found: /favicon.ico
+WARNING 2025-11-18 14:02:25,346 basehttp "GET /favicon.ico HTTP/1.1" 404 3225
+ERROR 2025-11-18 14:02:28,255 log Internal Server Error: /superadmin/master-input/
+Traceback (most recent call last):
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\template\backends\django.py", line 61, in render
+    return self.template.render(context)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\template\base.py", line 170, in render
+    return self._render(context)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\template\base.py", line 162, in _render
+    return self.nodelist.render(context)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\template\base.py", line 938, in render
+    bit = node.render_annotated(context)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\template\base.py", line 905, in render_annotated
+    return self.render(context)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\template\loader_tags.py", line 127, in render
+    compiled_parent = self.get_parent(context)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\template\loader_tags.py", line 124, in get_parent
+    return self.find_template(parent, context)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\template\loader_tags.py", line 103, in find_template
+    template, origin = context.template.engine.find_template(
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\template\engine.py", line 129, in find_template
+    raise TemplateDoesNotExist(name, tried=tried)
+django.template.exceptions.TemplateDoesNotExist: partials/base.html
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\core\handlers\exception.py", line 47, in inner
+    response = get_response(request)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\core\handlers\base.py", line 181, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\contrib\auth\decorators.py", line 21, in _wrapped_view
+    return view_func(request, *args, **kwargs)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\superadminpanel\views.py", line 39, in wrapper
+    return view_func(request, *args, **kwargs)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\superadminpanel\views.py", line 584, in master_input
+    return render(request, 'master_input.html')
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\shortcuts.py", line 19, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\template\loader.py", line 62, in render_to_string
+    return template.render(context, request)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\template\backends\django.py", line 63, in render
+    reraise(exc, self.backend)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\template\backends\django.py", line 84, in reraise
+    raise new from exc
+django.template.exceptions.TemplateDoesNotExist: partials/base.html
+ERROR 2025-11-18 14:02:28,256 basehttp "GET /superadmin/master-input/ HTTP/1.1" 500 153264
+ERROR 2025-11-18 14:02:34,767 views Error during logout for admin@gmail.com: 
+INFO 2025-11-18 14:02:34,777 basehttp "GET /accounts/logout/ HTTP/1.1" 302 0
+INFO 2025-11-18 14:02:34,785 basehttp "GET /accounts/login/ HTTP/1.1" 200 7956
+INFO 2025-11-18 14:03:06,010 autoreload Watching for file changes with StatReloader
+INFO 2025-11-18 14:03:12,692 basehttp "GET /accounts/login/ HTTP/1.1" 200 7338
+INFO 2025-11-18 14:03:12,904 basehttp "GET /static/css/style.css HTTP/1.1" 200 6856
+INFO 2025-11-18 14:03:12,913 basehttp "GET /static/css/base.css HTTP/1.1" 200 26393
+WARNING 2025-11-18 14:03:13,394 middleware Unauthorized access attempt to /favicon.ico from IP: 127.0.0.1
+INFO 2025-11-18 14:03:13,394 basehttp "GET /favicon.ico HTTP/1.1" 302 0
+INFO 2025-11-18 14:03:13,414 basehttp "GET /accounts/login/ HTTP/1.1" 200 7338
+INFO 2025-11-18 14:03:20,858 views Successful login for user: admin@gmail.com from IP: 127.0.0.1
+INFO 2025-11-18 14:03:20,939 basehttp "POST /accounts/login/ HTTP/1.1" 302 0
+INFO 2025-11-18 14:03:21,190 basehttp "GET /dashboard/ HTTP/1.1" 200 19179
+WARNING 2025-11-18 14:03:21,261 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
+INFO 2025-11-18 14:03:24,623 basehttp "GET /superadmin/dashboard/ HTTP/1.1" 200 23460
+WARNING 2025-11-18 14:03:24,665 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
+ERROR 2025-11-18 14:03:28,401 log Internal Server Error: /superadmin/master-input/
+Traceback (most recent call last):
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\template\backends\django.py", line 61, in render
+    return self.template.render(context)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\template\base.py", line 170, in render
+    return self._render(context)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\template\base.py", line 162, in _render
+    return self.nodelist.render(context)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\template\base.py", line 938, in render
+    bit = node.render_annotated(context)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\template\base.py", line 905, in render_annotated
+    return self.render(context)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\template\loader_tags.py", line 127, in render
+    compiled_parent = self.get_parent(context)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\template\loader_tags.py", line 124, in get_parent
+    return self.find_template(parent, context)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\template\loader_tags.py", line 103, in find_template
+    template, origin = context.template.engine.find_template(
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\template\engine.py", line 129, in find_template
+    raise TemplateDoesNotExist(name, tried=tried)
+django.template.exceptions.TemplateDoesNotExist: partials/base.html
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\core\handlers\exception.py", line 47, in inner
+    response = get_response(request)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\core\handlers\base.py", line 181, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\contrib\auth\decorators.py", line 21, in _wrapped_view
+    return view_func(request, *args, **kwargs)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\superadminpanel\views.py", line 39, in wrapper
+    return view_func(request, *args, **kwargs)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\superadminpanel\views.py", line 584, in master_input
+    return render(request, 'master_input.html')
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\shortcuts.py", line 19, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\template\loader.py", line 62, in render_to_string
+    return template.render(context, request)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\template\backends\django.py", line 63, in render
+    reraise(exc, self.backend)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\template\backends\django.py", line 84, in reraise
+    raise new from exc
+django.template.exceptions.TemplateDoesNotExist: partials/base.html
+ERROR 2025-11-18 14:03:28,404 basehttp "GET /superadmin/master-input/ HTTP/1.1" 500 153264
+WARNING 2025-11-18 14:03:29,337 log Not Found: /favicon.ico
+WARNING 2025-11-18 14:03:29,337 basehttp "GET /favicon.ico HTTP/1.1" 404 3225
+ERROR 2025-11-18 14:05:43,058 log Internal Server Error: /superadmin/master-input/
+Traceback (most recent call last):
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\template\backends\django.py", line 61, in render
+    return self.template.render(context)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\template\base.py", line 170, in render
+    return self._render(context)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\template\base.py", line 162, in _render
+    return self.nodelist.render(context)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\template\base.py", line 938, in render
+    bit = node.render_annotated(context)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\template\base.py", line 905, in render_annotated
+    return self.render(context)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\template\loader_tags.py", line 127, in render
+    compiled_parent = self.get_parent(context)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\template\loader_tags.py", line 124, in get_parent
+    return self.find_template(parent, context)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\template\loader_tags.py", line 103, in find_template
+    template, origin = context.template.engine.find_template(
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\template\engine.py", line 129, in find_template
+    raise TemplateDoesNotExist(name, tried=tried)
+django.template.exceptions.TemplateDoesNotExist: partials/base.html
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\core\handlers\exception.py", line 47, in inner
+    response = get_response(request)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\core\handlers\base.py", line 181, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\contrib\auth\decorators.py", line 21, in _wrapped_view
+    return view_func(request, *args, **kwargs)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\superadminpanel\views.py", line 39, in wrapper
+    return view_func(request, *args, **kwargs)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\superadminpanel\views.py", line 584, in master_input
+    return render(request, 'master_input.html')
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\shortcuts.py", line 19, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\template\loader.py", line 62, in render_to_string
+    return template.render(context, request)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\template\backends\django.py", line 63, in render
+    reraise(exc, self.backend)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\template\backends\django.py", line 84, in reraise
+    raise new from exc
+django.template.exceptions.TemplateDoesNotExist: partials/base.html
+ERROR 2025-11-18 14:05:43,062 basehttp "GET /superadmin/master-input/ HTTP/1.1" 500 153264
+ERROR 2025-11-18 14:06:34,646 log Internal Server Error: /superadmin/master-input/
+Traceback (most recent call last):
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\template\backends\django.py", line 61, in render
+    return self.template.render(context)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\template\base.py", line 170, in render
+    return self._render(context)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\template\base.py", line 162, in _render
+    return self.nodelist.render(context)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\template\base.py", line 938, in render
+    bit = node.render_annotated(context)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\template\base.py", line 905, in render_annotated
+    return self.render(context)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\template\loader_tags.py", line 127, in render
+    compiled_parent = self.get_parent(context)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\template\loader_tags.py", line 124, in get_parent
+    return self.find_template(parent, context)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\template\loader_tags.py", line 103, in find_template
+    template, origin = context.template.engine.find_template(
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\template\engine.py", line 129, in find_template
+    raise TemplateDoesNotExist(name, tried=tried)
+django.template.exceptions.TemplateDoesNotExist: partials/base.html
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\core\handlers\exception.py", line 47, in inner
+    response = get_response(request)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\core\handlers\base.py", line 181, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\contrib\auth\decorators.py", line 21, in _wrapped_view
+    return view_func(request, *args, **kwargs)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\superadminpanel\views.py", line 39, in wrapper
+    return view_func(request, *args, **kwargs)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\superadminpanel\views.py", line 584, in master_input
+    return render(request, 'master_input.html')
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\shortcuts.py", line 19, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\template\loader.py", line 62, in render_to_string
+    return template.render(context, request)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\template\backends\django.py", line 63, in render
+    reraise(exc, self.backend)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\template\backends\django.py", line 84, in reraise
+    raise new from exc
+django.template.exceptions.TemplateDoesNotExist: partials/base.html
+ERROR 2025-11-18 14:06:34,648 basehttp "GET /superadmin/master-input/ HTTP/1.1" 500 153264
+INFO 2025-11-18 14:08:19,535 basehttp "GET /superadmin/master-input/ HTTP/1.1" 200 20930
+WARNING 2025-11-18 14:08:19,574 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
+INFO 2025-11-18 14:08:24,102 basehttp "GET /superadmin/holiday-master/ HTTP/1.1" 200 23892
+WARNING 2025-11-18 14:08:24,145 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
+INFO 2025-11-18 14:09:12,763 basehttp "POST /superadmin/holiday-master/create/ HTTP/1.1" 302 0
+INFO 2025-11-18 14:09:13,295 basehttp "GET /superadmin/holiday-master/ HTTP/1.1" 200 23892
+WARNING 2025-11-18 14:09:13,388 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
+INFO 2025-11-18 14:10:51,846 autoreload Watching for file changes with StatReloader
+INFO 2025-11-18 14:11:09,650 autoreload C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\superadminpanel\views.py changed, reloading.
+INFO 2025-11-18 14:11:11,399 autoreload Watching for file changes with StatReloader
+INFO 2025-11-18 14:12:17,917 basehttp "POST /superadmin/holiday-master/create/ HTTP/1.1" 302 0
+INFO 2025-11-18 14:12:18,003 basehttp "GET /superadmin/holiday-master/ HTTP/1.1" 200 27616
+WARNING 2025-11-18 14:12:18,065 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
+INFO 2025-11-18 14:12:18,580 basehttp "GET /media/logo.png HTTP/1.1" 200 1275213
+INFO 2025-11-18 14:12:50,129 basehttp "POST /superadmin/holiday-master/delete/2/ HTTP/1.1" 302 0
+INFO 2025-11-18 14:12:50,688 basehttp "GET /superadmin/holiday-master/ HTTP/1.1" 200 27616
+WARNING 2025-11-18 14:12:50,743 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
+INFO 2025-11-18 14:12:56,409 basehttp "GET /superadmin/holiday-master/ HTTP/1.1" 200 27616
+INFO 2025-11-18 14:12:56,467 basehttp "GET /static/css/base.css HTTP/1.1" 200 26393
+WARNING 2025-11-18 14:12:56,470 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
+INFO 2025-11-18 14:12:56,916 basehttp "GET /media/logo.png HTTP/1.1" 200 1275213
+INFO 2025-11-18 14:12:58,312 basehttp "GET /media/logo.png HTTP/1.1" 200 1275213
+INFO 2025-11-18 14:16:46,843 autoreload Watching for file changes with StatReloader
+INFO 2025-11-18 14:16:53,596 basehttp "POST /superadmin/holiday-master/delete/2/ HTTP/1.1" 302 0
+INFO 2025-11-18 14:16:54,054 basehttp "GET /superadmin/holiday-master/ HTTP/1.1" 200 27616
+WARNING 2025-11-18 14:16:54,114 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
+INFO 2025-11-18 14:16:54,622 basehttp "GET /media/logo.png HTTP/1.1" 200 1275213
+INFO 2025-11-18 14:20:43,379 autoreload Watching for file changes with StatReloader
+INFO 2025-11-18 14:21:06,909 autoreload Watching for file changes with StatReloader
+INFO 2025-11-18 14:21:17,367 basehttp "GET /superadmin/holiday-master/ HTTP/1.1" 200 27616
+WARNING 2025-11-18 14:21:17,415 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
+INFO 2025-11-18 14:21:21,594 basehttp "POST /superadmin/holiday-master/delete/2/ HTTP/1.1" 302 0
+INFO 2025-11-18 14:21:22,114 basehttp "GET /superadmin/holiday-master/ HTTP/1.1" 200 25703
+WARNING 2025-11-18 14:21:22,175 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
+INFO 2025-11-18 14:21:22,723 basehttp "GET /media/logo.png HTTP/1.1" 200 1275213
+INFO 2025-11-18 14:21:25,023 basehttp "POST /superadmin/holiday-master/delete/1/ HTTP/1.1" 302 0
+INFO 2025-11-18 14:21:25,573 basehttp "GET /superadmin/holiday-master/ HTTP/1.1" 200 23893
+WARNING 2025-11-18 14:21:25,617 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
+INFO 2025-11-18 14:21:41,630 basehttp "POST /superadmin/holiday-master/create/ HTTP/1.1" 302 0
+INFO 2025-11-18 14:21:42,100 basehttp "GET /superadmin/holiday-master/ HTTP/1.1" 200 25703
+WARNING 2025-11-18 14:21:42,155 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
+INFO 2025-11-18 14:23:13,205 basehttp "POST /superadmin/holiday-master/create/ HTTP/1.1" 302 0
+INFO 2025-11-18 14:23:13,711 basehttp "GET /superadmin/holiday-master/ HTTP/1.1" 200 27615
+WARNING 2025-11-18 14:23:13,762 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
+INFO 2025-11-18 14:24:21,256 basehttp "POST /superadmin/holiday-master/create/ HTTP/1.1" 302 0
+INFO 2025-11-18 14:24:21,412 basehttp "GET /superadmin/holiday-master/ HTTP/1.1" 200 29539
+WARNING 2025-11-18 14:24:21,467 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
+INFO 2025-11-18 14:24:55,384 basehttp "POST /superadmin/holiday-master/delete/5/ HTTP/1.1" 302 0
+INFO 2025-11-18 14:24:55,679 basehttp "GET /superadmin/holiday-master/ HTTP/1.1" 200 27615
+WARNING 2025-11-18 14:24:55,731 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
+INFO 2025-11-18 14:24:59,589 basehttp "POST /superadmin/holiday-master/delete/4/ HTTP/1.1" 302 0
+INFO 2025-11-18 14:24:59,874 basehttp "GET /superadmin/holiday-master/ HTTP/1.1" 200 25703
+WARNING 2025-11-18 14:24:59,926 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
+INFO 2025-11-18 15:19:49,989 middleware Session expired for user: admin@gmail.com
+INFO 2025-11-18 15:19:49,995 basehttp "GET /static/css/base.css HTTP/1.1" 200 26393
+INFO 2025-11-18 15:19:50,015 basehttp "GET /media/logo.png HTTP/1.1" 302 0
+INFO 2025-11-18 15:19:51,924 basehttp "GET /accounts/login/ HTTP/1.1" 200 11735
+INFO 2025-11-18 15:19:52,768 basehttp "GET /media/logo.png HTTP/1.1" 200 1275213
+WARNING 2025-11-18 15:23:10,981 middleware Unauthorized access attempt to /superadmin/holiday-master/ from IP: 127.0.0.1
+INFO 2025-11-18 15:23:10,983 basehttp "GET /superadmin/holiday-master/ HTTP/1.1" 302 0
+INFO 2025-11-18 15:23:10,992 basehttp "GET /accounts/login/ HTTP/1.1" 200 7338
+INFO 2025-11-18 15:23:11,036 basehttp "GET /static/css/style.css HTTP/1.1" 200 6856
+WARNING 2025-11-18 15:23:11,610 middleware Unauthorized access attempt to /favicon.ico from IP: 127.0.0.1
+INFO 2025-11-18 15:23:11,611 basehttp "GET /favicon.ico HTTP/1.1" 302 0
+INFO 2025-11-18 15:23:11,632 basehttp "GET /accounts/login/ HTTP/1.1" 200 7338
+INFO 2025-11-18 18:26:17,042 basehttp "GET /accounts/login/ HTTP/1.1" 200 7338
+WARNING 2025-11-18 18:26:20,467 middleware Unauthorized access attempt to /favicon.ico from IP: 127.0.0.1
+INFO 2025-11-18 18:26:20,469 basehttp "GET /favicon.ico HTTP/1.1" 302 0
+INFO 2025-11-18 18:26:20,553 basehttp "GET /accounts/login/ HTTP/1.1" 200 7338
+INFO 2025-11-18 18:26:47,502 views Successful login for user: admin@gmail.com from IP: 127.0.0.1
+INFO 2025-11-18 18:26:47,520 basehttp "POST /accounts/login/ HTTP/1.1" 302 0
+INFO 2025-11-18 18:26:51,395 basehttp "GET /dashboard/ HTTP/1.1" 200 19179
+INFO 2025-11-18 18:26:51,441 basehttp "GET /static/css/base.css HTTP/1.1" 304 0
+WARNING 2025-11-18 18:26:51,483 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
+INFO 2025-11-18 18:26:51,743 basehttp "GET /media/logo.png HTTP/1.1" 200 1275213
+INFO 2025-11-18 18:27:10,512 basehttp "GET /dashboard/ HTTP/1.1" 200 19179
+WARNING 2025-11-18 18:27:10,551 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
+INFO 2025-11-18 18:27:22,089 basehttp "GET /dashboard/ HTTP/1.1" 200 19179
+WARNING 2025-11-18 18:27:22,134 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
+INFO 2025-11-18 18:27:22,149 basehttp "GET /static/css/base.css HTTP/1.1" 200 26393
+INFO 2025-11-18 18:27:22,603 basehttp "GET /media/logo.png HTTP/1.1" 200 1275213
+INFO 2025-11-18 18:27:23,265 basehttp "GET /dashboard/ HTTP/1.1" 200 19179
+INFO 2025-11-18 18:27:23,311 basehttp "GET /static/css/base.css HTTP/1.1" 200 26393
+WARNING 2025-11-18 18:27:23,313 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
+INFO 2025-11-18 18:27:23,924 basehttp "GET /media/logo.png HTTP/1.1" 200 1275213
+INFO 2025-11-18 18:27:24,437 basehttp "GET /dashboard/ HTTP/1.1" 200 19179
+INFO 2025-11-18 18:27:24,481 basehttp "GET /static/css/base.css HTTP/1.1" 200 26393
+WARNING 2025-11-18 18:27:24,485 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
+INFO 2025-11-18 18:27:24,996 basehttp "GET /media/logo.png HTTP/1.1" 200 1275213
+INFO 2025-11-18 18:27:37,934 autoreload Watching for file changes with StatReloader
+INFO 2025-11-18 18:27:41,209 basehttp "GET /dashboard/ HTTP/1.1" 200 19179
+INFO 2025-11-18 18:27:41,352 basehttp "GET /static/css/base.css HTTP/1.1" 200 26393
+WARNING 2025-11-18 18:27:41,429 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
+INFO 2025-11-18 18:27:41,498 basehttp "GET /media/logo.png HTTP/1.1" 200 1275213
+INFO 2025-11-18 18:27:47,630 basehttp "GET /dashboard/ HTTP/1.1" 200 19179
+WARNING 2025-11-18 18:27:47,683 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
+INFO 2025-11-18 18:27:51,259 basehttp "GET /superadmin/dashboard/ HTTP/1.1" 200 23460
+WARNING 2025-11-18 18:27:51,292 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
+INFO 2025-11-18 18:27:54,982 basehttp "GET /superadmin/master-input/ HTTP/1.1" 200 20930
+WARNING 2025-11-18 18:27:55,023 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
+INFO 2025-11-18 18:28:06,006 basehttp "GET /accounts/profile/ HTTP/1.1" 200 21469
+WARNING 2025-11-18 18:28:06,041 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
+INFO 2025-11-18 18:28:10,433 basehttp "GET /superadmin/master-input/ HTTP/1.1" 200 20930
+WARNING 2025-11-18 18:28:10,472 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
+INFO 2025-11-18 18:28:15,378 basehttp "GET /superadmin/holiday-master/ HTTP/1.1" 200 25703
+WARNING 2025-11-18 18:28:15,415 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
+INFO 2025-11-18 18:33:48,087 autoreload C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\superadminpanel\views.py changed, reloading.
+INFO 2025-11-18 18:33:49,619 autoreload Watching for file changes with StatReloader
+INFO 2025-11-18 18:33:56,879 autoreload C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\superadminpanel\urls.py changed, reloading.
+INFO 2025-11-18 18:33:58,375 autoreload Watching for file changes with StatReloader
+INFO 2025-11-18 18:36:39,723 basehttp "GET /superadmin/holiday-master/ HTTP/1.1" 200 29897
+WARNING 2025-11-18 18:36:39,775 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
+INFO 2025-11-18 18:36:39,856 basehttp "GET /static/css/base.css HTTP/1.1" 200 26393
+INFO 2025-11-18 18:36:39,929 basehttp "GET /media/logo.png HTTP/1.1" 200 1275213
+INFO 2025-11-18 18:37:11,321 basehttp "GET /superadmin/holiday-master/ HTTP/1.1" 200 26928
+INFO 2025-11-18 18:37:11,365 basehttp "GET /static/css/base.css HTTP/1.1" 200 26393
+WARNING 2025-11-18 18:37:11,376 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
+INFO 2025-11-18 18:37:11,817 basehttp "GET /media/logo.png HTTP/1.1" 200 1275213
+INFO 2025-11-18 18:37:36,828 basehttp "POST /superadmin/holiday-master/create/ HTTP/1.1" 302 0
+INFO 2025-11-18 18:37:36,980 basehttp "GET /superadmin/holiday-master/ HTTP/1.1" 200 29897
+WARNING 2025-11-18 18:37:37,020 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
+INFO 2025-11-18 18:37:57,087 basehttp "GET /superadmin/holiday-master/ HTTP/1.1" 200 29897
+WARNING 2025-11-18 18:37:57,127 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
+INFO 2025-11-18 18:38:06,403 basehttp "POST /superadmin/holiday-master/6/edit/ HTTP/1.1" 302 0
+INFO 2025-11-18 18:38:06,924 basehttp "GET /superadmin/holiday-master/ HTTP/1.1" 200 29897
+WARNING 2025-11-18 18:38:06,968 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
+INFO 2025-11-18 18:38:32,759 basehttp "POST /superadmin/holiday-master/delete/6/ HTTP/1.1" 302 0
+INFO 2025-11-18 18:38:32,815 basehttp "GET /superadmin/holiday-master/ HTTP/1.1" 200 26928
+WARNING 2025-11-18 18:38:32,857 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
+INFO 2025-11-18 18:39:04,545 basehttp "POST /superadmin/holiday-master/create/ HTTP/1.1" 302 0
+INFO 2025-11-18 18:39:04,733 basehttp "GET /superadmin/holiday-master/ HTTP/1.1" 200 29889
+WARNING 2025-11-18 18:39:04,771 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
+INFO 2025-11-18 18:39:19,511 basehttp "POST /superadmin/holiday-master/delete/7/ HTTP/1.1" 302 0
+INFO 2025-11-18 18:39:20,079 basehttp "GET /superadmin/holiday-master/ HTTP/1.1" 200 26928
+WARNING 2025-11-18 18:39:20,121 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
