@@ -153,3 +153,24 @@ WARNING 2025-11-18 14:03:13,394 middleware Unauthorized access attempt to /favic
 WARNING 2025-11-18 15:23:10,981 middleware Unauthorized access attempt to /superadmin/holiday-master/ from IP: 127.0.0.1
 WARNING 2025-11-18 15:23:11,610 middleware Unauthorized access attempt to /favicon.ico from IP: 127.0.0.1
 WARNING 2025-11-18 18:26:20,467 middleware Unauthorized access attempt to /favicon.ico from IP: 127.0.0.1
+WARNING 2025-11-19 11:08:49,233 middleware Unauthorized access attempt to /favicon.ico from IP: 127.0.0.1
+ERROR 2025-11-19 11:11:38,942 views Error during logout for admin@gmail.com: 
+WARNING 2025-11-19 11:11:39,747 middleware Unauthorized access attempt to /favicon.ico from IP: 127.0.0.1
+WARNING 2025-11-19 11:12:36,243 middleware Unauthorized access attempt to /favicon.ico from IP: 127.0.0.1
+WARNING 2025-11-19 11:13:00,638 middleware Unauthorized access attempt to / from IP: 127.0.0.1
+WARNING 2025-11-19 11:13:03,819 middleware Unauthorized access attempt to /favicon.ico from IP: 127.0.0.1
+WARNING 2025-11-19 11:13:11,088 middleware Unauthorized access attempt to /favicon.ico from IP: 127.0.0.1
+WARNING 2025-11-19 11:13:54,508 middleware Unauthorized access attempt to /favicon.ico from IP: 127.0.0.1
+ERROR 2025-11-19 11:14:37,634 views Error during logout for admin@gmail.com: 
+WARNING 2025-11-19 11:14:38,388 middleware Unauthorized access attempt to /favicon.ico from IP: 127.0.0.1
+WARNING 2025-11-19 13:10:22,193 middleware Unauthorized access attempt to / from IP: 127.0.0.1
+WARNING 2025-11-19 13:10:25,467 middleware Unauthorized access attempt to /favicon.ico from IP: 127.0.0.1
+WARNING 2025-11-19 13:10:31,124 middleware Unauthorized access attempt to /marketing/jobs/create/ from IP: 127.0.0.1
+WARNING 2025-11-19 13:10:34,029 middleware Unauthorized access attempt to /favicon.ico from IP: 127.0.0.1
+WARNING 2025-11-19 13:10:42,733 views Failed login attempt for: srijabiswas3001@gmail.com from IP: 127.0.0.1
+WARNING 2025-11-19 13:10:43,233 middleware Unauthorized access attempt to /favicon.ico from IP: 127.0.0.1
+ERROR 2025-11-19 13:42:19,961 views Error during logout for srijabiswas3001@gmail.com: 
+WARNING 2025-11-19 13:42:22,892 middleware Unauthorized access attempt to /favicon.ico from IP: 127.0.0.1
+WARNING 2025-11-19 14:57:44,856 middleware Unauthorized access attempt to /favicon.ico from IP: 127.0.0.1
+ERROR 2025-11-19 15:00:49,378 views Error during logout for srijabiswas3001@gmail.com: 
+ERROR 2025-11-19 15:06:21,121 views Error during logout for admin@gmail.com: 

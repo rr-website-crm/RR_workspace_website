@@ -1,8 +1,6 @@
 {% extends 'base.html' %}
 {% load static %}
-
 {% block title %}Marketing Dashboard - CRM Portal{% endblock %}
-
 {% block content %}
 <div class="dashboard-header">
     <h1 class="dashboard-title">Marketing Dashboard</h1>
@@ -83,6 +81,65 @@
     </div>
 </div>
 
+<!-- Draft Jobs Table -->
+{% if draft_jobs %}
+<div class="card mb-4">
+    <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
+        <h2 class="card-title" style="margin: 0;">Draft Jobs</h2>
+        <span class="status-tag status-pending" style="background: rgba(255, 152, 0, 0.2); color: #FF9800;">{{ draft_jobs.count }} Draft{{ draft_jobs.count|pluralize }}</span>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>SL No</th>
+                        <th>System ID</th>
+                        <th>Job ID</th>
+                        <th>Topic</th>
+                        <th>Word Count</th>
+                        <th>Category</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for job in draft_jobs %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td><strong>{{ job.system_id }}</strong></td>
+                        <td>{{ job.job_id }}</td>
+                        <td>{{ job.topic|default:"Not Generated" }}</td>
+                        <td>{{ job.word_count|default:"-" }}</td>
+                        <td>
+                            {% if job.writing_style %}
+                                {{ job.writing_style|title }}
+                            {% else %}
+                                -
+                            {% endif %}
+                        </td>
+                        <td>
+                            <span class="status-tag status-pending">Draft</span>
+                        </td>
+                        <td>
+                            <div class="btn-group-sm">
+                                <a href="{% url 'create_job' %}?job_id={{ job.system_id }}" class="btn btn-sm btn-warning" title="Edit Initial Form">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M17 3L21 7L8 20H4V16L17 3Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                    </svg>
+                                    EDIT
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endif %}
+
 <!-- Recent Activities -->
 <div class="card mb-4">
     <div class="card-header">
@@ -99,7 +156,6 @@
                             <th>Job ID</th>
                             <th>Topic</th>
                             <th>Word Count</th>
-                            <th>Amount</th>
                             <th>Deadline</th>
                             <th>Status</th>
                             <th>Category</th>
@@ -110,40 +166,48 @@
                         {% for activity in recent_activities %}
                         <tr>
                             <td>{{ forloop.counter }}</td>
-                            <td>{{ activity.system_id }}</td>
+                            <td><strong>{{ activity.system_id }}</strong></td>
                             <td>{{ activity.job_id }}</td>
-                            <td>{{ activity.topic }}</td>
-                            <td>{{ activity.word_count }}</td>
-                            <td>{{ activity.amount }}</td>
-                            <td>{{ activity.deadline|date:"d/m/Y" }}</td>
+                            <td>{{ activity.topic|truncatewords:8 }}</td>
+                            <td>{{ activity.word_count|default:"-" }}</td>
+                            <td>{{ activity.deadline|date:"d/m/Y"|default:"-" }}</td>
                             <td>
                                 <span class="status-tag status-{{ activity.status|lower }}">
-                                    {{ activity.status }}
+                                    {{ activity.get_status_display }}
                                 </span>
                             </td>
-                            <td>{{ activity.category }}</td>
+                            <td>
+                                {% if activity.writing_style %}
+                                    {{ activity.writing_style|title }}
+                                {% else %}
+                                    -
+                                {% endif %}
+                            </td>
                             <td>
                                 <div class="btn-group-sm">
-                                    <a href="#" class="btn btn-sm btn-primary" title="View">
-                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                            <path d="M1 12C1 12 5 4 12 4C19 4 23 12 23 12C23 12 19 20 12 20C5 20 1 12 1 12Z" stroke="currentColor" stroke-width="2"/>
-                                            <circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="2"/>
-                                        </svg>
-                                    </a>
-                                    <a href="#" class="btn btn-sm btn-secondary" title="Edit">
-                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                            <path d="M17 3L21 7L8 20H4V16L17 3Z" stroke="currentColor" stroke-width="2"/>
-                                        </svg>
-                                    </a>
-                                    <a href="#" class="btn btn-sm btn-danger" title="Delete">
-                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                            <path d="M3 6H21M8 6V4C8 3.44772 8.44772 3 9 3H15C15.5523 3 16 3.44772 16 4V6M19 6V20C19 20.5523 18.5523 21 18 21H6C5.44772 21 5 20.5523 5 20V6H19Z" stroke="currentColor" stroke-width="2"/>
-                                        </svg>
-                                    </a>
-                                    {% if not activity.is_final_complete %}
-                                    <a href="#" class="btn btn-sm btn-warning" title="Final Step">
-                                        Final Step
-                                    </a>
+                                    {% if activity.status == 'draft' %}
+                                        <a href="{% url 'create_job' %}?job_id={{ activity.system_id }}" class="btn btn-sm btn-warning" title="Edit Initial Form">
+                                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                <path d="M17 3L21 7L8 20H4V16L17 3Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                            </svg>
+                                            EDIT
+                                        </a>
+                                    {% elif activity.status == 'pending' %}
+                                        <a href="{% url 'create_job' %}?job_id={{ activity.system_id }}" class="btn btn-sm btn-success" title="Complete Final Step">
+                                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                <polyline points="9 11 12 14 22 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                                <path d="M21 12V19C21 19.5304 20.7893 20.0391 20.4142 20.4142C20.0391 20.7893 19.5304 21 19 21H5C4.46957 21 3.96086 20.7893 3.58579 20.4142C3.21071 20.0391 3 19.5304 3 19V5C3 4.46957 3.21071 3.96086 3.58579 3.58579C3.96086 3.21071 4.46957 3 5 3H16" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                            </svg>
+                                            FINAL STEP
+                                        </a>
+                                    {% else %}
+                                        <a href="#" class="btn btn-sm btn-primary" title="View Details">
+                                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                <path d="M1 12C1 12 5 4 12 4C19 4 23 12 23 12C23 12 19 20 12 20C5 20 1 12 1 12Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                                <circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="2"/>
+                                            </svg>
+                                            VIEW
+                                        </a>
                                     {% endif %}
                                 </div>
                             </td>
@@ -164,37 +228,6 @@
         {% endif %}
     </div>
 </div>
-
-
-{% comment %} <!-- Performance Insights -->
-<div class="card">
-    <div class="card-header">
-        <h2 class="card-title">Performance Insights</h2>
-    </div>
-    <div class="card-body">
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem;">
-            <div style="text-align: center; padding: 1.5rem; background-color: rgba(255, 255, 255, 0.05); border-radius: 12px;">
-                <div style="font-size: 2rem; font-weight: 700; color: var(--primary); margin-bottom: 0.5rem;">0%</div>
-                <div style="color: var(--text-color); opacity: 0.8;">Completion Rate</div>
-            </div>
-            
-            <div style="text-align: center; padding: 1.5rem; background-color: rgba(255, 255, 255, 0.05); border-radius: 12px;">
-                <div style="font-size: 2rem; font-weight: 700; color: var(--secondary); margin-bottom: 0.5rem;">0</div>
-                <div style="color: var(--text-color); opacity: 0.8;">Avg. Days to Complete</div>
-            </div>
-            
-            <div style="text-align: center; padding: 1.5rem; background-color: rgba(255, 255, 255, 0.05); border-radius: 12px;">
-                <div style="font-size: 2rem; font-weight: 700; color: var(--accent); margin-bottom: 0.5rem;">0</div>
-                <div style="color: var(--text-color); opacity: 0.8;">Active Writers</div>
-            </div>
-            
-            <div style="text-align: center; padding: 1.5rem; background-color: rgba(255, 255, 255, 0.05); border-radius: 12px;">
-                <div style="font-size: 2rem; font-weight: 700; color: #4CAF50; margin-bottom: 0.5rem;">0</div>
-                <div style="color: var(--text-color); opacity: 0.8;">This Month</div>
-            </div>
-        </div>
-    </div>
-</div> {% endcomment %}
 
 <style>
     .stat-card {

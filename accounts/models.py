@@ -478,22 +478,25 @@ class ActivityLog(models.Model):
 
 
 class ActivityLog(models.Model):
-    """Stores lifecycle and superadmin actions in MongoDB."""
-
+    """Stores lifecycle and all system actions."""
+    
+    # Categories
     CATEGORY_USER = 'user_lifecycle'
     CATEGORY_SUPERADMIN = 'superadmin'
     CATEGORY_EMPLOYEE = 'employee_id'
     CATEGORY_HOLIDAY = 'holiday_master'
+    CATEGORY_JOB = 'job_management'  # NEW CATEGORY
     CATEGORY_GENERAL = 'general'
-
+    
     CATEGORY_CHOICES = [
         (CATEGORY_USER, 'User Lifecycle'),
         (CATEGORY_SUPERADMIN, 'Superadmin / Manage Users'),
         (CATEGORY_EMPLOYEE, 'Employee ID'),
         (CATEGORY_HOLIDAY, 'Holiday Master'),
+        (CATEGORY_JOB, 'Job Management'),  # NEW CATEGORY
         (CATEGORY_GENERAL, 'General'),
     ]
-
+    
     event_key = models.CharField(max_length=64, db_index=True)
     category = models.CharField(
         max_length=32,
@@ -517,10 +520,34 @@ class ActivityLog(models.Model):
     )
     metadata = models.JSONField(default=dict, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
-
+    
     class Meta:
         db_table = 'activity_logs'
         ordering = ['-created_at']
-
+        indexes = [
+            models.Index(fields=['event_key']),
+            models.Index(fields=['category']),
+            models.Index(fields=['created_at']),
+        ]
+    
     def __str__(self):
         return f"{self.event_key} - {self.created_at:%Y-%m-%d %H:%M:%S}"
+
+
+# Job-specific event keys for ActivityLog
+JOB_EVENT_KEYS = {
+    'job_created': 'job.created',
+    'job_initial_form_saved': 'job.initial_form.saved',
+    'job_initial_form_submitted': 'job.initial_form.submitted',
+    'job_id_validated': 'job.job_id.validated',
+    'job_ai_summary_requested': 'job.ai_summary.requested',
+    'job_ai_summary_generated': 'job.ai_summary.generated',
+    'job_ai_summary_accepted': 'job.ai_summary.accepted',
+    'job_ai_summary_auto_accepted': 'job.ai_summary.auto_accepted',
+    'job_status_changed': 'job.status.changed',
+    'job_allocated': 'job.allocated',
+    'job_updated': 'job.updated',
+    'job_deleted': 'job.deleted',
+    'job_attachment_uploaded': 'job.attachment.uploaded',
+    'job_attachment_deleted': 'job.attachment.deleted',
+}

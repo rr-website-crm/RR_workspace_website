@@ -246,4 +246,12 @@ LOGS_DIR.mkdir(exist_ok=True)
 GOOGLE_SERVICE_ACCOUNT_FILE = os.path.join(BASE_DIR, 'rr-website-478606-8d60b4309fbb.json')
 GOOGLE_CALENDAR_ID = 'paulritabrata2@gmail.com'
 
+OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')
+# Maximum file upload size (10MB)
+DATA_UPLOAD_MAX_MEMORY_SIZE = 10485760  # 10MB in bytes
+FILE_UPLOAD_MAX_MEMORY_SIZE = 10485760
+
+# Allowed file extensions
+ALLOWED_UPLOAD_EXTENSIONS = ['pdf', 'docx', 'jpg', 'jpeg', 'png']
+
 

@@ -13822,3 +13822,346 @@ WARNING 2025-11-18 18:39:04,771 basehttp "GET /static/img/default-avatar.png HTT
 INFO 2025-11-18 18:39:19,511 basehttp "POST /superadmin/holiday-master/delete/7/ HTTP/1.1" 302 0
 INFO 2025-11-18 18:39:20,079 basehttp "GET /superadmin/holiday-master/ HTTP/1.1" 200 26928
 WARNING 2025-11-18 18:39:20,121 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
+INFO 2025-11-19 11:08:41,170 autoreload Watching for file changes with StatReloader
+INFO 2025-11-19 11:08:45,905 middleware Session expired for user: admin@gmail.com
+INFO 2025-11-19 11:08:45,938 basehttp "GET / HTTP/1.1" 302 0
+INFO 2025-11-19 11:08:45,961 basehttp "GET /accounts/login/ HTTP/1.1" 200 7338
+INFO 2025-11-19 11:08:45,991 basehttp "GET /static/css/style.css HTTP/1.1" 304 0
+INFO 2025-11-19 11:08:45,991 basehttp "GET /static/css/base.css HTTP/1.1" 304 0
+WARNING 2025-11-19 11:08:49,233 middleware Unauthorized access attempt to /favicon.ico from IP: 127.0.0.1
+INFO 2025-11-19 11:08:49,234 basehttp "GET /favicon.ico HTTP/1.1" 302 0
+INFO 2025-11-19 11:08:49,253 basehttp "GET /accounts/login/ HTTP/1.1" 200 7338
+INFO 2025-11-19 11:08:57,657 views Successful login for user: admin@gmail.com from IP: 127.0.0.1
+INFO 2025-11-19 11:08:57,763 basehttp "POST /accounts/login/ HTTP/1.1" 302 0
+INFO 2025-11-19 11:09:02,042 basehttp "GET /dashboard/ HTTP/1.1" 200 19179
+WARNING 2025-11-19 11:09:02,231 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
+INFO 2025-11-19 11:09:02,264 basehttp "GET /media/logo.png HTTP/1.1" 200 1275213
+INFO 2025-11-19 11:09:06,526 basehttp "GET /superadmin/dashboard/ HTTP/1.1" 200 23460
+WARNING 2025-11-19 11:09:06,561 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
+INFO 2025-11-19 11:09:22,171 basehttp "GET /superadmin/master-input/ HTTP/1.1" 200 20930
+WARNING 2025-11-19 11:09:22,207 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
+INFO 2025-11-19 11:09:54,136 basehttp "GET /superadmin/dashboard/ HTTP/1.1" 200 23460
+WARNING 2025-11-19 11:09:54,175 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
+ERROR 2025-11-19 11:11:38,942 views Error during logout for admin@gmail.com: 
+INFO 2025-11-19 11:11:38,950 basehttp "GET /accounts/logout/ HTTP/1.1" 302 0
+INFO 2025-11-19 11:11:38,958 basehttp "GET /accounts/login/ HTTP/1.1" 200 7956
+WARNING 2025-11-19 11:11:39,747 middleware Unauthorized access attempt to /favicon.ico from IP: 127.0.0.1
+INFO 2025-11-19 11:11:39,748 basehttp "GET /favicon.ico HTTP/1.1" 302 0
+INFO 2025-11-19 11:11:39,754 basehttp "GET /accounts/login/ HTTP/1.1" 200 7338
+INFO 2025-11-19 11:12:35,505 basehttp "GET /accounts/register/ HTTP/1.1" 200 13051
+WARNING 2025-11-19 11:12:36,243 middleware Unauthorized access attempt to /favicon.ico from IP: 127.0.0.1
+INFO 2025-11-19 11:12:36,244 basehttp "GET /favicon.ico HTTP/1.1" 302 0
+INFO 2025-11-19 11:12:36,259 basehttp "GET /accounts/login/ HTTP/1.1" 200 7338
+WARNING 2025-11-19 11:13:00,638 middleware Unauthorized access attempt to / from IP: 127.0.0.1
+INFO 2025-11-19 11:13:00,639 basehttp "GET / HTTP/1.1" 302 0
+INFO 2025-11-19 11:13:00,647 basehttp "GET /accounts/login/ HTTP/1.1" 200 7338
+WARNING 2025-11-19 11:13:03,819 middleware Unauthorized access attempt to /favicon.ico from IP: 127.0.0.1
+INFO 2025-11-19 11:13:03,820 basehttp "GET /favicon.ico HTTP/1.1" 302 0
+INFO 2025-11-19 11:13:03,825 basehttp "GET /accounts/login/ HTTP/1.1" 200 7338
+INFO 2025-11-19 11:13:10,428 basehttp "GET /accounts/register/ HTTP/1.1" 200 13051
+WARNING 2025-11-19 11:13:11,088 middleware Unauthorized access attempt to /favicon.ico from IP: 127.0.0.1
+INFO 2025-11-19 11:13:11,089 basehttp "GET /favicon.ico HTTP/1.1" 302 0
+INFO 2025-11-19 11:13:11,095 basehttp "GET /accounts/login/ HTTP/1.1" 200 7338
+INFO 2025-11-19 11:13:53,739 basehttp "POST /accounts/register/ HTTP/1.1" 302 0
+INFO 2025-11-19 11:13:53,746 basehttp "GET /accounts/login/ HTTP/1.1" 200 7679
+WARNING 2025-11-19 11:13:54,508 middleware Unauthorized access attempt to /favicon.ico from IP: 127.0.0.1
+INFO 2025-11-19 11:13:54,509 basehttp "GET /favicon.ico HTTP/1.1" 302 0
+INFO 2025-11-19 11:13:54,516 basehttp "GET /accounts/login/ HTTP/1.1" 200 7338
+INFO 2025-11-19 11:14:09,789 views Successful login for user: admin@gmail.com from IP: 127.0.0.1
+INFO 2025-11-19 11:14:09,801 basehttp "POST /accounts/login/ HTTP/1.1" 302 0
+INFO 2025-11-19 11:14:10,196 basehttp "GET /dashboard/ HTTP/1.1" 200 19179
+WARNING 2025-11-19 11:14:10,248 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
+INFO 2025-11-19 11:14:10,642 basehttp "GET /media/logo.png HTTP/1.1" 200 1275213
+INFO 2025-11-19 11:14:13,776 basehttp "GET /superadmin/dashboard/ HTTP/1.1" 200 23460
+WARNING 2025-11-19 11:14:13,810 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
+INFO 2025-11-19 11:14:22,156 basehttp "GET /superadmin/pending/ HTTP/1.1" 200 19937
+WARNING 2025-11-19 11:14:22,188 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
+INFO 2025-11-19 11:14:28,135 basehttp "POST /superadmin/approve-user/2/ HTTP/1.1" 302 0
+INFO 2025-11-19 11:14:28,658 basehttp "GET /superadmin/pending/ HTTP/1.1" 200 16878
+WARNING 2025-11-19 11:14:28,696 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
+INFO 2025-11-19 11:14:31,273 basehttp "GET /superadmin/manage-users/ HTTP/1.1" 200 28515
+WARNING 2025-11-19 11:14:31,306 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
+ERROR 2025-11-19 11:14:37,634 views Error during logout for admin@gmail.com: 
+INFO 2025-11-19 11:14:37,650 basehttp "GET /accounts/logout/ HTTP/1.1" 302 0
+INFO 2025-11-19 11:14:37,659 basehttp "GET /accounts/login/ HTTP/1.1" 200 8258
+WARNING 2025-11-19 11:14:38,388 middleware Unauthorized access attempt to /favicon.ico from IP: 127.0.0.1
+INFO 2025-11-19 11:14:38,389 basehttp "GET /favicon.ico HTTP/1.1" 302 0
+INFO 2025-11-19 11:14:38,396 basehttp "GET /accounts/login/ HTTP/1.1" 200 7338
+INFO 2025-11-19 11:14:48,076 views Successful login for user: srijabiswas3001@gmail.com from IP: 127.0.0.1
+INFO 2025-11-19 11:14:48,093 basehttp "POST /accounts/login/ HTTP/1.1" 302 0
+INFO 2025-11-19 11:14:48,432 basehttp "GET /dashboard/ HTTP/1.1" 200 21758
+WARNING 2025-11-19 11:14:48,476 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
+INFO 2025-11-19 11:14:51,186 basehttp "GET /marketing/dashboard/ HTTP/1.1" 200 22950
+WARNING 2025-11-19 11:14:51,316 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
+INFO 2025-11-19 11:14:59,036 basehttp "GET /marketing/jobs/create/ HTTP/1.1" 200 21664
+WARNING 2025-11-19 11:14:59,269 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
+INFO 2025-11-19 11:28:38,280 basehttp "GET /marketing/dashboard/ HTTP/1.1" 200 22950
+WARNING 2025-11-19 11:28:38,321 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
+INFO 2025-11-19 11:28:38,803 basehttp "GET /media/logo.png HTTP/1.1" 200 1275213
+INFO 2025-11-19 11:28:58,386 basehttp "GET /marketing/jobs/create/ HTTP/1.1" 200 21664
+WARNING 2025-11-19 11:28:58,422 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
+INFO 2025-11-19 11:31:21,647 basehttp "GET /marketing/dashboard/ HTTP/1.1" 200 22950
+WARNING 2025-11-19 11:31:21,681 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
+INFO 2025-11-19 12:20:54,395 autoreload C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\marketing\models.py changed, reloading.
+INFO 2025-11-19 12:20:55,719 autoreload Watching for file changes with StatReloader
+INFO 2025-11-19 12:21:07,422 autoreload C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\marketing\models.py changed, reloading.
+INFO 2025-11-19 12:21:08,850 autoreload Watching for file changes with StatReloader
+INFO 2025-11-19 12:21:16,154 autoreload C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\marketing\models.py changed, reloading.
+INFO 2025-11-19 12:21:17,545 autoreload Watching for file changes with StatReloader
+INFO 2025-11-19 12:23:18,188 autoreload C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\marketing\models.py changed, reloading.
+INFO 2025-11-19 12:23:19,579 autoreload Watching for file changes with StatReloader
+INFO 2025-11-19 12:31:17,474 autoreload C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\marketing\models.py changed, reloading.
+INFO 2025-11-19 12:31:18,879 autoreload Watching for file changes with StatReloader
+INFO 2025-11-19 12:32:56,970 autoreload C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\accounts\models.py changed, reloading.
+INFO 2025-11-19 12:32:58,017 autoreload Watching for file changes with StatReloader
+INFO 2025-11-19 12:33:58,806 autoreload C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\marketing\views.py changed, reloading.
+INFO 2025-11-19 12:33:59,819 autoreload Watching for file changes with StatReloader
+INFO 2025-11-19 13:10:19,649 autoreload Watching for file changes with StatReloader
+WARNING 2025-11-19 13:10:22,193 middleware Unauthorized access attempt to / from IP: 127.0.0.1
+INFO 2025-11-19 13:10:22,195 basehttp "GET / HTTP/1.1" 302 0
+INFO 2025-11-19 13:10:22,279 basehttp "GET /accounts/login/ HTTP/1.1" 200 7653
+WARNING 2025-11-19 13:10:25,467 middleware Unauthorized access attempt to /favicon.ico from IP: 127.0.0.1
+INFO 2025-11-19 13:10:25,468 basehttp "GET /favicon.ico HTTP/1.1" 302 0
+INFO 2025-11-19 13:10:25,473 basehttp "GET /accounts/login/ HTTP/1.1" 200 7338
+WARNING 2025-11-19 13:10:31,124 middleware Unauthorized access attempt to /marketing/jobs/create/ from IP: 127.0.0.1
+INFO 2025-11-19 13:10:31,125 basehttp "GET /marketing/jobs/create/ HTTP/1.1" 302 0
+INFO 2025-11-19 13:10:31,145 basehttp "GET /accounts/login/ HTTP/1.1" 200 7338
+WARNING 2025-11-19 13:10:34,029 middleware Unauthorized access attempt to /favicon.ico from IP: 127.0.0.1
+INFO 2025-11-19 13:10:34,029 basehttp "GET /favicon.ico HTTP/1.1" 302 0
+INFO 2025-11-19 13:10:34,037 basehttp "GET /accounts/login/ HTTP/1.1" 200 7338
+WARNING 2025-11-19 13:10:42,733 views Failed login attempt for: srijabiswas3001@gmail.com from IP: 127.0.0.1
+INFO 2025-11-19 13:10:42,735 basehttp "POST /accounts/login/ HTTP/1.1" 200 7654
+WARNING 2025-11-19 13:10:43,233 middleware Unauthorized access attempt to /favicon.ico from IP: 127.0.0.1
+INFO 2025-11-19 13:10:43,234 basehttp "GET /favicon.ico HTTP/1.1" 302 0
+INFO 2025-11-19 13:10:43,261 basehttp "GET /accounts/login/ HTTP/1.1" 200 7338
+INFO 2025-11-19 13:10:54,242 views Successful login for user: srijabiswas3001@gmail.com from IP: 127.0.0.1
+INFO 2025-11-19 13:10:54,271 basehttp "POST /accounts/login/ HTTP/1.1" 302 0
+INFO 2025-11-19 13:10:54,650 basehttp "GET /dashboard/ HTTP/1.1" 200 21758
+WARNING 2025-11-19 13:10:54,699 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
+INFO 2025-11-19 13:10:55,169 basehttp "GET /media/logo.png HTTP/1.1" 200 1275213
+ERROR 2025-11-19 13:10:56,720 log Internal Server Error: /marketing/dashboard/
+Traceback (most recent call last):
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\core\handlers\exception.py", line 47, in inner
+    response = get_response(request)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\core\handlers\base.py", line 181, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\contrib\auth\decorators.py", line 21, in _wrapped_view
+    return view_func(request, *args, **kwargs)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\marketing\views.py", line 29, in wrapper
+    return view_func(request, *args, **kwargs)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\marketing\views.py", line 69, in marketing_dashboard
+    return render(request, 'marketing_dashboard.html', context)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\shortcuts.py", line 19, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\template\loader.py", line 61, in render_to_string
+    template = get_template(template_name, using=using)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\template\loader.py", line 19, in get_template
+    raise TemplateDoesNotExist(template_name, chain=chain)
+django.template.exceptions.TemplateDoesNotExist: marketing_dashboard.html
+ERROR 2025-11-19 13:10:56,722 basehttp "GET /marketing/dashboard/ HTTP/1.1" 500 112445
+WARNING 2025-11-19 13:10:57,575 log Not Found: /favicon.ico
+WARNING 2025-11-19 13:10:57,575 basehttp "GET /favicon.ico HTTP/1.1" 404 3225
+INFO 2025-11-19 13:11:43,713 autoreload C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\marketing\views.py changed, reloading.
+INFO 2025-11-19 13:11:44,785 autoreload Watching for file changes with StatReloader
+INFO 2025-11-19 13:11:48,556 basehttp "GET /marketing/dashboard/ HTTP/1.1" 200 22975
+WARNING 2025-11-19 13:11:48,613 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
+INFO 2025-11-19 13:11:48,683 basehttp "GET /static/css/base.css HTTP/1.1" 200 26393
+INFO 2025-11-19 13:11:48,818 basehttp "GET /media/logo.png HTTP/1.1" 200 1275213
+INFO 2025-11-19 13:11:49,320 basehttp "GET /media/logo.png HTTP/1.1" 200 1275213
+INFO 2025-11-19 13:11:50,811 basehttp "GET /marketing/jobs/create/ HTTP/1.1" 200 50067
+WARNING 2025-11-19 13:11:50,850 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
+INFO 2025-11-19 13:12:00,373 basehttp "POST /marketing/jobs/check-job-id/ HTTP/1.1" 200 50
+INFO 2025-11-19 13:16:10,755 basehttp "POST /marketing/jobs/save-initial/ HTTP/1.1" 200 124
+ERROR 2025-11-19 13:16:11,262 log Internal Server Error: /marketing/jobs/generate-summary/
+ERROR 2025-11-19 13:16:11,262 basehttp "POST /marketing/jobs/generate-summary/ HTTP/1.1" 500 102
+INFO 2025-11-19 13:16:18,526 basehttp "POST /marketing/jobs/save-initial/ HTTP/1.1" 200 124
+INFO 2025-11-19 13:16:25,762 basehttp "POST /marketing/jobs/save-initial/ HTTP/1.1" 200 124
+ERROR 2025-11-19 13:16:26,284 log Internal Server Error: /marketing/jobs/generate-summary/
+ERROR 2025-11-19 13:16:26,284 basehttp "POST /marketing/jobs/generate-summary/ HTTP/1.1" 500 102
+INFO 2025-11-19 13:31:35,236 autoreload C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\marketing\views.py changed, reloading.
+INFO 2025-11-19 13:31:36,552 autoreload Watching for file changes with StatReloader
+INFO 2025-11-19 13:31:43,577 autoreload C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\marketing\views.py changed, reloading.
+INFO 2025-11-19 13:31:44,737 autoreload Watching for file changes with StatReloader
+INFO 2025-11-19 13:33:58,720 basehttp "POST /marketing/jobs/save-initial/ HTTP/1.1" 200 124
+ERROR 2025-11-19 13:33:58,803 log Internal Server Error: /marketing/jobs/generate-summary/
+ERROR 2025-11-19 13:33:58,804 basehttp "POST /marketing/jobs/generate-summary/ HTTP/1.1" 500 102
+INFO 2025-11-19 13:34:00,639 basehttp "GET /marketing/jobs/create/ HTTP/1.1" 200 50067
+WARNING 2025-11-19 13:34:00,687 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
+INFO 2025-11-19 13:34:05,392 basehttp "POST /marketing/jobs/check-job-id/ HTTP/1.1" 200 53
+INFO 2025-11-19 13:34:12,932 basehttp "GET /marketing/dashboard/ HTTP/1.1" 200 25570
+WARNING 2025-11-19 13:34:12,968 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
+INFO 2025-11-19 13:34:29,928 basehttp "GET /marketing/jobs/my-jobs/ HTTP/1.1" 200 21201
+WARNING 2025-11-19 13:34:29,959 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
+INFO 2025-11-19 13:34:35,399 basehttp "GET /marketing/jobs/create/ HTTP/1.1" 200 50067
+WARNING 2025-11-19 13:34:35,435 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
+INFO 2025-11-19 13:34:38,224 basehttp "POST /marketing/jobs/check-job-id/ HTTP/1.1" 200 53
+INFO 2025-11-19 13:34:41,012 basehttp "POST /marketing/jobs/check-job-id/ HTTP/1.1" 200 50
+INFO 2025-11-19 13:34:42,074 basehttp "POST /marketing/jobs/check-job-id/ HTTP/1.1" 200 50
+INFO 2025-11-19 13:35:13,850 basehttp "POST /marketing/jobs/save-initial/ HTTP/1.1" 200 124
+ERROR 2025-11-19 13:35:14,377 log Internal Server Error: /marketing/jobs/generate-summary/
+ERROR 2025-11-19 13:35:14,377 basehttp "POST /marketing/jobs/generate-summary/ HTTP/1.1" 500 102
+INFO 2025-11-19 13:37:28,906 autoreload C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\marketing\views.py changed, reloading.
+INFO 2025-11-19 13:37:30,194 autoreload Watching for file changes with StatReloader
+INFO 2025-11-19 13:37:38,274 autoreload C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\marketing\views.py changed, reloading.
+INFO 2025-11-19 13:37:39,583 autoreload Watching for file changes with StatReloader
+INFO 2025-11-19 13:38:57,487 basehttp "POST /marketing/jobs/save-initial/ HTTP/1.1" 200 124
+ERROR 2025-11-19 13:38:57,777 log Internal Server Error: /marketing/jobs/generate-summary/
+ERROR 2025-11-19 13:38:57,778 basehttp "POST /marketing/jobs/generate-summary/ HTTP/1.1" 500 102
+INFO 2025-11-19 13:38:59,775 basehttp "GET /marketing/jobs/create/ HTTP/1.1" 200 50067
+WARNING 2025-11-19 13:38:59,834 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
+INFO 2025-11-19 13:39:45,143 basehttp "GET /marketing/jobs/create/ HTTP/1.1" 200 50067
+WARNING 2025-11-19 13:39:45,178 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
+INFO 2025-11-19 13:39:46,086 basehttp "GET /marketing/jobs/create/ HTTP/1.1" 200 50067
+WARNING 2025-11-19 13:39:46,134 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
+INFO 2025-11-19 13:39:46,208 basehttp "GET /static/css/base.css HTTP/1.1" 200 26393
+INFO 2025-11-19 13:39:46,600 basehttp "GET /media/logo.png HTTP/1.1" 200 1275213
+INFO 2025-11-19 13:39:47,416 basehttp "GET /media/logo.png HTTP/1.1" 200 1275213
+INFO 2025-11-19 13:39:49,200 basehttp "POST /marketing/jobs/check-job-id/ HTTP/1.1" 200 50
+INFO 2025-11-19 13:40:02,998 basehttp "POST /marketing/jobs/save-initial/ HTTP/1.1" 200 124
+ERROR 2025-11-19 13:40:03,403 log Internal Server Error: /marketing/jobs/generate-summary/
+ERROR 2025-11-19 13:40:03,403 basehttp "POST /marketing/jobs/generate-summary/ HTTP/1.1" 500 102
+INFO 2025-11-19 13:42:16,398 autoreload Watching for file changes with StatReloader
+ERROR 2025-11-19 13:42:19,961 views Error during logout for srijabiswas3001@gmail.com: 
+INFO 2025-11-19 13:42:19,970 basehttp "GET /accounts/logout/ HTTP/1.1" 302 0
+INFO 2025-11-19 13:42:19,987 basehttp "GET /accounts/login/ HTTP/1.1" 200 7953
+WARNING 2025-11-19 13:42:22,892 middleware Unauthorized access attempt to /favicon.ico from IP: 127.0.0.1
+INFO 2025-11-19 13:42:22,894 basehttp "GET /favicon.ico HTTP/1.1" 302 0
+INFO 2025-11-19 13:42:22,899 basehttp "GET /accounts/login/ HTTP/1.1" 200 7338
+INFO 2025-11-19 13:42:31,927 views Successful login for user: srijabiswas3001@gmail.com from IP: 127.0.0.1
+INFO 2025-11-19 13:42:31,940 basehttp "POST /accounts/login/ HTTP/1.1" 302 0
+INFO 2025-11-19 13:42:32,366 basehttp "GET /dashboard/ HTTP/1.1" 200 21758
+WARNING 2025-11-19 13:42:32,423 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
+INFO 2025-11-19 13:42:32,873 basehttp "GET /media/logo.png HTTP/1.1" 200 1275213
+INFO 2025-11-19 13:42:35,690 basehttp "GET /marketing/jobs/create/ HTTP/1.1" 200 50067
+WARNING 2025-11-19 13:42:35,728 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
+INFO 2025-11-19 13:42:38,099 basehttp "POST /marketing/jobs/check-job-id/ HTTP/1.1" 200 53
+INFO 2025-11-19 13:42:40,903 basehttp "POST /marketing/jobs/check-job-id/ HTTP/1.1" 200 50
+INFO 2025-11-19 13:42:55,598 basehttp "POST /marketing/jobs/save-initial/ HTTP/1.1" 200 124
+ERROR 2025-11-19 13:42:56,136 log Internal Server Error: /marketing/jobs/generate-summary/
+ERROR 2025-11-19 13:42:56,136 basehttp "POST /marketing/jobs/generate-summary/ HTTP/1.1" 500 102
+INFO 2025-11-19 13:43:45,103 autoreload C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\marketing\views.py changed, reloading.
+INFO 2025-11-19 13:43:46,194 autoreload Watching for file changes with StatReloader
+INFO 2025-11-19 13:44:14,633 basehttp "GET /marketing/jobs/create/ HTTP/1.1" 200 50067
+WARNING 2025-11-19 13:44:14,700 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
+INFO 2025-11-19 13:44:14,789 basehttp "GET /static/css/base.css HTTP/1.1" 200 26393
+INFO 2025-11-19 13:44:15,049 basehttp "GET /media/logo.png HTTP/1.1" 200 1275213
+INFO 2025-11-19 13:44:15,541 basehttp "GET /media/logo.png HTTP/1.1" 200 1275213
+INFO 2025-11-19 13:44:35,740 basehttp "POST /marketing/jobs/check-job-id/ HTTP/1.1" 200 50
+INFO 2025-11-19 13:44:50,138 basehttp "POST /marketing/jobs/save-initial/ HTTP/1.1" 200 124
+ERROR 2025-11-19 13:44:50,684 log Internal Server Error: /marketing/jobs/generate-summary/
+ERROR 2025-11-19 13:44:50,685 basehttp "POST /marketing/jobs/generate-summary/ HTTP/1.1" 500 102
+INFO 2025-11-19 13:47:18,626 autoreload C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\marketing\views.py changed, reloading.
+INFO 2025-11-19 13:47:20,503 autoreload Watching for file changes with StatReloader
+INFO 2025-11-19 13:48:02,899 autoreload C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\marketing\views.py changed, reloading.
+INFO 2025-11-19 13:48:04,182 autoreload Watching for file changes with StatReloader
+INFO 2025-11-19 13:48:12,664 basehttp "POST /marketing/jobs/save-initial/ HTTP/1.1" 200 124
+ERROR 2025-11-19 13:48:12,865 log Internal Server Error: /marketing/jobs/generate-summary/
+ERROR 2025-11-19 13:48:12,866 basehttp "POST /marketing/jobs/generate-summary/ HTTP/1.1" 500 102
+INFO 2025-11-19 13:48:15,177 basehttp "GET /marketing/jobs/create/ HTTP/1.1" 200 50067
+WARNING 2025-11-19 13:48:15,222 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
+INFO 2025-11-19 13:49:28,834 basehttp "GET /marketing/jobs/create/ HTTP/1.1" 200 50067
+WARNING 2025-11-19 13:49:29,024 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
+INFO 2025-11-19 13:49:29,111 basehttp "GET /static/css/base.css HTTP/1.1" 200 26393
+INFO 2025-11-19 13:49:29,459 basehttp "GET /media/logo.png HTTP/1.1" 200 1275213
+INFO 2025-11-19 13:49:29,902 basehttp "GET /media/logo.png HTTP/1.1" 200 1275213
+INFO 2025-11-19 13:49:36,042 basehttp "GET /marketing/jobs/create/ HTTP/1.1" 200 50067
+INFO 2025-11-19 13:49:36,089 basehttp "GET /static/css/base.css HTTP/1.1" 200 26393
+WARNING 2025-11-19 13:49:36,090 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
+INFO 2025-11-19 13:49:36,532 basehttp "GET /media/logo.png HTTP/1.1" 200 1275213
+INFO 2025-11-19 13:49:37,068 basehttp "GET /media/logo.png HTTP/1.1" 200 1275213
+INFO 2025-11-19 13:49:38,936 basehttp "POST /marketing/jobs/check-job-id/ HTTP/1.1" 200 50
+INFO 2025-11-19 13:49:51,097 basehttp "POST /marketing/jobs/save-initial/ HTTP/1.1" 200 124
+ERROR 2025-11-19 13:49:51,584 log Internal Server Error: /marketing/jobs/generate-summary/
+ERROR 2025-11-19 13:49:51,584 basehttp "POST /marketing/jobs/generate-summary/ HTTP/1.1" 500 102
+INFO 2025-11-19 13:59:35,192 autoreload Watching for file changes with StatReloader
+INFO 2025-11-19 13:59:40,982 basehttp "GET /marketing/jobs/create/ HTTP/1.1" 200 50067
+WARNING 2025-11-19 13:59:41,032 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
+INFO 2025-11-19 13:59:41,131 basehttp "GET /static/css/base.css HTTP/1.1" 200 26393
+INFO 2025-11-19 13:59:41,187 basehttp "GET /media/logo.png HTTP/1.1" 200 1275213
+INFO 2025-11-19 13:59:44,745 basehttp "GET /media/logo.png HTTP/1.1" 200 1275213
+INFO 2025-11-19 13:59:46,982 basehttp "POST /marketing/jobs/check-job-id/ HTTP/1.1" 200 53
+INFO 2025-11-19 13:59:49,313 basehttp "POST /marketing/jobs/check-job-id/ HTTP/1.1" 200 50
+INFO 2025-11-19 14:00:01,638 basehttp "POST /marketing/jobs/save-initial/ HTTP/1.1" 200 124
+INFO 2025-11-19 14:00:11,740 basehttp "POST /marketing/jobs/generate-summary/ HTTP/1.1" 200 1982
+INFO 2025-11-19 14:00:11,866 basehttp "GET /marketing/jobs/summary-versions/CH-1763541001593/ HTTP/1.1" 200 1967
+INFO 2025-11-19 14:00:13,946 basehttp "GET /marketing/dashboard/ HTTP/1.1" 200 27411
+WARNING 2025-11-19 14:00:13,989 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
+INFO 2025-11-19 14:57:42,128 middleware Session expired for user: srijabiswas3001@gmail.com
+INFO 2025-11-19 14:57:42,135 basehttp "GET /marketing/dashboard/ HTTP/1.1" 302 0
+INFO 2025-11-19 14:57:42,203 basehttp "GET /accounts/login/ HTTP/1.1" 200 7653
+INFO 2025-11-19 14:57:42,249 basehttp "GET /static/css/style.css HTTP/1.1" 200 6856
+INFO 2025-11-19 14:57:42,261 basehttp "GET /static/css/base.css HTTP/1.1" 200 26393
+WARNING 2025-11-19 14:57:44,856 middleware Unauthorized access attempt to /favicon.ico from IP: 127.0.0.1
+INFO 2025-11-19 14:57:44,857 basehttp "GET /favicon.ico HTTP/1.1" 302 0
+INFO 2025-11-19 14:57:44,888 basehttp "GET /accounts/login/ HTTP/1.1" 200 7338
+INFO 2025-11-19 14:57:55,095 views Successful login for user: srijabiswas3001@gmail.com from IP: 127.0.0.1
+INFO 2025-11-19 14:57:55,105 basehttp "POST /accounts/login/ HTTP/1.1" 302 0
+INFO 2025-11-19 14:57:55,524 basehttp "GET /dashboard/ HTTP/1.1" 200 21758
+WARNING 2025-11-19 14:57:55,597 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
+INFO 2025-11-19 14:57:55,944 basehttp "GET /media/logo.png HTTP/1.1" 200 1275213
+INFO 2025-11-19 14:57:57,405 basehttp "GET /marketing/dashboard/ HTTP/1.1" 200 27162
+WARNING 2025-11-19 14:57:57,438 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
+INFO 2025-11-19 14:58:01,867 basehttp "GET /marketing/jobs/create/?job_id=CH-1763540391051 HTTP/1.1" 200 50236
+WARNING 2025-11-19 14:58:01,900 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
+INFO 2025-11-19 14:58:09,428 basehttp "GET /marketing/jobs/create/?job_id=CH-1763540391051 HTTP/1.1" 200 50236
+WARNING 2025-11-19 14:58:09,462 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
+INFO 2025-11-19 14:58:24,655 basehttp "POST /marketing/jobs/save-initial/ HTTP/1.1" 200 124
+INFO 2025-11-19 14:58:31,226 basehttp "POST /marketing/jobs/generate-summary/ HTTP/1.1" 200 2303
+INFO 2025-11-19 14:58:31,841 basehttp "GET /marketing/jobs/summary-versions/CH-1763540391051/ HTTP/1.1" 200 2288
+INFO 2025-11-19 14:58:33,348 basehttp "GET /marketing/dashboard/ HTTP/1.1" 200 26889
+WARNING 2025-11-19 14:58:33,388 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
+WARNING 2025-11-19 14:58:40,135 log Not Found: /marketing/jobs/create/
+WARNING 2025-11-19 14:58:40,136 basehttp "GET /marketing/jobs/create/?job_id=CH-1763541001593 HTTP/1.1" 404 1779
+WARNING 2025-11-19 14:58:40,837 log Not Found: /favicon.ico
+WARNING 2025-11-19 14:58:40,837 basehttp "GET /favicon.ico HTTP/1.1" 404 3225
+INFO 2025-11-19 14:58:51,124 basehttp "GET /marketing/jobs/my-jobs/ HTTP/1.1" 200 22309
+WARNING 2025-11-19 14:58:51,162 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
+INFO 2025-11-19 14:59:17,033 basehttp "GET /marketing/jobs/unallocated/ HTTP/1.1" 200 22347
+WARNING 2025-11-19 14:59:17,067 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
+INFO 2025-11-19 14:59:22,440 basehttp "GET /marketing/jobs/query/ HTTP/1.1" 200 20195
+WARNING 2025-11-19 14:59:22,475 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
+INFO 2025-11-19 14:59:48,981 basehttp "GET /marketing/jobs/my-jobs/ HTTP/1.1" 200 22309
+WARNING 2025-11-19 14:59:49,019 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
+INFO 2025-11-19 14:59:57,280 basehttp "GET /marketing/jobs/hold/ HTTP/1.1" 200 20208
+WARNING 2025-11-19 14:59:57,317 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
+INFO 2025-11-19 15:00:02,784 basehttp "GET /marketing/jobs/query/ HTTP/1.1" 200 20195
+WARNING 2025-11-19 15:00:02,820 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
+INFO 2025-11-19 15:00:05,970 basehttp "GET /marketing/jobs/unallocated/ HTTP/1.1" 200 22347
+WARNING 2025-11-19 15:00:06,008 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
+INFO 2025-11-19 15:00:11,097 basehttp "GET /marketing/jobs/completed/ HTTP/1.1" 200 20221
+WARNING 2025-11-19 15:00:11,163 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
+INFO 2025-11-19 15:00:16,032 basehttp "GET /marketing/jobs/allocated/ HTTP/1.1" 200 20225
+WARNING 2025-11-19 15:00:16,087 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
+INFO 2025-11-19 15:00:22,586 basehttp "GET /marketing/dashboard/ HTTP/1.1" 200 26889
+WARNING 2025-11-19 15:00:22,622 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
+ERROR 2025-11-19 15:00:49,378 views Error during logout for srijabiswas3001@gmail.com: 
+INFO 2025-11-19 15:00:49,386 basehttp "GET /accounts/logout/ HTTP/1.1" 302 0
+INFO 2025-11-19 15:00:49,394 basehttp "GET /accounts/login/ HTTP/1.1" 200 7953
+INFO 2025-11-19 15:01:01,718 views Successful login for user: admin@gmail.com from IP: 127.0.0.1
+INFO 2025-11-19 15:01:01,730 basehttp "POST /accounts/login/ HTTP/1.1" 302 0
+INFO 2025-11-19 15:01:02,073 basehttp "GET /dashboard/ HTTP/1.1" 200 19179
+WARNING 2025-11-19 15:01:02,118 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
+INFO 2025-11-19 15:01:05,315 basehttp "GET /superadmin/dashboard/ HTTP/1.1" 200 24411
+WARNING 2025-11-19 15:01:05,353 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
+INFO 2025-11-19 15:01:10,302 basehttp "GET /superadmin/pending/ HTTP/1.1" 200 16878
+WARNING 2025-11-19 15:01:10,339 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
+INFO 2025-11-19 15:01:13,103 basehttp "GET /superadmin/master-input/ HTTP/1.1" 200 20930
+WARNING 2025-11-19 15:01:13,140 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
+INFO 2025-11-19 15:01:16,613 basehttp "GET /superadmin/holiday-master/ HTTP/1.1" 200 26928
+WARNING 2025-11-19 15:01:16,745 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
+INFO 2025-11-19 15:01:21,797 basehttp "GET /superadmin/master-input/ HTTP/1.1" 200 20930
+WARNING 2025-11-19 15:01:21,833 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
+INFO 2025-11-19 15:01:49,014 basehttp "GET /superadmin/master-input/ HTTP/1.1" 200 20930
+WARNING 2025-11-19 15:01:49,055 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
+ERROR 2025-11-19 15:06:21,121 views Error during logout for admin@gmail.com: 
+INFO 2025-11-19 15:06:21,129 basehttp "GET /accounts/logout/ HTTP/1.1" 302 0
+INFO 2025-11-19 15:06:21,138 basehttp "GET /accounts/login/ HTTP/1.1" 200 7956
+INFO 2025-11-19 15:07:15,422 views Successful login for user: srijabiswas3001@gmail.com from IP: 127.0.0.1
+INFO 2025-11-19 15:07:15,434 basehttp "POST /accounts/login/ HTTP/1.1" 302 0
+INFO 2025-11-19 15:07:15,752 basehttp "GET /dashboard/ HTTP/1.1" 200 21758
+WARNING 2025-11-19 15:07:15,808 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
+INFO 2025-11-19 15:07:16,244 basehttp "GET /media/logo.png HTTP/1.1" 200 1275213
+INFO 2025-11-19 15:07:17,671 basehttp "GET /marketing/dashboard/ HTTP/1.1" 200 26889
+WARNING 2025-11-19 15:07:17,706 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
+INFO 2025-11-19 15:07:19,553 basehttp "GET /marketing/jobs/create/ HTTP/1.1" 200 50067
+WARNING 2025-11-19 15:07:19,594 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
