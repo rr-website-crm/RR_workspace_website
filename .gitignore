@@ -3,4 +3,3 @@ venv/
 ENV/
 env/
 *.json
-.env
