@@ -14165,3 +14165,31 @@ INFO 2025-11-19 15:07:17,671 basehttp "GET /marketing/dashboard/ HTTP/1.1" 200 2
 WARNING 2025-11-19 15:07:17,706 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
 INFO 2025-11-19 15:07:19,553 basehttp "GET /marketing/jobs/create/ HTTP/1.1" 200 50067
 WARNING 2025-11-19 15:07:19,594 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
+WARNING 2025-11-19 16:16:22,241 middleware Unauthorized access attempt to /accounts/logout/ from IP: 127.0.0.1
+INFO 2025-11-19 16:16:22,244 basehttp "GET /accounts/logout/ HTTP/1.1" 302 0
+INFO 2025-11-19 16:16:22,256 basehttp "GET /accounts/login/ HTTP/1.1" 200 7653
+INFO 2025-11-19 16:16:33,581 views Successful login for user: admin@gmail.com from IP: 127.0.0.1
+INFO 2025-11-19 16:16:33,593 basehttp "POST /accounts/login/ HTTP/1.1" 302 0
+INFO 2025-11-19 16:16:33,899 basehttp "GET /dashboard/ HTTP/1.1" 200 19179
+WARNING 2025-11-19 16:16:33,950 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
+INFO 2025-11-19 16:16:34,431 basehttp "GET /media/logo.png HTTP/1.1" 200 1275213
+INFO 2025-11-19 16:16:40,520 basehttp "GET /superadmin/dashboard/ HTTP/1.1" 200 24411
+WARNING 2025-11-19 16:16:40,556 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
+INFO 2025-11-19 16:16:43,930 basehttp "GET /superadmin/master-input/ HTTP/1.1" 200 20930
+WARNING 2025-11-19 16:16:43,963 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
+INFO 2025-11-19 16:17:39,221 basehttp "GET /superadmin/holiday-master/ HTTP/1.1" 200 26928
+WARNING 2025-11-19 16:17:39,265 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
+INFO 2025-11-19 16:18:21,758 basehttp "GET /superadmin/pending/ HTTP/1.1" 200 16878
+WARNING 2025-11-19 16:18:21,796 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
+INFO 2025-11-19 16:18:26,259 basehttp "GET /superadmin/dashboard/ HTTP/1.1" 200 24411
+WARNING 2025-11-19 16:18:26,294 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
+INFO 2025-11-19 16:18:34,274 basehttp "GET /superadmin/manage-users/ HTTP/1.1" 200 28515
+WARNING 2025-11-19 16:18:34,311 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
+INFO 2025-11-19 16:18:38,514 basehttp "GET /superadmin/master-input/ HTTP/1.1" 200 20930
+WARNING 2025-11-19 16:18:38,555 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
+INFO 2025-11-19 16:18:45,263 basehttp "GET /superadmin/holiday-master/ HTTP/1.1" 200 26928
+WARNING 2025-11-19 16:18:45,301 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
+INFO 2025-11-19 16:18:47,507 basehttp "GET /superadmin/master-input/ HTTP/1.1" 200 20930
+WARNING 2025-11-19 16:18:47,544 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
+INFO 2025-11-19 16:18:56,568 basehttp "GET /superadmin/master-input/ HTTP/1.1" 200 20930
+WARNING 2025-11-19 16:18:56,643 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
