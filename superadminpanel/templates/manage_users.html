@@ -13,20 +13,20 @@
 
 <!-- KPI Cards -->
 <div class="stats-grid">
-    <div class="stat-card" style="background: linear-gradient(135deg, #0A84FF 0%, #5AC8FA 100%);">
+    <a href="{% url 'manage_users' %}" class="stat-card gradient-primary kpi-card-link" title="View all approved users">
         <div class="stat-value">{{ total_users }}</div>
         <div class="stat-label">Number of Users</div>
-    </div>
+    </a>
     
-    <div class="stat-card" style="background: linear-gradient(135deg, #FFC107 0%, #FF9800 100%);">
+    <a href="{% url 'pending_items' %}" class="stat-card gradient-warning kpi-card-link" title="Review pending approvals and profile requests">
         <div class="stat-value">{{ pending_count }}</div>
         <div class="stat-label">Number of Pending</div>
-    </div>
+    </a>
     
-    <div class="stat-card" style="background: linear-gradient(135deg, #4CAF50 0%, #30D158 100%);">
+    <a href="{% url 'manage_users' %}" class="stat-card gradient-success kpi-card-link" title="See approved user list">
         <div class="stat-value">{{ approved_count }}</div>
         <div class="stat-label">Number of Approvals</div>
-    </div>
+    </a>
 </div>
 
 <!-- Users Table -->
@@ -38,11 +38,12 @@
         </div>
     </div>
     <div class="card-body">
-        <div class="table-container">
+        <div class="table-container table-scroll-lock">
             <table class="data-table" id="usersTable">
                 <thead>
                     <tr>
                         <th>SL. No</th>
+                        <th>Employee ID</th>
                         <th>Name</th>
                         <th>Email</th>
                         <th>Update Role</th>
@@ -57,12 +58,13 @@
                     {% for user in users %}
                     <tr data-user-id="{{ user.id }}">
                         <td>{{ forloop.counter }}</td>
-                        <td style="font-weight: 600;">{{ user.get_full_name }}</td>
-                        <td>{{ user.email }}</td>
+                        <td>{{ user.employee_id|default:'Not Assigned' }}</td>
+                        <td style="font-weight: 600;" data-column="name">{{ user.get_full_name }}</td>
+                        <td data-column="email">{{ user.email }}</td>
                         <td>
                             <form method="POST" action="{% url 'update_user_role' user.id %}" style="display: flex; gap: 0.5rem; align-items: center;">
                                 {% csrf_token %}
-                                <select name="role" class="form-control form-select" style="width: 150px; padding: 6px 12px; font-size: 13px;">
+                                <select name="role" class="form-control form-select" style="width: 150px; padding: 6px 12px; font-size: 13px;" data-role-select>
                                     <option value="user" {% if user.role == 'user' %}selected{% endif %}>User</option>
                                     <option value="superadmin" {% if user.role == 'superadmin' %}selected{% endif %}>SuperAdmin</option>
                                     <option value="admin" {% if user.role == 'admin' %}selected{% endif %}>Admin</option>
@@ -80,22 +82,28 @@
                             </span>
                         </td>
                         <td>
-                            <form method="POST" action="{% url 'update_user_category' user.id %}" style="display: flex; gap: 0.5rem;">
-                                {% csrf_token %}
-                                <select name="category" class="form-control form-select" style="width: 120px; padding: 6px 12px; font-size: 13px;" onchange="this.form.submit()">
-                                    <option value="">Select</option>
-                                    <option value="IT" {% if user.department == 'IT' %}selected{% endif %}>IT</option>
-                                    <option value="Non-IT" {% if user.department == 'Non-IT' %}selected{% endif %}>Non-IT</option>
-                                    <option value="Finance" {% if user.department == 'Finance' %}selected{% endif %}>Finance</option>
-                                </select>
-                            </form>
+                            <div class="writer-only-wrapper" data-writer-field>
+                                <form method="POST" action="{% url 'update_user_category' user.id %}" style="display: flex; gap: 0.5rem;">
+                                    {% csrf_token %}
+                                    <select name="category" class="form-control form-select" style="width: 120px; padding: 6px 12px; font-size: 13px;" onchange="this.form.submit()">
+                                        <option value="">Select</option>
+                                        <option value="IT" {% if user.department == 'IT' %}selected{% endif %}>IT</option>
+                                        <option value="Non-IT" {% if user.department == 'Non-IT' %}selected{% endif %}>Non-IT</option>
+                                        <option value="Finance" {% if user.department == 'Finance' %}selected{% endif %}>Finance</option>
+                                    </select>
+                                </form>
+                            </div>
+                            <span class="writer-only-placeholder" data-writer-placeholder>Only for Writer role</span>
                         </td>
                         <td>
-                            <form method="POST" action="{% url 'update_user_level' user.id %}" style="display: flex; gap: 0.5rem;">
-                                {% csrf_token %}
-                                <input type="number" name="level" value="{{ user.level|default:0 }}" min="0" max="5" class="form-control" style="width: 70px; padding: 6px; font-size: 13px;">
-                                <button type="submit" class="btn btn-primary btn-sm">Set</button>
-                            </form>
+                            <div class="writer-only-wrapper" data-writer-field>
+                                <form method="POST" action="{% url 'update_user_level' user.id %}" style="display: flex; gap: 0.5rem;">
+                                    {% csrf_token %}
+                                    <input type="number" name="level" value="{{ user.level|default:0 }}" min="0" max="5" class="form-control" style="width: 70px; padding: 6px; font-size: 13px;">
+                                    <button type="submit" class="btn btn-primary btn-sm">Set</button>
+                                </form>
+                            </div>
+                            <span class="writer-only-placeholder" data-writer-placeholder>Only for Writer role</span>
                         </td>
                         <td>
                             <a href="{% url 'edit_user' user.id %}" class="btn btn-outline btn-sm">
@@ -130,22 +138,48 @@
 </div>
 
 <script>
-    // Search functionality
-    document.getElementById('searchInput').addEventListener('keyup', function() {
-        const searchValue = this.value.toLowerCase();
-        const table = document.getElementById('usersTable');
-        const rows = table.getElementsByTagName('tbody')[0].getElementsByTagName('tr');
-        
-        for (let row of rows) {
-            const name = row.cells[1]?.textContent.toLowerCase() || '';
-            const email = row.cells[2]?.textContent.toLowerCase() || '';
+    document.addEventListener('DOMContentLoaded', () => {
+        // Search functionality
+        document.getElementById('searchInput').addEventListener('keyup', function() {
+            const searchValue = this.value.toLowerCase();
+            const rows = document.querySelectorAll('#usersTable tbody tr');
             
-            if (name.includes(searchValue) || email.includes(searchValue)) {
-                row.style.display = '';
-            } else {
-                row.style.display = 'none';
-            }
-        }
+            rows.forEach((row) => {
+                const nameCell = row.querySelector('[data-column="name"]');
+                const emailCell = row.querySelector('[data-column="email"]');
+                const name = nameCell?.textContent.toLowerCase() || '';
+                const email = emailCell?.textContent.toLowerCase() || '';
+                
+                row.style.display = (name.includes(searchValue) || email.includes(searchValue)) ? '' : 'none';
+            });
+        });
+
+        // Toggle category/level fields only for Writer role
+        const WRITER_ROLE = 'writer';
+        const rows = document.querySelectorAll('#usersTable tbody tr');
+
+        const toggleWriterFields = (row) => {
+            const roleSelect = row.querySelector('[data-role-select]');
+            if (!roleSelect) return;
+            const isWriter = (roleSelect.value || '').toLowerCase() === WRITER_ROLE;
+            row.querySelectorAll('[data-writer-field]').forEach((section) => {
+                section.classList.toggle('writer-field-hidden', !isWriter);
+                section.querySelectorAll('input, select, button').forEach((input) => {
+                    if (input.hasAttribute('data-keep-enabled')) return;
+                    input.disabled = !isWriter;
+                });
+            });
+            row.querySelectorAll('[data-writer-placeholder]').forEach((placeholder) => {
+                placeholder.classList.toggle('writer-field-hidden', isWriter);
+            });
+        };
+
+        rows.forEach((row) => {
+            const roleSelect = row.querySelector('[data-role-select]');
+            if (!roleSelect) return;
+            toggleWriterFields(row);
+            roleSelect.addEventListener('change', () => toggleWriterFields(row));
+        });
     });
 </script>
 
@@ -153,6 +187,19 @@
     .btn-sm {
         padding: 6px 12px;
         font-size: 13px;
+    }
+
+    .kpi-card-link {
+        display: block;
+        text-decoration: none;
+        color: inherit;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .kpi-card-link:hover,
+    .kpi-card-link:focus-visible {
+        transform: translateY(-4px);
+        box-shadow: 0 12px 24px rgba(0,0,0,0.25);
     }
     
     .toggle-switch {
@@ -198,6 +245,21 @@
     
     .toggle-switch input:checked + .toggle-slider:before {
         transform: translateX(26px);
+    }
+
+    .writer-only-placeholder {
+        display: inline-block;
+        font-size: 12px;
+        color: var(--secondary);
+        opacity: 0.7;
+    }
+
+    .writer-field-hidden {
+        display: none !important;
+    }
+
+    .writer-only-wrapper {
+        min-height: 40px;
     }
     
     @media (max-width: 768px) {

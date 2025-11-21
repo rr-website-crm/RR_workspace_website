@@ -12,10 +12,18 @@
 </div>
 
 <!-- KPI Card -->
-<div class="stats-grid" style="grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));">
-    <div class="stat-card" style="background: linear-gradient(135deg, #FFC107 0%, #FF9800 100%);">
+<div class="stats-grid" style="grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));">
+    <div class="stat-card gradient-warning">
         <div class="stat-value">{{ pending_total }}</div>
         <div class="stat-label">Pending Registrations</div>
+    </div>
+    <div class="stat-card gradient-secondary">
+        <div class="stat-value">{{ profile_pending_total }}</div>
+        <div class="stat-label">Profile Edit Requests</div>
+    </div>
+    <div class="stat-card gradient-success">
+        <div class="stat-value">{{ profile_active_total }}</div>
+        <div class="stat-label">Active Edit Approvals</div>
     </div>
 </div>
 
@@ -100,6 +108,133 @@
     </div>
 </div>
 
+<!-- Profile Edit Requests -->
+<div class="card mt-4">
+    <div class="card-header">
+        <h3 class="card-title">Profile Edit Requests</h3>
+        <p style="margin:0;color:var(--secondary);">Review new unlock requests and monitor who currently has an active edit window.</p>
+    </div>
+    <div class="card-body">
+        <h4 style="margin-bottom: 0.35rem;">Pending Requests</h4>
+        <p class="table-hint">Approve to unlock a one-time edit window for the requested user.</p>
+        {% if profile_requests_pending %}
+        <div class="table-container">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>User</th>
+                        <th>Current Details</th>
+                        <th>Requested Details</th>
+                        <th>Reason</th>
+                        <th>Submitted</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for request_item in profile_requests_pending %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td>
+                            <strong>{{ request_item.user.get_full_name|default:request_item.user.email }}</strong><br>
+                            <small>{{ request_item.user.role|title }}</small>
+                        </td>
+                        <td>
+                            {{ request_item.current_first_name }} {{ request_item.current_last_name }}<br>
+                            <small>{{ request_item.current_email }}</small>
+                        </td>
+                        <td>
+                            {{ request_item.requested_first_name }} {{ request_item.requested_last_name }}<br>
+                            <small>{{ request_item.requested_email }}</small>
+                        </td>
+                        <td style="max-width: 220px;">
+                            {{ request_item.reason|default:"No reason provided." }}
+                        </td>
+                        <td>{{ request_item.created_at|date:"d M Y, H:i" }}</td>
+                        <td>
+                            <div style="display: flex; gap: 0.4rem;">
+                                <form method="post" action="{% url 'approve_profile_request' request_item.id %}" onsubmit="return confirm('Allow this user to edit their profile?');">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-primary btn-sm">Approve</button>
+                                </form>
+                                <form method="post" action="{% url 'reject_profile_request' request_item.id %}" onsubmit="return confirm('Reject this edit request?');">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-sm" style="background:#F44336;color:#fff;">Reject</button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div style="text-align: center; padding: 2rem;">
+            <p style="color: var(--secondary);">No pending profile edit requests.</p>
+        </div>
+        {% endif %}
+
+        <hr style="margin: 2rem 0; opacity: 0.1;">
+
+        <h4 style="margin-bottom: 0.35rem;">Active Edit Approvals</h4>
+        <p class="table-hint">Approvals remain active until the user saves their profile or you revoke access.</p>
+        {% if profile_requests_active %}
+        <div class="table-container">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>User</th>
+                        <th>Requested Email</th>
+                        <th>Approved At</th>
+                        <th>Approved By</th>
+                        <th>Active For</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for request_item in profile_requests_active %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td>
+                            <strong>{{ request_item.user.get_full_name|default:request_item.user.email }}</strong><br>
+                            <small>{{ request_item.user.role|title }}</small>
+                        </td>
+                        <td>{{ request_item.requested_email }}</td>
+                        <td>{{ request_item.reviewed_at|date:"d M Y, H:i" }}</td>
+                        <td>
+                            {% if request_item.reviewed_by %}
+                                {{ request_item.reviewed_by.get_full_name|default:request_item.reviewed_by.email }}
+                            {% else %}
+                                -
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if request_item.reviewed_at %}
+                                {{ request_item.reviewed_at|timesince }} ago
+                            {% else %}
+                                -
+                            {% endif %}
+                        </td>
+                        <td>
+                            <form method="post" action="{% url 'reject_profile_request' request_item.id %}" onsubmit="return confirm('Revoke this edit access?');">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-sm" style="background:#FF9800;color:#000;">Revoke</button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div style="text-align: center; padding: 2rem;">
+            <p style="color: var(--secondary);">No users currently hold active edit approvals.</p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
 <script>
     function approveUser(userId) {
         const form = document.getElementById('approveForm' + userId);
@@ -124,6 +259,13 @@
         display: inline-flex;
         align-items: center;
         gap: 6px;
+    }
+
+    .table-hint {
+        margin: 0 0 1rem;
+        color: var(--secondary);
+        opacity: 0.85;
+        font-size: 0.9rem;
     }
     
     @media (max-width: 768px) {

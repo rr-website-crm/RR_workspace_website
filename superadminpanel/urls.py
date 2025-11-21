@@ -16,6 +16,8 @@ urlpatterns = [
     # Approval Actions
     path('approve-user/<int:user_id>/', views.approve_user, name='approve_user'),
     path('reject-user/<int:user_id>/', views.reject_user, name='reject_user'),
+    path('profile-request/<int:request_id>/approve/', views.approve_profile_request, name='approve_profile_request'),
+    path('profile-request/<int:request_id>/reject/', views.reject_profile_request, name='reject_profile_request'),
     
     # API Endpoints
     path('role-details/<str:role>/', views.role_details, name='role_details'),
@@ -43,9 +45,9 @@ urlpatterns = [
 
     # Add these URLs to your superadminpanel/urls.py
 
-# Academic Writing Style Master
-path('academic-writing-master/', views.academic_writing_master, name='academic_writing_master'),
-path('academic-writing-master/create/', views.create_writing, name='create_writing'),
-path('academic-writing-master/<str:writing_id>/edit/', views.edit_writing, name='edit_writing'),
-path('academic-writing-master/delete/<str:writing_id>/', views.delete_writing, name='delete_writing'),
+    # Academic Writing Style Master
+    path('academic-writing-master/', views.academic_writing_master, name='academic_writing_master'),
+    path('academic-writing-master/create/', views.create_writing, name='create_writing'),
+    path('academic-writing-master/<str:writing_id>/edit/', views.edit_writing, name='edit_writing'),
+    path('academic-writing-master/delete/<str:writing_id>/', views.delete_writing, name='delete_writing'),
 ]

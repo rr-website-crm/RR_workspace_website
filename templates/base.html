@@ -51,6 +51,7 @@
                              class="profile-image"
                              onerror="this.src='https://ui-avatars.com/api/?name={{ user.get_full_name|urlencode }}&background=random&color=fff'">
                         <div class="profile-info">
+                            <span class="user-name">{{ user.get_full_name|default:user.email }}</span>
                             <span class="user-role">{{ user.role|default:"User" }}</span>
                         </div>
                     {% endif %}
@@ -134,6 +135,7 @@
                             </span>
                             <span class="menu-item-text">Pending</span>
                         </a>
+
                         <a href="{% url 'master_input' %}" class="menu-item {% if 'master-input' in request.path or 'holiday-master' in request.path %}active{% endif %}">
                             <span class="menu-item-icon">
                                 <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -149,7 +151,7 @@
                     {% if user.role == 'admin' %}
                     <div class="menu-section">
                         <div class="menu-section-title">Admin</div>
-                        <a href="{% url 'admin_dashboard' %}" class="menu-item {% if 'admin_dashboard' in request.path %}active{% endif %}">
+                        <a href="{% url 'adminpanel:dashboard' %}" class="menu-item {% if 'adminpanel/dashboard' in request.path %}active{% endif %}">
                             <span class="menu-item-icon">
                                 <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                     <rect x="3" y="3" width="7" height="7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -161,7 +163,7 @@
                             <span class="menu-item-text">Dashboard</span>
                         </a>
                         
-                        <a href="{% url 'manage_users' %}" class="menu-item {% if 'manage_users' in request.path %}active{% endif %}">
+                        <a href="{% url 'adminpanel:manage_users' %}" class="menu-item {% if 'adminpanel/manage-users' in request.path %}active{% endif %}">
                             <span class="menu-item-icon">
                                 <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                     <path d="M17 21V19C17 17.9391 16.5786 16.9217 15.8284 16.1716C15.0783 15.4214 14.0609 15 13 15H5C3.93913 15 2.92172 15.4214 2.17157 16.1716C1.42143 16.9217 1 17.9391 1 19V21" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -171,7 +173,16 @@
                             </span>
                             <span class="menu-item-text">Manage Users</span>
                         </a>
-                        
+
+                        <a href="{% url 'adminpanel:pending_items' %}" class="menu-item {% if 'adminpanel/pending' in request.path %}active{% endif %}">
+                            <span class="menu-item-icon">
+                                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                    <polyline points="12 6 12 12 16 14" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                            </span>
+                            <span class="menu-item-text">Pending Items</span>
+                        </a>
                     </div>
                     {% endif %}
 
@@ -587,6 +598,109 @@
                     setTimeout(() => message.remove(), 500);
                 }, 5000);
             });
+
+            const initTables = () => {
+                document.querySelectorAll('.table-container .data-table').forEach(table => {
+                    const container = table.closest('.table-container');
+                    if (!container) {
+                        return;
+                    }
+
+                    // Ensure scroll body wrapper exists
+                    if (!table.parentElement.classList.contains('table-scroll-body')) {
+                        const wrapper = document.createElement('div');
+                        wrapper.className = 'table-scroll-body';
+                        container.insertBefore(wrapper, table);
+                        wrapper.appendChild(table);
+                    }
+
+                    // Responsive data-labels
+                    const headers = Array.from(table.querySelectorAll('thead th')).map(th => th.textContent.trim());
+                    table.querySelectorAll('tbody tr').forEach(row => {
+                        row.querySelectorAll('td').forEach((cell, index) => {
+                            if (!cell.hasAttribute('data-label') && headers[index]) {
+                                cell.setAttribute('data-label', headers[index]);
+                            }
+                        });
+                    });
+
+                    // Pagination
+                    if (table.dataset.paginated === 'true') {
+                        return;
+                    }
+
+                    const tbody = table.tBodies[0];
+                    if (!tbody) {
+                        return;
+                    }
+
+                    const rows = Array.from(tbody.rows);
+                    const pageSize = parseInt(table.dataset.pageSize || '10', 10);
+                    if (rows.length <= pageSize) {
+                        return;
+                    }
+
+                    table.dataset.paginated = 'true';
+
+                    const paginationWrapper = document.createElement('div');
+                    paginationWrapper.className = 'table-pagination';
+
+                    const counter = document.createElement('span');
+                    counter.className = 'table-pagination__counter';
+
+                    const controls = document.createElement('div');
+                    controls.className = 'table-pagination__controls';
+
+                    const prevBtn = document.createElement('button');
+                    prevBtn.type = 'button';
+                    prevBtn.className = 'table-pagination__btn';
+                    prevBtn.innerHTML = '&lsaquo;';
+
+                    const nextBtn = document.createElement('button');
+                    nextBtn.type = 'button';
+                    nextBtn.className = 'table-pagination__btn';
+                    nextBtn.innerHTML = '&rsaquo;';
+
+                    controls.append(prevBtn, nextBtn);
+                    paginationWrapper.append(counter, controls);
+                    container.appendChild(paginationWrapper);
+
+                    let currentPage = 0;
+                    const totalRows = rows.length;
+                    const totalPages = Math.ceil(totalRows / pageSize);
+
+                    const renderPage = () => {
+                        const start = currentPage * pageSize;
+                        const end = Math.min(start + pageSize, totalRows);
+                        rows.forEach((row, index) => {
+                            row.style.display = index >= start && index < end ? '' : 'none';
+                        });
+                        const startDisplay = totalRows === 0 ? 0 : start + 1;
+                        counter.textContent = `${startDisplay}-${end} of ${totalRows}`;
+                        prevBtn.disabled = currentPage === 0;
+                        nextBtn.disabled = currentPage >= totalPages - 1;
+                    };
+
+                    prevBtn.addEventListener('click', () => {
+                        if (currentPage > 0) {
+                            currentPage -= 1;
+                            renderPage();
+                        }
+                    });
+
+                    nextBtn.addEventListener('click', () => {
+                        if (currentPage < totalPages - 1) {
+                            currentPage += 1;
+                            renderPage();
+                        }
+                    });
+
+                    renderPage();
+                });
+            };
+
+            initTables();
+            window.refreshTableBehaviors = initTables;
         });
     </script>
 

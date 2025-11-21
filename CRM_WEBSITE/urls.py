@@ -24,7 +24,7 @@ urlpatterns = [
     path('', include('common.urls')),
     path('accounts/', include('accounts.urls')),
     path('superadmin/', include('superadminpanel.urls')),
-    # path('adminpanel/', include('adminpanel.urls')),
+    path('adminpanel/', include('adminpanel.urls')),
     path('marketing/', include('marketing.urls')),
     path('allocator/', include('allocator.urls')),
     path('writer/', include('writer.urls')),

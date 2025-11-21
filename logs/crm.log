@@ -15017,3 +15017,1048 @@ INFO 2025-11-21 11:29:23,396 views Profile updated for user: srijabiswas3001@gma
 INFO 2025-11-21 11:29:23,401 basehttp "POST /accounts/profile/ HTTP/1.1" 302 0
 INFO 2025-11-21 11:29:23,925 basehttp "GET /accounts/profile/ HTTP/1.1" 200 36700
 WARNING 2025-11-21 11:29:23,967 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
+INFO 2025-11-21 12:24:19,540 autoreload Watching for file changes with StatReloader
+INFO 2025-11-21 12:24:24,763 middleware Session expired for user: srijabiswas3001@gmail.com
+INFO 2025-11-21 12:24:24,770 basehttp "GET /accounts/profile/ HTTP/1.1" 302 0
+INFO 2025-11-21 12:24:24,794 basehttp "GET /accounts/login/ HTTP/1.1" 200 9690
+WARNING 2025-11-21 12:24:27,540 middleware Unauthorized access attempt to /favicon.ico from IP: 127.0.0.1
+INFO 2025-11-21 12:24:27,541 basehttp "GET /favicon.ico HTTP/1.1" 302 0
+INFO 2025-11-21 12:24:27,565 basehttp "GET /accounts/login/ HTTP/1.1" 200 7338
+WARNING 2025-11-21 12:24:46,504 views Failed login attempt for: srijabiswas3001@gmail.com from IP: 127.0.0.1
+INFO 2025-11-21 12:24:46,507 basehttp "POST /accounts/login/ HTTP/1.1" 200 7654
+WARNING 2025-11-21 12:24:47,023 middleware Unauthorized access attempt to /favicon.ico from IP: 127.0.0.1
+INFO 2025-11-21 12:24:47,024 basehttp "GET /favicon.ico HTTP/1.1" 302 0
+INFO 2025-11-21 12:24:47,041 basehttp "GET /accounts/login/ HTTP/1.1" 200 7338
+INFO 2025-11-21 12:24:59,886 views Successful login for user: srijabiswas3001@gmail.com from IP: 127.0.0.1
+INFO 2025-11-21 12:24:59,899 basehttp "POST /accounts/login/ HTTP/1.1" 302 0
+INFO 2025-11-21 12:25:00,255 basehttp "GET /dashboard/ HTTP/1.1" 200 21768
+INFO 2025-11-21 12:25:00,835 basehttp "GET /media/profile/EMPMK378939_srija-ai.jfif HTTP/1.1" 200 8803
+INFO 2025-11-21 12:25:01,180 basehttp "GET /media/logo.png HTTP/1.1" 200 1275213
+INFO 2025-11-21 12:25:02,221 basehttp "GET /marketing/dashboard/ HTTP/1.1" 200 28929
+INFO 2025-11-21 12:25:05,389 basehttp "GET /accounts/profile/ HTTP/1.1" 200 36670
+INFO 2025-11-21 12:25:21,288 views Profile updated for user: srijabiswas3001@gmail.com
+INFO 2025-11-21 12:25:21,293 basehttp "POST /accounts/profile/ HTTP/1.1" 302 0
+INFO 2025-11-21 12:25:21,886 basehttp "GET /accounts/profile/ HTTP/1.1" 200 36681
+INFO 2025-11-21 12:29:20,981 autoreload Watching for file changes with StatReloader
+INFO 2025-11-21 12:29:26,908 basehttp "GET /marketing/jobs/create/ HTTP/1.1" 200 50082
+INFO 2025-11-21 12:29:33,268 basehttp "GET /marketing/jobs/my-jobs/ HTTP/1.1" 200 23418
+INFO 2025-11-21 12:29:56,256 basehttp "GET /marketing/jobs/query/ HTTP/1.1" 200 20210
+INFO 2025-11-21 12:29:58,904 basehttp "GET /marketing/jobs/unallocated/ HTTP/1.1" 200 23456
+INFO 2025-11-21 12:30:01,515 basehttp "GET /marketing/jobs/completed/ HTTP/1.1" 200 20236
+INFO 2025-11-21 12:30:04,860 basehttp "GET /marketing/jobs/create/ HTTP/1.1" 200 50082
+INFO 2025-11-21 12:30:11,591 basehttp "GET /accounts/profile/ HTTP/1.1" 200 36681
+INFO 2025-11-21 12:30:17,439 basehttp "GET /marketing/jobs/create/ HTTP/1.1" 200 50082
+INFO 2025-11-21 12:31:25,536 autoreload C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\process\admin.py changed, reloading.
+INFO 2025-11-21 12:31:26,779 autoreload Watching for file changes with StatReloader
+INFO 2025-11-21 12:31:41,116 autoreload C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\process\models.py changed, reloading.
+INFO 2025-11-21 12:31:43,665 autoreload Watching for file changes with StatReloader
+INFO 2025-11-21 12:31:53,264 autoreload C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\process\views.py changed, reloading.
+INFO 2025-11-21 12:31:55,146 autoreload Watching for file changes with StatReloader
+ERROR 2025-11-21 12:32:51,865 views Error during logout for srijabiswas3001@gmail.com: 
+INFO 2025-11-21 12:32:51,873 basehttp "GET /accounts/logout/ HTTP/1.1" 302 0
+INFO 2025-11-21 12:32:51,899 basehttp "GET /accounts/login/ HTTP/1.1" 200 8244
+WARNING 2025-11-21 12:32:52,625 middleware Unauthorized access attempt to /favicon.ico from IP: 127.0.0.1
+INFO 2025-11-21 12:32:52,626 basehttp "GET /favicon.ico HTTP/1.1" 302 0
+INFO 2025-11-21 12:32:52,643 basehttp "GET /accounts/login/ HTTP/1.1" 200 7338
+INFO 2025-11-21 12:33:00,387 views Successful login for user: admin@gmail.com from IP: 127.0.0.1
+INFO 2025-11-21 12:33:00,400 basehttp "POST /accounts/login/ HTTP/1.1" 302 0
+INFO 2025-11-21 12:33:00,783 basehttp "GET /dashboard/ HTTP/1.1" 200 19179
+WARNING 2025-11-21 12:33:00,851 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
+INFO 2025-11-21 12:33:01,348 basehttp "GET /media/logo.png HTTP/1.1" 200 1275213
+INFO 2025-11-21 12:33:03,918 basehttp "GET /superadmin/dashboard/ HTTP/1.1" 200 24417
+WARNING 2025-11-21 12:33:03,963 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
+INFO 2025-11-21 12:33:07,824 basehttp "GET /superadmin/manage-users/ HTTP/1.1" 200 28518
+WARNING 2025-11-21 12:33:07,860 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
+ERROR 2025-11-21 12:33:11,965 log Internal Server Error: /superadmin/edit-user/2/
+Traceback (most recent call last):
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\core\handlers\exception.py", line 47, in inner
+    response = get_response(request)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\core\handlers\base.py", line 181, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\contrib\auth\decorators.py", line 21, in _wrapped_view
+    return view_func(request, *args, **kwargs)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\superadminpanel\views.py", line 41, in wrapper
+    return view_func(request, *args, **kwargs)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\superadminpanel\views.py", line 468, in edit_user
+    return render(request, 'edit_user.html', context)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\shortcuts.py", line 19, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\template\loader.py", line 61, in render_to_string
+    template = get_template(template_name, using=using)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\template\loader.py", line 15, in get_template
+    return engine.get_template(template_name)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\template\backends\django.py", line 34, in get_template
+    return Template(self.engine.get_template(template_name), self)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\template\engine.py", line 143, in get_template
+    template, origin = self.find_template(template_name)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\template\engine.py", line 125, in find_template
+    template = loader.get_template(name, skip=skip)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\template\loaders\base.py", line 29, in get_template
+    return Template(
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\template\base.py", line 155, in __init__
+    self.nodelist = self.compile_nodelist()
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\template\base.py", line 193, in compile_nodelist
+    return parser.parse()
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\template\base.py", line 479, in parse
+    self.extend_nodelist(nodelist, compiled_result, token)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\template\base.py", line 496, in extend_nodelist
+    raise self.error(
+django.template.exceptions.TemplateSyntaxError: <ExtendsNode: extends 'base.html'> must be the first tag in the template.
+ERROR 2025-11-21 12:33:11,969 basehttp "GET /superadmin/edit-user/2/ HTTP/1.1" 500 161223
+WARNING 2025-11-21 12:33:12,902 log Not Found: /favicon.ico
+WARNING 2025-11-21 12:33:12,903 basehttp "GET /favicon.ico HTTP/1.1" 404 3336
+INFO 2025-11-21 12:35:24,819 basehttp "GET /superadmin/manage-users/ HTTP/1.1" 200 33051
+WARNING 2025-11-21 12:35:24,952 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
+INFO 2025-11-21 12:35:27,443 basehttp "GET /superadmin/master-input/ HTTP/1.1" 200 25258
+WARNING 2025-11-21 12:35:27,481 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
+INFO 2025-11-21 12:35:30,855 basehttp "GET /superadmin/manage-users/ HTTP/1.1" 200 33051
+WARNING 2025-11-21 12:35:30,893 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
+ERROR 2025-11-21 12:35:33,194 log Internal Server Error: /superadmin/edit-user/2/
+Traceback (most recent call last):
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\core\handlers\exception.py", line 47, in inner
+    response = get_response(request)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\core\handlers\base.py", line 181, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\contrib\auth\decorators.py", line 21, in _wrapped_view
+    return view_func(request, *args, **kwargs)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\superadminpanel\views.py", line 41, in wrapper
+    return view_func(request, *args, **kwargs)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\superadminpanel\views.py", line 468, in edit_user
+    return render(request, 'edit_user.html', context)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\shortcuts.py", line 19, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\template\loader.py", line 61, in render_to_string
+    template = get_template(template_name, using=using)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\template\loader.py", line 15, in get_template
+    return engine.get_template(template_name)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\template\backends\django.py", line 34, in get_template
+    return Template(self.engine.get_template(template_name), self)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\template\engine.py", line 143, in get_template
+    template, origin = self.find_template(template_name)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\template\engine.py", line 125, in find_template
+    template = loader.get_template(name, skip=skip)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\template\loaders\base.py", line 29, in get_template
+    return Template(
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\template\base.py", line 155, in __init__
+    self.nodelist = self.compile_nodelist()
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\template\base.py", line 193, in compile_nodelist
+    return parser.parse()
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\template\base.py", line 479, in parse
+    self.extend_nodelist(nodelist, compiled_result, token)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\template\base.py", line 496, in extend_nodelist
+    raise self.error(
+django.template.exceptions.TemplateSyntaxError: <ExtendsNode: extends 'base.html'> must be the first tag in the template.
+ERROR 2025-11-21 12:35:33,196 basehttp "GET /superadmin/edit-user/2/ HTTP/1.1" 500 161223
+ERROR 2025-11-21 12:36:16,882 log Internal Server Error: /superadmin/edit-user/2/
+Traceback (most recent call last):
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\core\handlers\exception.py", line 47, in inner
+    response = get_response(request)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\core\handlers\base.py", line 181, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\contrib\auth\decorators.py", line 21, in _wrapped_view
+    return view_func(request, *args, **kwargs)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\superadminpanel\views.py", line 41, in wrapper
+    return view_func(request, *args, **kwargs)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\superadminpanel\views.py", line 468, in edit_user
+    return render(request, 'edit_user.html', context)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\shortcuts.py", line 19, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\template\loader.py", line 61, in render_to_string
+    template = get_template(template_name, using=using)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\template\loader.py", line 15, in get_template
+    return engine.get_template(template_name)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\template\backends\django.py", line 34, in get_template
+    return Template(self.engine.get_template(template_name), self)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\template\engine.py", line 143, in get_template
+    template, origin = self.find_template(template_name)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\template\engine.py", line 125, in find_template
+    template = loader.get_template(name, skip=skip)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\template\loaders\base.py", line 29, in get_template
+    return Template(
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\template\base.py", line 155, in __init__
+    self.nodelist = self.compile_nodelist()
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\template\base.py", line 193, in compile_nodelist
+    return parser.parse()
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\template\base.py", line 479, in parse
+    self.extend_nodelist(nodelist, compiled_result, token)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\template\base.py", line 496, in extend_nodelist
+    raise self.error(
+django.template.exceptions.TemplateSyntaxError: <ExtendsNode: extends 'base.html'> must be the first tag in the template.
+ERROR 2025-11-21 12:36:16,884 basehttp "GET /superadmin/edit-user/2/ HTTP/1.1" 500 161356
+INFO 2025-11-21 12:36:42,739 basehttp "GET /superadmin/edit-user/2/ HTTP/1.1" 200 10084
+ERROR 2025-11-21 12:37:08,363 log Internal Server Error: /superadmin/edit-user/2/
+Traceback (most recent call last):
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\core\handlers\exception.py", line 47, in inner
+    response = get_response(request)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\core\handlers\base.py", line 181, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\contrib\auth\decorators.py", line 21, in _wrapped_view
+    return view_func(request, *args, **kwargs)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\superadminpanel\views.py", line 41, in wrapper
+    return view_func(request, *args, **kwargs)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\superadminpanel\views.py", line 468, in edit_user
+    return render(request, 'edit_user.html', context)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\shortcuts.py", line 19, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\template\loader.py", line 61, in render_to_string
+    template = get_template(template_name, using=using)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\template\loader.py", line 15, in get_template
+    return engine.get_template(template_name)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\template\backends\django.py", line 34, in get_template
+    return Template(self.engine.get_template(template_name), self)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\template\engine.py", line 143, in get_template
+    template, origin = self.find_template(template_name)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\template\engine.py", line 125, in find_template
+    template = loader.get_template(name, skip=skip)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\template\loaders\base.py", line 29, in get_template
+    return Template(
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\template\base.py", line 155, in __init__
+    self.nodelist = self.compile_nodelist()
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\template\base.py", line 193, in compile_nodelist
+    return parser.parse()
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\template\base.py", line 479, in parse
+    self.extend_nodelist(nodelist, compiled_result, token)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\template\base.py", line 496, in extend_nodelist
+    raise self.error(
+django.template.exceptions.TemplateSyntaxError: <ExtendsNode: extends 'base.html'> must be the first tag in the template.
+ERROR 2025-11-21 12:37:08,365 basehttp "GET /superadmin/edit-user/2/ HTTP/1.1" 500 161360
+ERROR 2025-11-21 12:37:15,434 log Internal Server Error: /superadmin/edit-user/2/
+Traceback (most recent call last):
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\core\handlers\exception.py", line 47, in inner
+    response = get_response(request)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\core\handlers\base.py", line 181, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\contrib\auth\decorators.py", line 21, in _wrapped_view
+    return view_func(request, *args, **kwargs)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\superadminpanel\views.py", line 41, in wrapper
+    return view_func(request, *args, **kwargs)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\superadminpanel\views.py", line 468, in edit_user
+    return render(request, 'edit_user.html', context)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\shortcuts.py", line 19, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\template\loader.py", line 61, in render_to_string
+    template = get_template(template_name, using=using)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\template\loader.py", line 15, in get_template
+    return engine.get_template(template_name)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\template\backends\django.py", line 34, in get_template
+    return Template(self.engine.get_template(template_name), self)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\template\engine.py", line 143, in get_template
+    template, origin = self.find_template(template_name)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\template\engine.py", line 125, in find_template
+    template = loader.get_template(name, skip=skip)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\template\loaders\base.py", line 29, in get_template
+    return Template(
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\template\base.py", line 155, in __init__
+    self.nodelist = self.compile_nodelist()
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\template\base.py", line 193, in compile_nodelist
+    return parser.parse()
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\template\base.py", line 479, in parse
+    self.extend_nodelist(nodelist, compiled_result, token)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\template\base.py", line 496, in extend_nodelist
+    raise self.error(
+django.template.exceptions.TemplateSyntaxError: <ExtendsNode: extends 'base.html'> must be the first tag in the template.
+ERROR 2025-11-21 12:37:15,436 basehttp "GET /superadmin/edit-user/2/ HTTP/1.1" 500 161488
+WARNING 2025-11-21 12:37:16,081 log Not Found: /favicon.ico
+WARNING 2025-11-21 12:37:16,082 basehttp "GET /favicon.ico HTTP/1.1" 404 3336
+INFO 2025-11-21 12:37:18,155 basehttp "GET /superadmin/manage-users/ HTTP/1.1" 200 33051
+INFO 2025-11-21 12:37:18,199 basehttp "GET /static/css/base.css HTTP/1.1" 200 26393
+WARNING 2025-11-21 12:37:18,204 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
+INFO 2025-11-21 12:37:18,619 basehttp "GET /media/logo.png HTTP/1.1" 200 1275213
+INFO 2025-11-21 12:37:19,131 basehttp "GET /media/logo.png HTTP/1.1" 200 1275213
+ERROR 2025-11-21 12:37:20,042 log Internal Server Error: /superadmin/edit-user/2/
+Traceback (most recent call last):
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\core\handlers\exception.py", line 47, in inner
+    response = get_response(request)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\core\handlers\base.py", line 181, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\contrib\auth\decorators.py", line 21, in _wrapped_view
+    return view_func(request, *args, **kwargs)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\superadminpanel\views.py", line 41, in wrapper
+    return view_func(request, *args, **kwargs)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\superadminpanel\views.py", line 468, in edit_user
+    return render(request, 'edit_user.html', context)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\shortcuts.py", line 19, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\template\loader.py", line 61, in render_to_string
+    template = get_template(template_name, using=using)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\template\loader.py", line 15, in get_template
+    return engine.get_template(template_name)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\template\backends\django.py", line 34, in get_template
+    return Template(self.engine.get_template(template_name), self)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\template\engine.py", line 143, in get_template
+    template, origin = self.find_template(template_name)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\template\engine.py", line 125, in find_template
+    template = loader.get_template(name, skip=skip)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\template\loaders\base.py", line 29, in get_template
+    return Template(
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\template\base.py", line 155, in __init__
+    self.nodelist = self.compile_nodelist()
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\template\base.py", line 193, in compile_nodelist
+    return parser.parse()
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\template\base.py", line 479, in parse
+    self.extend_nodelist(nodelist, compiled_result, token)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\template\base.py", line 496, in extend_nodelist
+    raise self.error(
+django.template.exceptions.TemplateSyntaxError: <ExtendsNode: extends 'base.html'> must be the first tag in the template.
+ERROR 2025-11-21 12:37:20,044 basehttp "GET /superadmin/edit-user/2/ HTTP/1.1" 500 161223
+WARNING 2025-11-21 12:37:20,872 log Not Found: /favicon.ico
+WARNING 2025-11-21 12:37:20,872 basehttp "GET /favicon.ico HTTP/1.1" 404 3336
+INFO 2025-11-21 12:37:40,525 basehttp "GET /superadmin/edit-user/2/ HTTP/1.1" 200 26730
+WARNING 2025-11-21 12:37:40,565 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
+INFO 2025-11-21 12:38:06,090 basehttp "GET /superadmin/edit-user/2/ HTTP/1.1" 200 29067
+WARNING 2025-11-21 12:38:06,129 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
+INFO 2025-11-21 12:38:16,788 basehttp "POST /superadmin/edit-user/2/ HTTP/1.1" 302 0
+INFO 2025-11-21 12:38:17,327 basehttp "GET /superadmin/manage-users/ HTTP/1.1" 200 33052
+WARNING 2025-11-21 12:38:17,379 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
+INFO 2025-11-21 12:38:17,802 basehttp "GET /media/logo.png HTTP/1.1" 200 1275213
+INFO 2025-11-21 12:38:28,322 basehttp "POST /superadmin/update-role/2/ HTTP/1.1" 302 0
+INFO 2025-11-21 12:38:28,845 basehttp "GET /superadmin/manage-users/ HTTP/1.1" 200 33046
+WARNING 2025-11-21 12:38:28,888 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
+INFO 2025-11-21 12:38:31,756 basehttp "POST /superadmin/update-role/2/ HTTP/1.1" 302 0
+INFO 2025-11-21 12:38:32,298 basehttp "GET /superadmin/manage-users/ HTTP/1.1" 200 33052
+WARNING 2025-11-21 12:38:32,337 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
+INFO 2025-11-21 12:38:37,467 basehttp "GET /superadmin/manage-users/ HTTP/1.1" 200 33052
+INFO 2025-11-21 12:38:37,513 basehttp "GET /static/css/base.css HTTP/1.1" 200 26393
+WARNING 2025-11-21 12:38:37,516 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
+INFO 2025-11-21 12:38:37,939 basehttp "GET /media/logo.png HTTP/1.1" 200 1275213
+INFO 2025-11-21 12:38:38,453 basehttp "GET /media/logo.png HTTP/1.1" 200 1275213
+INFO 2025-11-21 12:40:48,035 autoreload C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\superadminpanel\urls.py changed, reloading.
+INFO 2025-11-21 12:40:49,735 autoreload Watching for file changes with StatReloader
+INFO 2025-11-21 12:42:49,307 autoreload C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\superadminpanel\views.py changed, reloading.
+INFO 2025-11-21 12:42:51,491 autoreload Watching for file changes with StatReloader
+INFO 2025-11-21 12:42:57,957 autoreload C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\superadminpanel\views.py changed, reloading.
+INFO 2025-11-21 12:42:59,844 autoreload Watching for file changes with StatReloader
+INFO 2025-11-21 12:43:17,594 autoreload C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\superadminpanel\views.py changed, reloading.
+INFO 2025-11-21 12:43:19,224 autoreload Watching for file changes with StatReloader
+ERROR 2025-11-21 12:46:47,741 views Error during logout for admin@gmail.com: 
+INFO 2025-11-21 12:46:47,751 basehttp "GET /accounts/logout/ HTTP/1.1" 302 0
+INFO 2025-11-21 12:46:47,773 basehttp "GET /accounts/login/ HTTP/1.1" 200 8861
+WARNING 2025-11-21 12:46:48,843 middleware Unauthorized access attempt to /favicon.ico from IP: 127.0.0.1
+INFO 2025-11-21 12:46:48,844 basehttp "GET /favicon.ico HTTP/1.1" 302 0
+INFO 2025-11-21 12:46:48,850 basehttp "GET /accounts/login/ HTTP/1.1" 200 7338
+INFO 2025-11-21 12:47:03,738 views Successful login for user: srijabiswas3001@gmail.com from IP: 127.0.0.1
+INFO 2025-11-21 12:47:03,749 basehttp "POST /accounts/login/ HTTP/1.1" 302 0
+INFO 2025-11-21 12:47:04,149 basehttp "GET /dashboard/ HTTP/1.1" 200 26315
+INFO 2025-11-21 12:47:04,758 basehttp "GET /media/profile/EMPMK378939_srija-ai.jfif HTTP/1.1" 200 8803
+INFO 2025-11-21 12:47:04,761 basehttp "GET /media/logo.png HTTP/1.1" 200 1275213
+INFO 2025-11-21 12:47:06,078 basehttp "GET /marketing/dashboard/ HTTP/1.1" 200 33472
+INFO 2025-11-21 12:47:30,999 basehttp "GET /marketing/jobs/my-jobs/ HTTP/1.1" 200 27952
+INFO 2025-11-21 12:47:38,277 basehttp "GET /marketing/jobs/create/ HTTP/1.1" 200 54616
+INFO 2025-11-21 12:48:06,982 basehttp "POST /marketing/jobs/check-job-id/ HTTP/1.1" 200 50
+INFO 2025-11-21 12:48:08,440 basehttp "POST /marketing/jobs/check-job-id/ HTTP/1.1" 200 50
+INFO 2025-11-21 12:54:02,393 basehttp "GET /marketing/jobs/create/ HTTP/1.1" 200 54616
+INFO 2025-11-21 12:54:02,449 basehttp "GET /static/css/base.css HTTP/1.1" 200 26393
+INFO 2025-11-21 12:54:02,851 basehttp "GET /media/profile/EMPMK378939_srija-ai.jfif HTTP/1.1" 200 8803
+INFO 2025-11-21 12:54:02,858 basehttp "GET /media/logo.png HTTP/1.1" 200 1275213
+INFO 2025-11-21 12:54:04,999 basehttp "GET /media/logo.png HTTP/1.1" 200 1275213
+INFO 2025-11-21 12:54:10,709 basehttp "GET /marketing/jobs/my-jobs/ HTTP/1.1" 200 27952
+INFO 2025-11-21 12:54:10,765 basehttp "GET /static/css/base.css HTTP/1.1" 200 26393
+INFO 2025-11-21 12:54:11,181 basehttp "GET /media/profile/EMPMK378939_srija-ai.jfif HTTP/1.1" 200 8803
+INFO 2025-11-21 12:54:11,188 basehttp "GET /media/logo.png HTTP/1.1" 200 1275213
+INFO 2025-11-21 12:54:11,678 basehttp "GET /media/logo.png HTTP/1.1" 200 1275213
+INFO 2025-11-21 12:54:13,161 basehttp "GET /dashboard/ HTTP/1.1" 200 26315
+INFO 2025-11-21 12:54:15,553 basehttp "GET /marketing/dashboard/ HTTP/1.1" 200 33472
+INFO 2025-11-21 12:54:20,589 basehttp "GET /marketing/jobs/create/ HTTP/1.1" 200 54616
+INFO 2025-11-21 12:54:23,078 basehttp "POST /marketing/jobs/check-job-id/ HTTP/1.1" 200 50
+INFO 2025-11-21 12:54:23,674 basehttp "POST /marketing/jobs/check-job-id/ HTTP/1.1" 200 50
+INFO 2025-11-21 12:54:24,969 basehttp "POST /marketing/jobs/check-job-id/ HTTP/1.1" 200 50
+INFO 2025-11-21 12:54:26,051 basehttp "POST /marketing/jobs/check-job-id/ HTTP/1.1" 200 50
+INFO 2025-11-21 12:54:46,992 basehttp "POST /marketing/jobs/save-initial/ HTTP/1.1" 200 116
+ERROR 2025-11-21 12:54:49,382 log Internal Server Error: /marketing/jobs/generate-summary/
+ERROR 2025-11-21 12:54:49,382 basehttp "POST /marketing/jobs/generate-summary/ HTTP/1.1" 500 287
+INFO 2025-11-21 12:55:23,646 basehttp "POST /marketing/jobs/save-initial/ HTTP/1.1" 200 116
+ERROR 2025-11-21 12:55:24,550 log Internal Server Error: /marketing/jobs/generate-summary/
+ERROR 2025-11-21 12:55:24,550 basehttp "POST /marketing/jobs/generate-summary/ HTTP/1.1" 500 287
+INFO 2025-11-21 12:55:27,664 basehttp "POST /marketing/jobs/save-initial/ HTTP/1.1" 200 116
+INFO 2025-11-21 12:55:31,211 basehttp "GET /marketing/dashboard/ HTTP/1.1" 200 35770
+INFO 2025-11-21 12:55:34,390 basehttp "GET /marketing/jobs/create/?job_id=CH-1763709886722 HTTP/1.1" 200 55344
+INFO 2025-11-21 12:55:40,960 basehttp "POST /marketing/jobs/save-initial/ HTTP/1.1" 200 116
+ERROR 2025-11-21 12:55:41,882 log Internal Server Error: /marketing/jobs/generate-summary/
+ERROR 2025-11-21 12:55:41,883 basehttp "POST /marketing/jobs/generate-summary/ HTTP/1.1" 500 287
+INFO 2025-11-21 12:56:02,370 basehttp "GET /marketing/jobs/create/?job_id=CH-1763709886722 HTTP/1.1" 200 55344
+INFO 2025-11-21 12:56:02,407 basehttp "GET /static/css/base.css HTTP/1.1" 200 26393
+INFO 2025-11-21 12:56:02,875 basehttp "GET /media/profile/EMPMK378939_srija-ai.jfif HTTP/1.1" 200 8803
+INFO 2025-11-21 12:56:02,884 basehttp "GET /media/logo.png HTTP/1.1" 200 1275213
+INFO 2025-11-21 12:56:03,383 basehttp "GET /media/logo.png HTTP/1.1" 200 1275213
+INFO 2025-11-21 12:56:08,222 basehttp "POST /marketing/jobs/save-initial/ HTTP/1.1" 200 116
+ERROR 2025-11-21 12:56:09,172 log Internal Server Error: /marketing/jobs/generate-summary/
+ERROR 2025-11-21 12:56:09,172 basehttp "POST /marketing/jobs/generate-summary/ HTTP/1.1" 500 287
+INFO 2025-11-21 12:56:17,665 autoreload Watching for file changes with StatReloader
+INFO 2025-11-21 12:56:28,691 basehttp "GET /marketing/jobs/create/?job_id=CH-1763709886722 HTTP/1.1" 200 55344
+INFO 2025-11-21 12:56:28,826 basehttp "GET /static/css/base.css HTTP/1.1" 200 26393
+INFO 2025-11-21 12:56:29,089 basehttp "GET /media/profile/EMPMK378939_srija-ai.jfif HTTP/1.1" 200 8803
+INFO 2025-11-21 12:56:29,096 basehttp "GET /media/logo.png HTTP/1.1" 200 1275213
+INFO 2025-11-21 12:56:29,595 basehttp "GET /media/logo.png HTTP/1.1" 200 1275213
+INFO 2025-11-21 12:56:34,251 basehttp "POST /marketing/jobs/save-initial/ HTTP/1.1" 200 116
+INFO 2025-11-21 12:56:42,882 basehttp "POST /marketing/jobs/generate-summary/ HTTP/1.1" 200 1824
+INFO 2025-11-21 12:56:43,292 basehttp "GET /marketing/jobs/summary-versions/CH-1763709886722/ HTTP/1.1" 200 1784
+INFO 2025-11-21 12:57:45,921 basehttp "POST /marketing/jobs/accept-summary/ HTTP/1.1" 200 93
+INFO 2025-11-21 12:57:47,637 basehttp "GET /marketing/dashboard/ HTTP/1.1" 200 35544
+WARNING 2025-11-21 12:57:58,841 log Not Found: /marketing/jobs/create/
+WARNING 2025-11-21 12:57:58,842 basehttp "GET /marketing/jobs/create/?job_id=CH-1763709886722 HTTP/1.1" 404 1779
+WARNING 2025-11-21 12:57:59,542 log Not Found: /favicon.ico
+WARNING 2025-11-21 12:57:59,542 basehttp "GET /favicon.ico HTTP/1.1" 404 3336
+INFO 2025-11-21 12:59:56,269 autoreload C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\superadminpanel\views.py changed, reloading.
+INFO 2025-11-21 12:59:59,634 autoreload Watching for file changes with StatReloader
+INFO 2025-11-21 13:00:15,038 autoreload C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\superadminpanel\views.py changed, reloading.
+INFO 2025-11-21 13:00:17,439 autoreload Watching for file changes with StatReloader
+INFO 2025-11-21 13:00:25,430 autoreload C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\superadminpanel\views.py changed, reloading.
+INFO 2025-11-21 13:00:28,362 autoreload Watching for file changes with StatReloader
+INFO 2025-11-21 13:00:32,187 autoreload C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\superadminpanel\views.py changed, reloading.
+INFO 2025-11-21 13:00:33,311 autoreload Watching for file changes with StatReloader
+INFO 2025-11-21 13:00:40,450 basehttp "GET /marketing/dashboard/ HTTP/1.1" 200 35544
+INFO 2025-11-21 13:00:40,661 basehttp "GET /static/css/base.css HTTP/1.1" 200 26393
+INFO 2025-11-21 13:00:40,707 basehttp "GET /media/profile/EMPMK378939_srija-ai.jfif HTTP/1.1" 200 8803
+INFO 2025-11-21 13:00:40,719 basehttp "GET /media/logo.png HTTP/1.1" 200 1275213
+INFO 2025-11-21 13:00:41,194 basehttp "GET /media/logo.png HTTP/1.1" 200 1275213
+ERROR 2025-11-21 13:00:43,282 views Error during logout for srijabiswas3001@gmail.com: 
+INFO 2025-11-21 13:00:43,289 basehttp "GET /accounts/logout/ HTTP/1.1" 302 0
+INFO 2025-11-21 13:00:43,300 basehttp "GET /accounts/login/ HTTP/1.1" 200 7957
+WARNING 2025-11-21 13:00:44,373 middleware Unauthorized access attempt to /favicon.ico from IP: 127.0.0.1
+INFO 2025-11-21 13:00:44,374 basehttp "GET /favicon.ico HTTP/1.1" 302 0
+INFO 2025-11-21 13:00:44,393 basehttp "GET /accounts/login/ HTTP/1.1" 200 7338
+WARNING 2025-11-21 13:00:53,484 views Failed login attempt for: admin@gmail.com from IP: 127.0.0.1
+INFO 2025-11-21 13:00:53,487 basehttp "POST /accounts/login/ HTTP/1.1" 200 7654
+WARNING 2025-11-21 13:00:54,007 middleware Unauthorized access attempt to /favicon.ico from IP: 127.0.0.1
+INFO 2025-11-21 13:00:54,007 basehttp "GET /favicon.ico HTTP/1.1" 302 0
+INFO 2025-11-21 13:00:54,025 basehttp "GET /accounts/login/ HTTP/1.1" 200 7338
+INFO 2025-11-21 13:01:00,542 views Successful login for user: admin@gmail.com from IP: 127.0.0.1
+INFO 2025-11-21 13:01:00,553 basehttp "POST /accounts/login/ HTTP/1.1" 302 0
+INFO 2025-11-21 13:01:00,874 basehttp "GET /dashboard/ HTTP/1.1" 200 23712
+WARNING 2025-11-21 13:01:00,954 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
+INFO 2025-11-21 13:01:01,393 basehttp "GET /media/logo.png HTTP/1.1" 200 1275213
+ERROR 2025-11-21 13:01:03,920 log Internal Server Error: /superadmin/dashboard/
+Traceback (most recent call last):
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\core\handlers\exception.py", line 47, in inner
+    response = get_response(request)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\core\handlers\base.py", line 181, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\contrib\auth\decorators.py", line 21, in _wrapped_view
+    return view_func(request, *args, **kwargs)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\superadminpanel\views.py", line 30, in wrapper
+    return view_func(request, *args, **kwargs)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\superadminpanel\views.py", line 42, in superadmin_dashboard
+    context = portal_services.get_dashboard_context()
+AttributeError: module 'superadminpanel.services' has no attribute 'get_dashboard_context'
+ERROR 2025-11-21 13:01:03,921 basehttp "GET /superadmin/dashboard/ HTTP/1.1" 500 91568
+WARNING 2025-11-21 13:01:04,690 log Not Found: /favicon.ico
+WARNING 2025-11-21 13:01:04,690 basehttp "GET /favicon.ico HTTP/1.1" 404 3336
+ERROR 2025-11-21 13:01:29,472 log Internal Server Error: /superadmin/dashboard/
+Traceback (most recent call last):
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\core\handlers\exception.py", line 47, in inner
+    response = get_response(request)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\core\handlers\base.py", line 181, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\contrib\auth\decorators.py", line 21, in _wrapped_view
+    return view_func(request, *args, **kwargs)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\superadminpanel\views.py", line 30, in wrapper
+    return view_func(request, *args, **kwargs)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\superadminpanel\views.py", line 42, in superadmin_dashboard
+    context = portal_services.get_dashboard_context()
+AttributeError: module 'superadminpanel.services' has no attribute 'get_dashboard_context'
+ERROR 2025-11-21 13:01:29,473 basehttp "GET /superadmin/dashboard/ HTTP/1.1" 500 91705
+ERROR 2025-11-21 13:03:28,218 log Internal Server Error: /superadmin/dashboard/
+Traceback (most recent call last):
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\core\handlers\exception.py", line 47, in inner
+    response = get_response(request)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\core\handlers\base.py", line 181, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\contrib\auth\decorators.py", line 21, in _wrapped_view
+    return view_func(request, *args, **kwargs)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\superadminpanel\views.py", line 30, in wrapper
+    return view_func(request, *args, **kwargs)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\superadminpanel\views.py", line 42, in superadmin_dashboard
+    context = portal_services.get_dashboard_context()
+AttributeError: module 'superadminpanel.services' has no attribute 'get_dashboard_context'
+ERROR 2025-11-21 13:03:28,219 basehttp "GET /superadmin/dashboard/ HTTP/1.1" 500 91833
+WARNING 2025-11-21 13:03:28,885 log Not Found: /favicon.ico
+WARNING 2025-11-21 13:03:28,885 basehttp "GET /favicon.ico HTTP/1.1" 404 3336
+INFO 2025-11-21 13:03:46,015 autoreload Watching for file changes with StatReloader
+ERROR 2025-11-21 13:03:47,829 log Internal Server Error: /superadmin/dashboard/
+Traceback (most recent call last):
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\core\handlers\exception.py", line 47, in inner
+    response = get_response(request)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\core\handlers\base.py", line 181, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\contrib\auth\decorators.py", line 21, in _wrapped_view
+    return view_func(request, *args, **kwargs)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\superadminpanel\views.py", line 30, in wrapper
+    return view_func(request, *args, **kwargs)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\superadminpanel\views.py", line 42, in superadmin_dashboard
+    context = portal_services.get_dashboard_context()
+AttributeError: module 'superadminpanel.services' has no attribute 'get_dashboard_context'
+ERROR 2025-11-21 13:03:47,832 basehttp "GET /superadmin/dashboard/ HTTP/1.1" 500 91705
+INFO 2025-11-21 13:03:52,882 basehttp "GET /dashboard/ HTTP/1.1" 200 23712
+WARNING 2025-11-21 13:03:52,917 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
+ERROR 2025-11-21 13:03:54,380 log Internal Server Error: /superadmin/dashboard/
+Traceback (most recent call last):
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\core\handlers\exception.py", line 47, in inner
+    response = get_response(request)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\core\handlers\base.py", line 181, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\contrib\auth\decorators.py", line 21, in _wrapped_view
+    return view_func(request, *args, **kwargs)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\superadminpanel\views.py", line 30, in wrapper
+    return view_func(request, *args, **kwargs)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\superadminpanel\views.py", line 42, in superadmin_dashboard
+    context = portal_services.get_dashboard_context()
+AttributeError: module 'superadminpanel.services' has no attribute 'get_dashboard_context'
+ERROR 2025-11-21 13:03:54,381 basehttp "GET /superadmin/dashboard/ HTTP/1.1" 500 91568
+INFO 2025-11-21 13:08:51,368 autoreload C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\superadminpanel\views.py changed, reloading.
+INFO 2025-11-21 13:08:52,662 autoreload Watching for file changes with StatReloader
+INFO 2025-11-21 13:09:40,130 autoreload C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\superadminpanel\views.py changed, reloading.
+INFO 2025-11-21 13:09:41,311 autoreload Watching for file changes with StatReloader
+INFO 2025-11-21 13:09:44,938 basehttp "GET /superadmin/dashboard/ HTTP/1.1" 200 28950
+WARNING 2025-11-21 13:09:44,988 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
+INFO 2025-11-21 13:09:49,557 basehttp "GET /superadmin/manage-users/ HTTP/1.1" 200 33052
+WARNING 2025-11-21 13:09:49,594 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
+INFO 2025-11-21 13:09:52,239 basehttp "GET /superadmin/edit-user/2/ HTTP/1.1" 200 29069
+WARNING 2025-11-21 13:09:52,273 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
+INFO 2025-11-21 13:10:00,963 basehttp "GET /superadmin/master-input/ HTTP/1.1" 200 25258
+WARNING 2025-11-21 13:10:01,000 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
+INFO 2025-11-21 13:10:05,323 basehttp "GET /superadmin/manage-users/ HTTP/1.1" 200 33052
+WARNING 2025-11-21 13:10:05,364 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
+INFO 2025-11-21 13:10:21,693 basehttp "GET /superadmin/pending/ HTTP/1.1" 200 21411
+WARNING 2025-11-21 13:10:21,731 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
+INFO 2025-11-21 13:11:09,570 basehttp "GET /superadmin/pending/ HTTP/1.1" 200 22911
+WARNING 2025-11-21 13:11:09,618 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
+INFO 2025-11-21 13:11:15,128 basehttp "GET /superadmin/manage-users/ HTTP/1.1" 200 36419
+WARNING 2025-11-21 13:11:15,164 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
+INFO 2025-11-21 13:11:28,345 basehttp "POST /superadmin/update-role/2/ HTTP/1.1" 302 0
+INFO 2025-11-21 13:11:28,875 basehttp "GET /superadmin/manage-users/ HTTP/1.1" 200 36413
+WARNING 2025-11-21 13:11:28,921 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
+INFO 2025-11-21 13:11:32,420 basehttp "POST /superadmin/update-category/2/ HTTP/1.1" 302 0
+INFO 2025-11-21 13:11:32,951 basehttp "GET /superadmin/manage-users/ HTTP/1.1" 200 36421
+WARNING 2025-11-21 13:11:32,994 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
+INFO 2025-11-21 13:11:35,483 basehttp "GET /superadmin/edit-user/2/ HTTP/1.1" 200 29077
+WARNING 2025-11-21 13:11:35,527 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
+INFO 2025-11-21 13:11:55,175 basehttp "POST /superadmin/edit-user/2/ HTTP/1.1" 302 0
+INFO 2025-11-21 13:11:55,694 basehttp "GET /superadmin/manage-users/ HTTP/1.1" 200 36421
+WARNING 2025-11-21 13:11:55,738 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
+INFO 2025-11-21 13:12:00,356 basehttp "GET /superadmin/edit-user/2/ HTTP/1.1" 200 29096
+WARNING 2025-11-21 13:12:00,398 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
+INFO 2025-11-21 13:12:06,928 basehttp "POST /superadmin/edit-user/2/ HTTP/1.1" 302 0
+INFO 2025-11-21 13:12:07,476 basehttp "GET /superadmin/manage-users/ HTTP/1.1" 200 36421
+WARNING 2025-11-21 13:12:07,515 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
+INFO 2025-11-21 13:12:11,640 basehttp "POST /superadmin/update-role/2/ HTTP/1.1" 302 0
+INFO 2025-11-21 13:12:12,171 basehttp "GET /superadmin/manage-users/ HTTP/1.1" 200 36427
+WARNING 2025-11-21 13:12:12,217 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
+ERROR 2025-11-21 13:12:32,721 views Error during logout for admin@gmail.com: 
+INFO 2025-11-21 13:12:32,728 basehttp "GET /accounts/logout/ HTTP/1.1" 302 0
+INFO 2025-11-21 13:12:32,738 basehttp "GET /accounts/login/ HTTP/1.1" 200 9454
+INFO 2025-11-21 13:12:47,164 views Successful login for user: srijabiswas3001@gmail.com from IP: 127.0.0.1
+INFO 2025-11-21 13:12:47,175 basehttp "POST /accounts/login/ HTTP/1.1" 302 0
+INFO 2025-11-21 13:12:47,498 basehttp "GET /dashboard/ HTTP/1.1" 200 26315
+INFO 2025-11-21 13:12:48,144 basehttp "GET /media/profile/EMPMK378939_srija-ai.jfif HTTP/1.1" 200 8803
+INFO 2025-11-21 13:12:49,438 basehttp "GET /marketing/dashboard/ HTTP/1.1" 200 35544
+INFO 2025-11-21 13:12:52,768 basehttp "GET /accounts/profile/ HTTP/1.1" 200 41217
+INFO 2025-11-21 13:13:07,647 basehttp "POST /accounts/profile/ HTTP/1.1" 302 0
+INFO 2025-11-21 13:13:08,148 basehttp "GET /accounts/profile/ HTTP/1.1" 200 41478
+ERROR 2025-11-21 13:13:12,484 views Error during logout for srijabiswas3001@gmail.com: 
+INFO 2025-11-21 13:13:12,492 basehttp "GET /accounts/logout/ HTTP/1.1" 302 0
+INFO 2025-11-21 13:13:12,501 basehttp "GET /accounts/login/ HTTP/1.1" 200 8272
+INFO 2025-11-21 13:13:22,426 views Successful login for user: admin@gmail.com from IP: 127.0.0.1
+INFO 2025-11-21 13:13:22,438 basehttp "POST /accounts/login/ HTTP/1.1" 302 0
+INFO 2025-11-21 13:13:22,737 basehttp "GET /dashboard/ HTTP/1.1" 200 23712
+WARNING 2025-11-21 13:13:22,775 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
+INFO 2025-11-21 13:13:26,162 basehttp "GET /superadmin/dashboard/ HTTP/1.1" 200 28950
+WARNING 2025-11-21 13:13:26,206 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
+ERROR 2025-11-21 13:13:30,037 log Internal Server Error: /superadmin/pending/
+Traceback (most recent call last):
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\core\handlers\exception.py", line 47, in inner
+    response = get_response(request)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\core\handlers\base.py", line 181, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\contrib\auth\decorators.py", line 21, in _wrapped_view
+    return view_func(request, *args, **kwargs)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\superadminpanel\views.py", line 30, in wrapper
+    return view_func(request, *args, **kwargs)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\superadminpanel\views.py", line 115, in pending_items
+    return render(request, 'pending_items.html', context)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\shortcuts.py", line 19, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\template\loader.py", line 62, in render_to_string
+    return template.render(context, request)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\template\backends\django.py", line 61, in render
+    return self.template.render(context)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\template\base.py", line 170, in render
+    return self._render(context)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\template\base.py", line 162, in _render
+    return self.nodelist.render(context)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\template\base.py", line 938, in render
+    bit = node.render_annotated(context)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\template\base.py", line 905, in render_annotated
+    return self.render(context)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\template\loader_tags.py", line 150, in render
+    return compiled_parent._render(context)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\template\base.py", line 162, in _render
+    return self.nodelist.render(context)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\template\base.py", line 938, in render
+    bit = node.render_annotated(context)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\template\base.py", line 905, in render_annotated
+    return self.render(context)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\template\loader_tags.py", line 62, in render
+    result = block.nodelist.render(context)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\template\base.py", line 938, in render
+    bit = node.render_annotated(context)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\template\base.py", line 905, in render_annotated
+    return self.render(context)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\template\defaulttags.py", line 312, in render
+    return nodelist.render(context)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\template\base.py", line 938, in render
+    bit = node.render_annotated(context)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\template\base.py", line 905, in render_annotated
+    return self.render(context)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\template\defaulttags.py", line 211, in render
+    nodelist.append(node.render_annotated(context))
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\template\base.py", line 905, in render_annotated
+    return self.render(context)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\template\defaulttags.py", line 446, in render
+    url = reverse(view_name, args=args, kwargs=kwargs, current_app=current_app)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\urls\base.py", line 87, in reverse
+    return iri_to_uri(resolver._reverse_with_prefix(view, prefix, *args, **kwargs))
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\urls\resolvers.py", line 685, in _reverse_with_prefix
+    raise NoReverseMatch(msg)
+django.urls.exceptions.NoReverseMatch: Reverse for 'approve_profile_request' not found. 'approve_profile_request' is not a valid view function or pattern name.
+ERROR 2025-11-21 13:13:30,041 basehttp "GET /superadmin/pending/ HTTP/1.1" 500 218356
+INFO 2025-11-21 13:17:32,653 autoreload C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\superadminpanel\urls.py changed, reloading.
+INFO 2025-11-21 13:17:33,968 autoreload Watching for file changes with StatReloader
+INFO 2025-11-21 13:17:36,816 basehttp "GET /superadmin/pending/ HTTP/1.1" 200 25266
+WARNING 2025-11-21 13:17:36,881 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
+INFO 2025-11-21 13:17:42,220 basehttp "GET /superadmin/pending/ HTTP/1.1" 200 25266
+WARNING 2025-11-21 13:17:42,254 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
+INFO 2025-11-21 13:17:42,928 basehttp "GET /media/logo.png HTTP/1.1" 200 1275213
+INFO 2025-11-21 13:17:49,459 basehttp "POST /superadmin/profile-request/1/approve/ HTTP/1.1" 302 0
+INFO 2025-11-21 13:17:50,016 basehttp "GET /superadmin/pending/ HTTP/1.1" 200 24564
+WARNING 2025-11-21 13:17:50,067 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
+INFO 2025-11-21 13:17:50,436 basehttp "GET /media/logo.png HTTP/1.1" 200 1275213
+WARNING 2025-11-21 13:18:01,536 middleware Unauthorized access attempt to / from IP: 127.0.0.1
+INFO 2025-11-21 13:18:01,537 basehttp "GET / HTTP/1.1" 302 0
+INFO 2025-11-21 13:18:01,544 basehttp "GET /accounts/login/ HTTP/1.1" 200 7338
+INFO 2025-11-21 13:18:01,576 basehttp "GET /static/css/base.css HTTP/1.1" 200 26393
+INFO 2025-11-21 13:18:01,582 basehttp "GET /static/css/style.css HTTP/1.1" 200 6856
+INFO 2025-11-21 13:18:11,472 views Successful login for user: srijabiswas3001@gmail.com from IP: 127.0.0.1
+INFO 2025-11-21 13:18:11,483 basehttp "POST /accounts/login/ HTTP/1.1" 302 0
+INFO 2025-11-21 13:18:11,793 basehttp "GET /dashboard/ HTTP/1.1" 200 26315
+INFO 2025-11-21 13:18:12,309 basehttp "GET /media/profile/EMPMK378939_srija-ai.jfif HTTP/1.1" 200 8803
+INFO 2025-11-21 13:18:12,316 basehttp "GET /media/logo.png HTTP/1.1" 200 1275213
+INFO 2025-11-21 13:18:13,267 basehttp "GET /marketing/dashboard/ HTTP/1.1" 200 35544
+INFO 2025-11-21 13:18:16,881 basehttp "GET /accounts/profile/ HTTP/1.1" 200 41442
+INFO 2025-11-21 13:18:22,951 basehttp "GET /accounts/profile/ HTTP/1.1" 200 41442
+INFO 2025-11-21 13:19:16,428 views Profile updated for user: srijabiswas3001@gmail.com
+INFO 2025-11-21 13:19:16,441 basehttp "POST /accounts/profile/ HTTP/1.1" 302 0
+INFO 2025-11-21 13:19:16,952 basehttp "GET /accounts/profile/ HTTP/1.1" 200 41219
+INFO 2025-11-21 13:19:17,461 basehttp "GET /media/logo.png HTTP/1.1" 200 1275213
+INFO 2025-11-21 13:19:25,126 basehttp "GET /superadmin/pending/ HTTP/1.1" 200 22911
+WARNING 2025-11-21 13:19:25,175 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
+INFO 2025-11-21 13:19:32,411 basehttp "GET /superadmin/dashboard/ HTTP/1.1" 200 28950
+WARNING 2025-11-21 13:19:32,451 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
+ERROR 2025-11-21 13:20:11,235 views Error during logout for srijabiswas3001@gmail.com: 
+INFO 2025-11-21 13:20:11,243 basehttp "GET /accounts/logout/ HTTP/1.1" 302 0
+INFO 2025-11-21 13:20:11,304 basehttp "GET /accounts/login/ HTTP/1.1" 200 8248
+INFO 2025-11-21 13:20:20,255 basehttp "GET /superadmin/manage-users/ HTTP/1.1" 200 36415
+WARNING 2025-11-21 13:20:20,303 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
+INFO 2025-11-21 13:20:25,683 basehttp "POST /superadmin/update-role/2/ HTTP/1.1" 302 0
+INFO 2025-11-21 13:20:26,211 basehttp "GET /superadmin/manage-users/ HTTP/1.1" 200 36415
+WARNING 2025-11-21 13:20:26,256 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
+INFO 2025-11-21 13:20:41,365 views Successful login for user: srijabiswas3001@gmail.com from IP: 127.0.0.1
+INFO 2025-11-21 13:20:41,376 basehttp "POST /accounts/login/ HTTP/1.1" 302 0
+INFO 2025-11-21 13:20:41,687 basehttp "GET /dashboard/ HTTP/1.1" 200 28058
+INFO 2025-11-21 13:20:42,213 basehttp "GET /media/logo.png HTTP/1.1" 200 1275213
+INFO 2025-11-21 13:20:43,604 basehttp "GET /allocator/dashboard/ HTTP/1.1" 200 31706
+INFO 2025-11-21 13:20:54,997 basehttp "GET /allocator/pending/ HTTP/1.1" 200 26128
+INFO 2025-11-21 13:20:57,008 basehttp "GET /allocator/in-progress/ HTTP/1.1" 200 25856
+INFO 2025-11-21 13:20:59,165 basehttp "GET /allocator/cancel/ HTTP/1.1" 200 27680
+INFO 2025-11-21 13:21:02,565 basehttp "GET /allocator/process/ HTTP/1.1" 200 31127
+INFO 2025-11-21 13:21:05,010 basehttp "GET /allocator/completed/ HTTP/1.1" 200 30069
+INFO 2025-11-21 13:21:07,328 basehttp "GET /allocator/writers/ HTTP/1.1" 200 26064
+INFO 2025-11-21 13:21:09,941 basehttp "GET /allocator/process-team/ HTTP/1.1" 200 30717
+INFO 2025-11-21 13:21:12,427 basehttp "GET /allocator/pending/ HTTP/1.1" 200 26128
+INFO 2025-11-21 13:24:55,851 basehttp "GET /allocator/pending/ HTTP/1.1" 200 26128
+INFO 2025-11-21 13:24:56,330 basehttp "GET /media/profile/EMPMK378939_srija-ai.jfif HTTP/1.1" 200 8803
+INFO 2025-11-21 13:24:58,520 basehttp "GET /allocator/dashboard/ HTTP/1.1" 200 31706
+INFO 2025-11-21 13:25:08,792 autoreload Watching for file changes with StatReloader
+INFO 2025-11-21 13:25:12,611 basehttp "GET /allocator/dashboard/ HTTP/1.1" 200 31706
+INFO 2025-11-21 13:25:12,727 basehttp "GET /static/css/base.css HTTP/1.1" 200 39652
+INFO 2025-11-21 13:25:12,788 basehttp "GET /media/profile/EMPMK378939_srija-ai.jfif HTTP/1.1" 200 8803
+INFO 2025-11-21 13:25:12,798 basehttp "GET /media/logo.png HTTP/1.1" 200 1275213
+INFO 2025-11-21 13:25:18,374 basehttp "GET /allocator/assigned/ HTTP/1.1" 200 26991
+INFO 2025-11-21 13:25:18,398 basehttp "GET /static/css/base.css HTTP/1.1" 304 0
+INFO 2025-11-21 13:25:20,306 basehttp "GET /allocator/in-progress/ HTTP/1.1" 200 25856
+INFO 2025-11-21 13:25:22,214 basehttp "GET /allocator/cancel/ HTTP/1.1" 200 27680
+INFO 2025-11-21 13:25:22,234 basehttp "GET /static/css/base.css HTTP/1.1" 304 0
+INFO 2025-11-21 13:25:24,972 basehttp "GET /allocator/dashboard/ HTTP/1.1" 200 31706
+INFO 2025-11-21 13:25:38,028 basehttp "GET /allocator/process/ HTTP/1.1" 200 31127
+INFO 2025-11-21 13:25:38,052 basehttp "GET /static/css/base.css HTTP/1.1" 304 0
+INFO 2025-11-21 13:26:06,145 basehttp "GET /allocator/process-team/ HTTP/1.1" 200 30717
+INFO 2025-11-21 13:26:06,169 basehttp "GET /static/css/base.css HTTP/1.1" 304 0
+INFO 2025-11-21 13:26:13,472 basehttp "GET /allocator/writers/ HTTP/1.1" 200 26064
+INFO 2025-11-21 13:26:13,502 basehttp "GET /static/css/base.css HTTP/1.1" 304 0
+ERROR 2025-11-21 13:26:20,420 views Error during logout for srijabiswas3001@gmail.com: 
+INFO 2025-11-21 13:26:20,428 basehttp "GET /accounts/logout/ HTTP/1.1" 302 0
+INFO 2025-11-21 13:26:20,435 basehttp "GET /accounts/login/ HTTP/1.1" 200 7953
+INFO 2025-11-21 13:26:26,635 basehttp "GET /superadmin/manage-users/ HTTP/1.1" 200 36415
+WARNING 2025-11-21 13:26:26,697 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
+INFO 2025-11-21 13:26:27,100 basehttp "GET /media/logo.png HTTP/1.1" 200 1275213
+INFO 2025-11-21 13:26:32,049 basehttp "GET /superadmin/master-input/ HTTP/1.1" 200 25258
+WARNING 2025-11-21 13:26:32,092 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
+INFO 2025-11-21 13:26:35,027 basehttp "GET /superadmin/holiday-master/ HTTP/1.1" 200 34435
+WARNING 2025-11-21 13:26:35,065 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
+INFO 2025-11-21 13:26:40,490 basehttp "GET /superadmin/dashboard/ HTTP/1.1" 200 28950
+WARNING 2025-11-21 13:26:40,529 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
+INFO 2025-11-21 13:26:43,651 basehttp "GET /superadmin/dashboard/ HTTP/1.1" 200 28950
+INFO 2025-11-21 13:26:43,699 basehttp "GET /static/css/base.css HTTP/1.1" 200 39652
+WARNING 2025-11-21 13:26:43,701 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
+INFO 2025-11-21 13:26:44,112 basehttp "GET /media/logo.png HTTP/1.1" 200 1275213
+INFO 2025-11-21 13:26:44,625 basehttp "GET /media/logo.png HTTP/1.1" 200 1275213
+INFO 2025-11-21 13:26:48,977 basehttp "GET /superadmin/manage-users/ HTTP/1.1" 200 36415
+WARNING 2025-11-21 13:26:49,014 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
+INFO 2025-11-21 13:26:52,278 basehttp "GET /superadmin/pending/ HTTP/1.1" 200 22911
+WARNING 2025-11-21 13:26:52,317 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
+INFO 2025-11-21 13:26:56,067 basehttp "GET /superadmin/master-input/ HTTP/1.1" 200 25258
+INFO 2025-11-21 13:26:56,135 basehttp "GET /static/css/base.css HTTP/1.1" 304 0
+WARNING 2025-11-21 13:26:56,140 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
+INFO 2025-11-21 13:26:57,820 basehttp "GET /superadmin/holiday-master/ HTTP/1.1" 200 34435
+WARNING 2025-11-21 13:26:57,911 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
+INFO 2025-11-21 13:27:07,382 basehttp "GET /superadmin/master-input/ HTTP/1.1" 200 25258
+WARNING 2025-11-21 13:27:07,430 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
+INFO 2025-11-21 13:27:09,004 basehttp "GET /superadmin/price-master/ HTTP/1.1" 200 41571
+INFO 2025-11-21 13:27:09,048 basehttp "GET /static/css/base.css HTTP/1.1" 304 0
+WARNING 2025-11-21 13:27:09,053 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
+INFO 2025-11-21 13:27:18,472 basehttp "GET /dashboard/ HTTP/1.1" 200 23712
+WARNING 2025-11-21 13:27:18,514 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
+INFO 2025-11-21 13:27:21,993 basehttp "GET /superadmin/dashboard/ HTTP/1.1" 200 28950
+WARNING 2025-11-21 13:27:22,087 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
+INFO 2025-11-21 13:28:02,216 views Successful login for user: srijabiswas3001@gmail.com from IP: 127.0.0.1
+INFO 2025-11-21 13:28:02,228 basehttp "POST /accounts/login/ HTTP/1.1" 302 0
+INFO 2025-11-21 13:28:02,531 basehttp "GET /dashboard/ HTTP/1.1" 200 28058
+INFO 2025-11-21 13:28:02,570 basehttp "GET /static/css/base.css HTTP/1.1" 304 0
+INFO 2025-11-21 13:28:03,045 basehttp "GET /media/logo.png HTTP/1.1" 200 1275213
+INFO 2025-11-21 13:28:04,607 basehttp "GET /allocator/dashboard/ HTTP/1.1" 200 31706
+INFO 2025-11-21 13:28:12,335 basehttp "GET /superadmin/master-input/ HTTP/1.1" 200 25258
+INFO 2025-11-21 13:28:12,378 basehttp "GET /static/css/base.css HTTP/1.1" 304 0
+WARNING 2025-11-21 13:28:12,385 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
+INFO 2025-11-21 13:28:37,972 basehttp "GET /static/css/base.css HTTP/1.1" 304 0
+WARNING 2025-11-21 13:28:38,048 log Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-11-21 13:28:38,048 basehttp "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 3447
+WARNING 2025-11-21 13:28:50,452 middleware User agent change detected for user: admin@gmail.com
+WARNING 2025-11-21 13:28:50,452 middleware Potential session hijacking detected for user: admin@gmail.com
+INFO 2025-11-21 13:28:50,458 basehttp "GET /superadmin/dashboard/ HTTP/1.1" 302 0
+INFO 2025-11-21 13:28:50,469 basehttp "GET /accounts/login/ HTTP/1.1" 200 8254
+WARNING 2025-11-21 13:28:50,697 middleware Unauthorized access attempt to /.well-known/appspecific/com.chrome.devtools.json from IP: 127.0.0.1
+INFO 2025-11-21 13:28:50,697 basehttp "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 302 0
+INFO 2025-11-21 13:28:50,707 basehttp "GET /accounts/login/ HTTP/1.1" 200 7338
+WARNING 2025-11-21 13:28:53,018 middleware Unauthorized access attempt to /favicon.ico from IP: 127.0.0.1
+INFO 2025-11-21 13:28:53,018 basehttp "GET /favicon.ico HTTP/1.1" 302 0
+INFO 2025-11-21 13:28:53,025 basehttp "GET /accounts/login/ HTTP/1.1" 200 7338
+INFO 2025-11-21 13:29:08,243 views Successful login for user: admin@gmail.com from IP: 127.0.0.1
+INFO 2025-11-21 13:29:08,254 basehttp "POST /accounts/login/ HTTP/1.1" 302 0
+INFO 2025-11-21 13:29:08,467 basehttp "GET /dashboard/ HTTP/1.1" 200 23712
+INFO 2025-11-21 13:29:08,744 basehttp "GET /static/css/base.css HTTP/1.1" 304 0
+WARNING 2025-11-21 13:29:08,767 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
+WARNING 2025-11-21 13:29:08,988 middleware User agent change detected for user: admin@gmail.com
+WARNING 2025-11-21 13:29:08,988 middleware Potential session hijacking detected for user: admin@gmail.com
+INFO 2025-11-21 13:29:08,998 basehttp "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 302 0
+INFO 2025-11-21 13:29:09,007 basehttp "GET /accounts/login/ HTTP/1.1" 200 7656
+INFO 2025-11-21 13:29:09,009 basehttp "GET /media/logo.png HTTP/1.1" 200 1275213
+WARNING 2025-11-21 13:29:15,410 middleware Unauthorized access attempt to /superadmin/manage-users/ from IP: 127.0.0.1
+INFO 2025-11-21 13:29:15,411 basehttp "GET /superadmin/manage-users/ HTTP/1.1" 302 0
+INFO 2025-11-21 13:29:15,420 basehttp "GET /accounts/login/ HTTP/1.1" 200 7338
+WARNING 2025-11-21 13:29:15,693 middleware Unauthorized access attempt to /.well-known/appspecific/com.chrome.devtools.json from IP: 127.0.0.1
+INFO 2025-11-21 13:29:15,693 basehttp "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 302 0
+INFO 2025-11-21 13:29:15,699 basehttp "GET /accounts/login/ HTTP/1.1" 200 7338
+WARNING 2025-11-21 13:29:17,965 middleware Unauthorized access attempt to /favicon.ico from IP: 127.0.0.1
+INFO 2025-11-21 13:29:17,966 basehttp "GET /favicon.ico HTTP/1.1" 302 0
+INFO 2025-11-21 13:29:17,972 basehttp "GET /accounts/login/ HTTP/1.1" 200 7338
+INFO 2025-11-21 13:29:35,796 views Successful login for user: admin@gmail.com from IP: 127.0.0.1
+INFO 2025-11-21 13:29:35,809 basehttp "POST /accounts/login/ HTTP/1.1" 302 0
+INFO 2025-11-21 13:29:36,116 basehttp "GET /dashboard/ HTTP/1.1" 200 23712
+INFO 2025-11-21 13:29:36,385 basehttp "GET /static/css/base.css HTTP/1.1" 304 0
+WARNING 2025-11-21 13:29:36,386 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
+WARNING 2025-11-21 13:29:36,620 middleware User agent change detected for user: admin@gmail.com
+WARNING 2025-11-21 13:29:36,621 middleware Potential session hijacking detected for user: admin@gmail.com
+INFO 2025-11-21 13:29:36,628 basehttp "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 302 0
+INFO 2025-11-21 13:29:36,634 basehttp "GET /accounts/login/ HTTP/1.1" 200 7656
+INFO 2025-11-21 13:30:37,439 basehttp "GET /allocator/dashboard/ HTTP/1.1" 200 31706
+INFO 2025-11-21 13:30:37,478 basehttp "GET /static/css/base.css HTTP/1.1" 200 39302
+INFO 2025-11-21 13:30:37,934 basehttp "GET /media/profile/EMPMK378939_srija-ai.jfif HTTP/1.1" 200 8803
+INFO 2025-11-21 13:30:37,943 basehttp "GET /media/logo.png HTTP/1.1" 200 1275213
+INFO 2025-11-21 13:30:41,435 basehttp "GET /allocator/pending/ HTTP/1.1" 200 26128
+INFO 2025-11-21 13:30:41,461 basehttp "GET /static/css/base.css HTTP/1.1" 304 0
+INFO 2025-11-21 13:30:43,920 basehttp "GET /allocator/pending/ HTTP/1.1" 200 26128
+INFO 2025-11-21 13:30:43,961 basehttp "GET /static/css/base.css HTTP/1.1" 200 39302
+INFO 2025-11-21 13:30:44,425 basehttp "GET /media/profile/EMPMK378939_srija-ai.jfif HTTP/1.1" 200 8803
+INFO 2025-11-21 13:30:44,433 basehttp "GET /media/logo.png HTTP/1.1" 200 1275213
+INFO 2025-11-21 13:30:46,263 basehttp "GET /allocator/cancel/ HTTP/1.1" 200 27680
+INFO 2025-11-21 13:30:46,291 basehttp "GET /static/css/base.css HTTP/1.1" 304 0
+INFO 2025-11-21 13:30:48,652 basehttp "GET /allocator/process/ HTTP/1.1" 200 31127
+INFO 2025-11-21 13:30:48,675 basehttp "GET /static/css/base.css HTTP/1.1" 304 0
+INFO 2025-11-21 13:30:51,539 basehttp "GET /allocator/cancel/ HTTP/1.1" 200 27680
+INFO 2025-11-21 13:30:51,564 basehttp "GET /static/css/base.css HTTP/1.1" 304 0
+INFO 2025-11-21 13:30:58,101 basehttp "GET /allocator/cancel/ HTTP/1.1" 200 27680
+INFO 2025-11-21 13:30:58,143 basehttp "GET /static/css/base.css HTTP/1.1" 200 39652
+INFO 2025-11-21 13:30:58,584 basehttp "GET /media/profile/EMPMK378939_srija-ai.jfif HTTP/1.1" 200 8803
+INFO 2025-11-21 13:30:58,592 basehttp "GET /media/logo.png HTTP/1.1" 200 1275213
+INFO 2025-11-21 13:31:00,137 basehttp "GET /allocator/cancel/ HTTP/1.1" 200 27680
+INFO 2025-11-21 13:31:00,173 basehttp "GET /static/css/base.css HTTP/1.1" 200 39652
+INFO 2025-11-21 13:31:00,703 basehttp "GET /media/profile/EMPMK378939_srija-ai.jfif HTTP/1.1" 200 8803
+INFO 2025-11-21 13:31:00,873 basehttp "GET /media/logo.png HTTP/1.1" 200 1275213
+INFO 2025-11-21 13:31:01,680 basehttp "GET /allocator/cancel/ HTTP/1.1" 200 27680
+INFO 2025-11-21 13:31:02,162 basehttp "GET /static/css/base.css HTTP/1.1" 200 39652
+INFO 2025-11-21 13:31:02,662 basehttp "GET /media/profile/EMPMK378939_srija-ai.jfif HTTP/1.1" 200 8803
+INFO 2025-11-21 13:31:02,671 basehttp "GET /media/logo.png HTTP/1.1" 200 1275213
+INFO 2025-11-21 13:31:08,519 basehttp "GET /allocator/cancel/ HTTP/1.1" 200 27680
+INFO 2025-11-21 13:31:08,558 basehttp "GET /static/css/base.css HTTP/1.1" 200 39302
+INFO 2025-11-21 13:31:09,016 basehttp "GET /media/profile/EMPMK378939_srija-ai.jfif HTTP/1.1" 200 8803
+INFO 2025-11-21 13:31:09,028 basehttp "GET /media/logo.png HTTP/1.1" 200 1275213
+INFO 2025-11-21 13:31:11,276 basehttp "GET /allocator/completed/ HTTP/1.1" 200 30069
+INFO 2025-11-21 13:31:11,299 basehttp "GET /static/css/base.css HTTP/1.1" 304 0
+INFO 2025-11-21 13:31:13,837 basehttp "GET /allocator/dashboard/ HTTP/1.1" 200 31706
+INFO 2025-11-21 13:31:13,863 basehttp "GET /static/css/base.css HTTP/1.1" 304 0
+INFO 2025-11-21 13:31:18,439 basehttp "GET /allocator/completed/ HTTP/1.1" 200 30069
+INFO 2025-11-21 13:31:18,464 basehttp "GET /static/css/base.css HTTP/1.1" 304 0
+INFO 2025-11-21 13:31:21,437 basehttp "GET /allocator/process-team/ HTTP/1.1" 200 30717
+INFO 2025-11-21 13:31:21,464 basehttp "GET /static/css/base.css HTTP/1.1" 304 0
+INFO 2025-11-21 13:31:24,166 basehttp "GET /allocator/writers/ HTTP/1.1" 200 26064
+INFO 2025-11-21 13:31:24,193 basehttp "GET /static/css/base.css HTTP/1.1" 304 0
+WARNING 2025-11-21 13:31:33,991 middleware Unauthorized access attempt to /dashboard/ from IP: 127.0.0.1
+INFO 2025-11-21 13:31:33,993 basehttp "GET /dashboard/ HTTP/1.1" 302 0
+INFO 2025-11-21 13:31:34,003 basehttp "GET /accounts/login/ HTTP/1.1" 200 7338
+INFO 2025-11-21 13:31:34,060 basehttp "GET /static/css/style.css HTTP/1.1" 200 6856
+INFO 2025-11-21 13:31:34,060 basehttp "GET /static/css/base.css HTTP/1.1" 200 39302
+WARNING 2025-11-21 13:31:36,685 middleware Unauthorized access attempt to /favicon.ico from IP: 127.0.0.1
+INFO 2025-11-21 13:31:36,685 basehttp "GET /favicon.ico HTTP/1.1" 302 0
+INFO 2025-11-21 13:31:36,713 basehttp "GET /accounts/login/ HTTP/1.1" 200 7338
+INFO 2025-11-21 13:31:42,838 views Successful login for user: admin@gmail.com from IP: 127.0.0.1
+INFO 2025-11-21 13:31:42,850 basehttp "POST /accounts/login/ HTTP/1.1" 302 0
+INFO 2025-11-21 13:31:43,159 basehttp "GET /dashboard/ HTTP/1.1" 200 23712
+INFO 2025-11-21 13:31:43,213 basehttp "GET /static/css/base.css HTTP/1.1" 304 0
+WARNING 2025-11-21 13:31:43,222 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
+INFO 2025-11-21 13:31:43,662 basehttp "GET /media/logo.png HTTP/1.1" 200 1275213
+INFO 2025-11-21 13:31:47,025 basehttp "GET /superadmin/dashboard/ HTTP/1.1" 200 28950
+INFO 2025-11-21 13:31:47,118 basehttp "GET /static/css/base.css HTTP/1.1" 304 0
+WARNING 2025-11-21 13:31:47,126 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
+INFO 2025-11-21 13:32:09,786 basehttp "GET /superadmin/dashboard/ HTTP/1.1" 200 28950
+INFO 2025-11-21 13:32:09,831 basehttp "GET /static/css/base.css HTTP/1.1" 200 39302
+WARNING 2025-11-21 13:32:09,840 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
+INFO 2025-11-21 13:32:10,234 basehttp "GET /media/logo.png HTTP/1.1" 200 1275213
+INFO 2025-11-21 13:32:10,747 basehttp "GET /media/logo.png HTTP/1.1" 200 1275213
+ERROR 2025-11-21 13:32:13,952 views Error during logout for admin@gmail.com: 
+INFO 2025-11-21 13:32:13,961 basehttp "GET /accounts/logout/ HTTP/1.1" 302 0
+INFO 2025-11-21 13:32:14,030 basehttp "GET /accounts/login/ HTTP/1.1" 200 7956
+WARNING 2025-11-21 13:32:14,716 middleware Unauthorized access attempt to /favicon.ico from IP: 127.0.0.1
+INFO 2025-11-21 13:32:14,717 basehttp "GET /favicon.ico HTTP/1.1" 302 0
+INFO 2025-11-21 13:32:14,734 basehttp "GET /accounts/login/ HTTP/1.1" 200 7338
+INFO 2025-11-21 13:32:17,008 basehttp "GET /accounts/login/ HTTP/1.1" 200 7338
+INFO 2025-11-21 13:32:17,051 basehttp "GET /static/css/style.css HTTP/1.1" 200 14133
+INFO 2025-11-21 13:32:17,052 basehttp "GET /static/css/base.css HTTP/1.1" 200 39302
+WARNING 2025-11-21 13:32:17,577 middleware Unauthorized access attempt to /favicon.ico from IP: 127.0.0.1
+INFO 2025-11-21 13:32:17,577 basehttp "GET /favicon.ico HTTP/1.1" 302 0
+INFO 2025-11-21 13:32:17,607 basehttp "GET /accounts/login/ HTTP/1.1" 200 7338
+INFO 2025-11-21 13:32:26,075 views Successful login for user: admin@gmail.com from IP: 127.0.0.1
+INFO 2025-11-21 13:32:26,087 basehttp "POST /accounts/login/ HTTP/1.1" 302 0
+INFO 2025-11-21 13:32:26,385 basehttp "GET /dashboard/ HTTP/1.1" 200 23712
+INFO 2025-11-21 13:32:26,456 basehttp "GET /static/css/base.css HTTP/1.1" 304 0
+WARNING 2025-11-21 13:32:26,466 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
+INFO 2025-11-21 13:32:26,897 basehttp "GET /media/logo.png HTTP/1.1" 200 1275213
+INFO 2025-11-21 13:32:29,941 basehttp "GET /superadmin/dashboard/ HTTP/1.1" 200 28950
+WARNING 2025-11-21 13:32:29,988 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
+ERROR 2025-11-21 13:32:33,730 views Error during logout for admin@gmail.com: 
+INFO 2025-11-21 13:32:33,738 basehttp "GET /accounts/logout/ HTTP/1.1" 302 0
+INFO 2025-11-21 13:32:33,761 basehttp "GET /accounts/login/ HTTP/1.1" 200 7956
+INFO 2025-11-21 13:32:33,806 basehttp "GET /static/css/style.css HTTP/1.1" 304 0
+WARNING 2025-11-21 13:32:34,395 middleware Unauthorized access attempt to /favicon.ico from IP: 127.0.0.1
+INFO 2025-11-21 13:32:34,396 basehttp "GET /favicon.ico HTTP/1.1" 302 0
+INFO 2025-11-21 13:32:34,416 basehttp "GET /accounts/login/ HTTP/1.1" 200 7338
+INFO 2025-11-21 13:32:36,617 basehttp "GET /accounts/register/ HTTP/1.1" 200 13051
+INFO 2025-11-21 13:32:36,657 basehttp "GET /static/css/base.css HTTP/1.1" 304 0
+INFO 2025-11-21 13:32:36,660 basehttp "GET /static/css/style.css HTTP/1.1" 304 0
+WARNING 2025-11-21 13:32:37,302 middleware Unauthorized access attempt to /favicon.ico from IP: 127.0.0.1
+INFO 2025-11-21 13:32:37,304 basehttp "GET /favicon.ico HTTP/1.1" 302 0
+INFO 2025-11-21 13:32:37,312 basehttp "GET /accounts/login/ HTTP/1.1" 200 7338
+INFO 2025-11-21 13:33:38,805 basehttp "POST /accounts/register/ HTTP/1.1" 302 0
+INFO 2025-11-21 13:33:38,815 basehttp "GET /accounts/login/ HTTP/1.1" 200 7679
+INFO 2025-11-21 13:33:38,863 basehttp "GET /static/css/base.css HTTP/1.1" 304 0
+INFO 2025-11-21 13:33:38,864 basehttp "GET /static/css/style.css HTTP/1.1" 304 0
+WARNING 2025-11-21 13:33:39,492 middleware Unauthorized access attempt to /favicon.ico from IP: 127.0.0.1
+INFO 2025-11-21 13:33:39,493 basehttp "GET /favicon.ico HTTP/1.1" 302 0
+INFO 2025-11-21 13:33:39,525 basehttp "GET /accounts/login/ HTTP/1.1" 200 7338
+ERROR 2025-11-21 13:33:45,003 views Error during logout for srijabiswas3001@gmail.com: 
+INFO 2025-11-21 13:33:45,013 basehttp "GET /accounts/logout/ HTTP/1.1" 302 0
+INFO 2025-11-21 13:33:45,019 basehttp "GET /accounts/login/ HTTP/1.1" 200 7953
+INFO 2025-11-21 13:33:45,049 basehttp "GET /static/css/base.css HTTP/1.1" 304 0
+WARNING 2025-11-21 13:33:45,080 middleware Unauthorized access attempt to /favicon.ico from IP: 127.0.0.1
+INFO 2025-11-21 13:33:45,081 basehttp "GET /favicon.ico HTTP/1.1" 302 0
+INFO 2025-11-21 13:33:45,086 basehttp "GET /accounts/login/ HTTP/1.1" 200 7338
+INFO 2025-11-21 13:33:48,947 basehttp "GET /accounts/login/ HTTP/1.1" 200 7338
+INFO 2025-11-21 13:33:48,979 basehttp "GET /static/css/base.css HTTP/1.1" 200 39302
+INFO 2025-11-21 13:33:48,984 basehttp "GET /static/css/style.css HTTP/1.1" 200 14133
+WARNING 2025-11-21 13:33:49,303 middleware Unauthorized access attempt to /favicon.ico from IP: 127.0.0.1
+INFO 2025-11-21 13:33:49,304 basehttp "GET /favicon.ico HTTP/1.1" 302 0
+INFO 2025-11-21 13:33:49,310 basehttp "GET /accounts/login/ HTTP/1.1" 200 7338
+INFO 2025-11-21 13:33:54,785 views Successful login for user: admin@gmail.com from IP: 127.0.0.1
+INFO 2025-11-21 13:33:54,798 basehttp "POST /accounts/login/ HTTP/1.1" 302 0
+INFO 2025-11-21 13:33:55,094 basehttp "GET /dashboard/ HTTP/1.1" 200 23712
+WARNING 2025-11-21 13:33:55,145 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
+INFO 2025-11-21 13:33:55,610 basehttp "GET /media/logo.png HTTP/1.1" 200 1275213
+INFO 2025-11-21 13:33:56,557 basehttp "GET /superadmin/dashboard/ HTTP/1.1" 200 28950
+WARNING 2025-11-21 13:33:56,592 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
+INFO 2025-11-21 13:33:59,140 basehttp "GET /superadmin/pending/ HTTP/1.1" 200 25975
+WARNING 2025-11-21 13:33:59,171 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
+INFO 2025-11-21 13:34:15,733 basehttp "POST /superadmin/approve-user/3/ HTTP/1.1" 302 0
+INFO 2025-11-21 13:34:16,248 basehttp "GET /superadmin/pending/ HTTP/1.1" 200 22911
+INFO 2025-11-21 13:34:16,278 basehttp "GET /static/css/base.css HTTP/1.1" 304 0
+WARNING 2025-11-21 13:34:16,302 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
+INFO 2025-11-21 13:34:16,690 basehttp "GET /media/logo.png HTTP/1.1" 200 1275213
+INFO 2025-11-21 13:34:18,790 basehttp "GET /accounts/login/ HTTP/1.1" 200 7338
+INFO 2025-11-21 13:34:18,845 basehttp "GET /static/css/style.css HTTP/1.1" 200 14133
+INFO 2025-11-21 13:34:18,845 basehttp "GET /static/css/base.css HTTP/1.1" 200 39302
+WARNING 2025-11-21 13:34:19,428 middleware Unauthorized access attempt to /favicon.ico from IP: 127.0.0.1
+INFO 2025-11-21 13:34:19,429 basehttp "GET /favicon.ico HTTP/1.1" 302 0
+INFO 2025-11-21 13:34:19,447 basehttp "GET /accounts/login/ HTTP/1.1" 200 7338
+INFO 2025-11-21 13:34:31,078 views Successful login for user: paulritabrata2@gmail.com from IP: 127.0.0.1
+INFO 2025-11-21 13:34:31,095 basehttp "POST /accounts/login/ HTTP/1.1" 302 0
+INFO 2025-11-21 13:34:31,410 basehttp "GET /dashboard/ HTTP/1.1" 200 23603
+WARNING 2025-11-21 13:34:31,458 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
+INFO 2025-11-21 13:34:35,487 basehttp "GET /writer/dashboard/ HTTP/1.1" 200 25593
+WARNING 2025-11-21 13:34:35,522 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
+WARNING 2025-11-21 13:34:44,989 middleware Unauthorized access attempt to / from IP: 127.0.0.1
+INFO 2025-11-21 13:34:44,990 basehttp "GET / HTTP/1.1" 302 0
+INFO 2025-11-21 13:34:44,995 basehttp "GET /accounts/login/ HTTP/1.1" 200 7338
+INFO 2025-11-21 13:34:45,022 basehttp "GET /static/css/style.css HTTP/1.1" 200 14133
+INFO 2025-11-21 13:34:45,022 basehttp "GET /static/css/base.css HTTP/1.1" 200 39302
+WARNING 2025-11-21 13:34:45,408 middleware Unauthorized access attempt to /favicon.ico from IP: 127.0.0.1
+INFO 2025-11-21 13:34:45,409 basehttp "GET /favicon.ico HTTP/1.1" 302 0
+INFO 2025-11-21 13:34:45,416 basehttp "GET /accounts/login/ HTTP/1.1" 200 7338
+INFO 2025-11-21 13:34:57,849 views Successful login for user: admin@gmail.com from IP: 127.0.0.1
+INFO 2025-11-21 13:34:57,860 basehttp "POST /accounts/login/ HTTP/1.1" 302 0
+INFO 2025-11-21 13:34:58,165 basehttp "GET /dashboard/ HTTP/1.1" 200 23712
+WARNING 2025-11-21 13:34:58,208 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
+INFO 2025-11-21 13:34:58,667 basehttp "GET /media/logo.png HTTP/1.1" 200 1275213
+INFO 2025-11-21 13:35:03,917 basehttp "GET /superadmin/dashboard/ HTTP/1.1" 200 29895
+WARNING 2025-11-21 13:35:03,946 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
+ERROR 2025-11-21 13:35:09,087 views Error during logout for admin@gmail.com: 
+INFO 2025-11-21 13:35:09,094 basehttp "GET /accounts/logout/ HTTP/1.1" 302 0
+INFO 2025-11-21 13:35:09,101 basehttp "GET /accounts/login/ HTTP/1.1" 200 8255
+INFO 2025-11-21 13:35:09,130 basehttp "GET /static/css/base.css HTTP/1.1" 304 0
+INFO 2025-11-21 13:35:09,132 basehttp "GET /static/css/style.css HTTP/1.1" 304 0
+WARNING 2025-11-21 13:35:09,169 middleware Unauthorized access attempt to /favicon.ico from IP: 127.0.0.1
+INFO 2025-11-21 13:35:09,169 basehttp "GET /favicon.ico HTTP/1.1" 302 0
+INFO 2025-11-21 13:35:09,174 basehttp "GET /accounts/login/ HTTP/1.1" 200 7338
+INFO 2025-11-21 13:35:22,474 views Successful login for user: srijabiswas3001@gmail.com from IP: 127.0.0.1
+INFO 2025-11-21 13:35:22,487 basehttp "POST /accounts/login/ HTTP/1.1" 302 0
+INFO 2025-11-21 13:35:22,787 basehttp "GET /dashboard/ HTTP/1.1" 200 28058
+INFO 2025-11-21 13:35:23,313 basehttp "GET /media/profile/EMPMK378939_srija-ai.jfif HTTP/1.1" 200 8803
+INFO 2025-11-21 13:35:23,321 basehttp "GET /media/logo.png HTTP/1.1" 200 1275213
+INFO 2025-11-21 13:35:24,228 basehttp "GET /allocator/dashboard/ HTTP/1.1" 200 31706
+INFO 2025-11-21 13:35:28,315 basehttp "GET /allocator/writers/ HTTP/1.1" 200 26064
+INFO 2025-11-21 13:35:30,268 basehttp "GET /allocator/writers/ HTTP/1.1" 200 27799
+INFO 2025-11-21 13:35:30,309 basehttp "GET /static/css/base.css HTTP/1.1" 200 39302
+INFO 2025-11-21 13:35:30,848 basehttp "GET /media/profile/EMPMK378939_srija-ai.jfif HTTP/1.1" 200 8803
+INFO 2025-11-21 13:35:30,880 basehttp "GET /media/logo.png HTTP/1.1" 200 1275213
+INFO 2025-11-21 13:35:31,376 basehttp "GET /allocator/writers/ HTTP/1.1" 200 27799
+INFO 2025-11-21 13:35:31,416 basehttp "GET /static/css/base.css HTTP/1.1" 200 39302
+INFO 2025-11-21 13:35:31,945 basehttp "GET /media/profile/EMPMK378939_srija-ai.jfif HTTP/1.1" 200 8803
+INFO 2025-11-21 13:35:31,953 basehttp "GET /media/logo.png HTTP/1.1" 200 1275213
+INFO 2025-11-21 13:35:39,266 basehttp "GET /allocator/in-progress/ HTTP/1.1" 200 25856
+INFO 2025-11-21 13:35:42,176 basehttp "GET /allocator/writers/ HTTP/1.1" 200 27799
+INFO 2025-11-21 13:35:51,470 basehttp "GET /superadmin/manage-users/ HTTP/1.1" 200 42038
+INFO 2025-11-21 13:35:51,492 basehttp "GET /static/css/base.css HTTP/1.1" 304 0
+WARNING 2025-11-21 13:35:51,503 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
+INFO 2025-11-21 13:35:54,717 basehttp "POST /superadmin/update-category/3/ HTTP/1.1" 302 0
+INFO 2025-11-21 13:35:55,258 basehttp "GET /superadmin/manage-users/ HTTP/1.1" 200 42046
+WARNING 2025-11-21 13:35:55,300 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
+INFO 2025-11-21 13:35:55,729 basehttp "GET /media/logo.png HTTP/1.1" 200 1275213
+INFO 2025-11-21 13:36:09,082 basehttp "POST /superadmin/update-level/3/ HTTP/1.1" 302 0
+INFO 2025-11-21 13:36:09,627 basehttp "GET /superadmin/manage-users/ HTTP/1.1" 200 42046
+WARNING 2025-11-21 13:36:09,668 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
+INFO 2025-11-21 13:36:12,063 basehttp "GET /allocator/writers/ HTTP/1.1" 200 27799
+INFO 2025-11-21 13:36:12,086 basehttp "GET /static/css/base.css HTTP/1.1" 304 0
+INFO 2025-11-21 13:36:14,617 basehttp "GET /allocator/writers/ HTTP/1.1" 200 27799
+INFO 2025-11-21 13:36:14,654 basehttp "GET /static/css/base.css HTTP/1.1" 200 39302
+INFO 2025-11-21 13:36:15,112 basehttp "GET /media/profile/EMPMK378939_srija-ai.jfif HTTP/1.1" 200 8803
+INFO 2025-11-21 13:36:15,124 basehttp "GET /media/logo.png HTTP/1.1" 200 1275213
+INFO 2025-11-21 13:36:15,805 basehttp "GET /allocator/writers/ HTTP/1.1" 200 27799
+INFO 2025-11-21 13:36:15,841 basehttp "GET /static/css/base.css HTTP/1.1" 200 39302
+INFO 2025-11-21 13:36:16,511 basehttp "GET /media/profile/EMPMK378939_srija-ai.jfif HTTP/1.1" 200 8803
+INFO 2025-11-21 13:36:16,611 basehttp "GET /media/logo.png HTTP/1.1" 200 1275213
+INFO 2025-11-21 13:36:18,887 basehttp "GET /allocator/writers/ HTTP/1.1" 200 27799
+INFO 2025-11-21 13:36:18,914 basehttp "GET /static/css/base.css HTTP/1.1" 200 39302
+INFO 2025-11-21 13:36:19,437 basehttp "GET /media/profile/EMPMK378939_srija-ai.jfif HTTP/1.1" 200 8803
+INFO 2025-11-21 13:36:19,444 basehttp "GET /media/logo.png HTTP/1.1" 200 1275213
+ERROR 2025-11-21 13:36:24,331 views Error during logout for srijabiswas3001@gmail.com: 
+INFO 2025-11-21 13:36:24,339 basehttp "GET /accounts/logout/ HTTP/1.1" 302 0
+INFO 2025-11-21 13:36:24,346 basehttp "GET /accounts/login/ HTTP/1.1" 200 7953
+INFO 2025-11-21 13:36:24,370 basehttp "GET /static/css/style.css HTTP/1.1" 304 0
+WARNING 2025-11-21 13:36:24,400 middleware Unauthorized access attempt to /favicon.ico from IP: 127.0.0.1
+INFO 2025-11-21 13:36:24,400 basehttp "GET /favicon.ico HTTP/1.1" 302 0
+INFO 2025-11-21 13:36:24,405 basehttp "GET /accounts/login/ HTTP/1.1" 200 7338
+INFO 2025-11-21 13:37:11,905 autoreload C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\process\admin.py changed, reloading.
+INFO 2025-11-21 13:37:15,023 autoreload Watching for file changes with StatReloader
+INFO 2025-11-21 13:37:19,949 autoreload C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\process\models.py changed, reloading.
+INFO 2025-11-21 13:37:22,020 autoreload Watching for file changes with StatReloader
+INFO 2025-11-21 13:37:29,225 autoreload C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\process\urls.py changed, reloading.
+INFO 2025-11-21 13:37:31,505 autoreload Watching for file changes with StatReloader
+INFO 2025-11-21 13:37:36,383 autoreload C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\process\views.py changed, reloading.
+INFO 2025-11-21 13:37:38,625 autoreload Watching for file changes with StatReloader
+ERROR 2025-11-21 13:37:40,323 views Error during logout for paulritabrata2@gmail.com: 
+INFO 2025-11-21 13:37:40,333 basehttp "GET /accounts/logout/ HTTP/1.1" 302 0
+INFO 2025-11-21 13:37:40,355 basehttp "GET /accounts/login/ HTTP/1.1" 200 7959
+INFO 2025-11-21 13:37:40,407 basehttp "GET /static/css/base.css HTTP/1.1" 304 0
+INFO 2025-11-21 13:37:40,435 basehttp "GET /static/css/style.css HTTP/1.1" 304 0
+WARNING 2025-11-21 13:37:41,149 middleware Unauthorized access attempt to /favicon.ico from IP: 127.0.0.1
+INFO 2025-11-21 13:37:41,150 basehttp "GET /favicon.ico HTTP/1.1" 302 0
+INFO 2025-11-21 13:37:41,156 basehttp "GET /accounts/login/ HTTP/1.1" 200 7338
+INFO 2025-11-21 13:37:42,222 basehttp "GET /accounts/register/ HTTP/1.1" 200 13051
+WARNING 2025-11-21 13:37:42,932 middleware Unauthorized access attempt to /favicon.ico from IP: 127.0.0.1
+INFO 2025-11-21 13:37:42,933 basehttp "GET /favicon.ico HTTP/1.1" 302 0
+INFO 2025-11-21 13:37:42,941 basehttp "GET /accounts/login/ HTTP/1.1" 200 7338
+INFO 2025-11-21 13:38:55,102 basehttp "POST /accounts/register/ HTTP/1.1" 302 0
+INFO 2025-11-21 13:38:55,112 basehttp "GET /accounts/login/ HTTP/1.1" 200 7679
+INFO 2025-11-21 13:38:55,156 basehttp "GET /static/css/base.css HTTP/1.1" 304 0
+INFO 2025-11-21 13:38:55,158 basehttp "GET /static/css/style.css HTTP/1.1" 304 0
+WARNING 2025-11-21 13:38:55,825 middleware Unauthorized access attempt to /favicon.ico from IP: 127.0.0.1
+INFO 2025-11-21 13:38:55,826 basehttp "GET /favicon.ico HTTP/1.1" 302 0
+INFO 2025-11-21 13:38:55,842 basehttp "GET /accounts/login/ HTTP/1.1" 200 7338
+INFO 2025-11-21 13:39:03,542 views Successful login for user: admin@gmail.com from IP: 127.0.0.1
+INFO 2025-11-21 13:39:03,555 basehttp "POST /accounts/login/ HTTP/1.1" 302 0
+INFO 2025-11-21 13:39:03,947 basehttp "GET /dashboard/ HTTP/1.1" 200 23712
+INFO 2025-11-21 13:39:03,978 basehttp "GET /static/css/base.css HTTP/1.1" 304 0
+WARNING 2025-11-21 13:39:04,005 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
+INFO 2025-11-21 13:39:04,469 basehttp "GET /media/logo.png HTTP/1.1" 200 1275213
+INFO 2025-11-21 13:39:06,438 basehttp "GET /superadmin/dashboard/ HTTP/1.1" 200 29895
+WARNING 2025-11-21 13:39:06,473 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
+INFO 2025-11-21 13:39:09,881 basehttp "GET /superadmin/manage-users/ HTTP/1.1" 200 42046
+WARNING 2025-11-21 13:39:09,912 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
+INFO 2025-11-21 13:39:18,364 basehttp "POST /superadmin/update-role/2/ HTTP/1.1" 302 0
+INFO 2025-11-21 13:39:18,900 basehttp "GET /superadmin/manage-users/ HTTP/1.1" 200 42047
+WARNING 2025-11-21 13:39:18,952 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
+INFO 2025-11-21 13:39:19,360 basehttp "GET /media/logo.png HTTP/1.1" 200 1275213
+INFO 2025-11-21 13:39:23,874 basehttp "POST /superadmin/update-role/2/ HTTP/1.1" 302 0
+INFO 2025-11-21 13:39:24,411 basehttp "GET /superadmin/manage-users/ HTTP/1.1" 200 42046
+WARNING 2025-11-21 13:39:24,457 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
+INFO 2025-11-21 13:39:24,883 basehttp "GET /media/logo.png HTTP/1.1" 200 1275213
+INFO 2025-11-21 13:39:27,068 basehttp "GET /superadmin/pending/ HTTP/1.1" 200 25976
+WARNING 2025-11-21 13:39:27,103 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
+INFO 2025-11-21 13:39:34,330 basehttp "POST /superadmin/approve-user/4/ HTTP/1.1" 302 0
+INFO 2025-11-21 13:39:34,848 basehttp "GET /superadmin/pending/ HTTP/1.1" 200 22911
+WARNING 2025-11-21 13:39:34,895 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
+INFO 2025-11-21 13:39:35,309 basehttp "GET /media/logo.png HTTP/1.1" 200 1275213
+INFO 2025-11-21 13:39:49,852 views Successful login for user: dhabalaritra2001@gmail.com from IP: 127.0.0.1
+INFO 2025-11-21 13:39:49,869 basehttp "POST /accounts/login/ HTTP/1.1" 302 0
+INFO 2025-11-21 13:39:50,175 basehttp "GET /dashboard/ HTTP/1.1" 200 22245
+INFO 2025-11-21 13:39:50,220 basehttp "GET /static/css/base.css HTTP/1.1" 304 0
+WARNING 2025-11-21 13:39:50,229 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
+INFO 2025-11-21 13:39:50,683 basehttp "GET /media/logo.png HTTP/1.1" 200 1275213
+INFO 2025-11-21 13:39:51,974 basehttp "GET /process/dashboard/ HTTP/1.1" 200 19203
+WARNING 2025-11-21 13:39:52,076 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
+INFO 2025-11-21 13:39:56,498 basehttp "GET /process/dashboard/ HTTP/1.1" 200 19203
+WARNING 2025-11-21 13:39:56,539 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
+INFO 2025-11-21 13:39:59,827 basehttp "GET /process/my-jobs/ HTTP/1.1" 200 18976
+WARNING 2025-11-21 13:39:59,864 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
+INFO 2025-11-21 13:40:02,179 basehttp "GET /process/closed-jobs/ HTTP/1.1" 200 19289
+WARNING 2025-11-21 13:40:02,214 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
+INFO 2025-11-21 13:40:05,459 basehttp "GET /dashboard/ HTTP/1.1" 200 22245
+WARNING 2025-11-21 13:40:05,491 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
+INFO 2025-11-21 13:40:07,912 basehttp "GET /process/dashboard/ HTTP/1.1" 200 19203
+WARNING 2025-11-21 13:40:07,951 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793

@@ -5,18 +5,25 @@
 {% block title %}Process Dashboard - CRM Portal{% endblock %}
 
 {% block content %}
+{% now "l, F d, Y" as process_today %}
+{% with welcome_name=process_member_name|default:request.user.get_full_name|default:request.user.email %}
 <div class="dashboard-header">
-    <h1 class="dashboard-title">Welcome, {{ process_member_name }}!</h1>
-    <p class="dashboard-subtitle">Process Team Dashboard</p>
+    <div>
+        <h1 class="dashboard-title">Process Dashboard</h1>
+        <p class="dashboard-subtitle">
+            Welcome back, {{ welcome_name }} | {{ process_today }}
+        </p>
+    </div>
 </div>
+{% endwith %}
 
 <!-- Stats Overview -->
 <div class="stats-grid">
-    <div class="stat-card">
+    <div class="stat-card gradient-primary">
         <div class="stat-value">{{ total_jobs }}</div>
         <div class="stat-label">Total Active Jobs</div>
     </div>
-    <div class="stat-card" style="background: linear-gradient(135deg, var(--accent) 0%, var(--secondary) 100%);">
+    <div class="stat-card gradient-secondary">
         <div class="stat-value">{{ jobs.paginator.count }}</div>
         <div class="stat-label">Jobs This Page</div>
     </div>

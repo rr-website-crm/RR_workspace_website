@@ -53,12 +53,21 @@
                     <input type="text" name="whatsapp_number" class="form-control" value="{{ edit_user.whatsapp_number }}" pattern="[0-9]{10}" maxlength="10" required>
                 </div>
             </div>
+
+            <div class="form-group">
+                <label class="form-label">Alternate Email</label>
+                <input type="email"
+                       name="alternate_email"
+                       class="form-control"
+                       value="{{ edit_user.alternate_email|default_if_none:'' }}"
+                       placeholder="name@example.com">
+            </div>
             
-            <!-- Role and Level -->
+            <!-- Role, Category & Level -->
             <div class="form-row">
                 <div class="form-group">
                     <label class="form-label required">Role</label>
-                    <select name="role" class="form-control form-select" required>
+                    <select name="role" class="form-control form-select" required data-writer-role-select>
                         <option value="">Select Role</option>
                         <option value="superadmin" {% if edit_user.role == 'superadmin' %}selected{% endif %}>SuperAdmin</option>
                         <option value="admin" {% if edit_user.role == 'admin' %}selected{% endif %}>Admin</option>
@@ -68,8 +77,18 @@
                         <option value="process" {% if edit_user.role == 'process' %}selected{% endif %}>Process</option>
                     </select>
                 </div>
-                
-                <div class="form-group">
+
+                <div class="form-group writer-only-field" data-writer-field>
+                    <label class="form-label required">Category</label>
+                    <select name="category" class="form-control form-select">
+                        <option value="">Select</option>
+                        <option value="IT" {% if edit_user.department == 'IT' %}selected{% endif %}>IT</option>
+                        <option value="Non-IT" {% if edit_user.department == 'Non-IT' %}selected{% endif %}>Non-IT</option>
+                        <option value="Finance" {% if edit_user.department == 'Finance' %}selected{% endif %}>Finance</option>
+                    </select>
+                </div>
+
+                <div class="form-group writer-only-field" data-writer-field>
                     <label class="form-label required">Level (0-5)</label>
                     <input type="number" name="level" class="form-control" value="{{ edit_user.level|default:0 }}" min="0" max="5" required>
                     <small style="color: var(--secondary); opacity: 0.7; font-size: 12px; margin-top: 4px; display: block;">
@@ -77,6 +96,9 @@
                     </small>
                 </div>
             </div>
+            <p class="writer-only-placeholder" data-writer-placeholder>
+                Category and Level are only applicable when the user is assigned the Writer role.
+            </p>
             
             <!-- Date of Joining (Read-only) -->
             <div class="form-group">
@@ -140,11 +162,43 @@
     </div>
 </div>
 
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const roleSelect = document.querySelector('[data-writer-role-select]');
+        const writerFields = document.querySelectorAll('[data-writer-field]');
+        const placeholders = document.querySelectorAll('[data-writer-placeholder]');
+        const toggleWriterFields = () => {
+            const isWriter = (roleSelect?.value || '').toLowerCase() === 'writer';
+            writerFields.forEach((field) => {
+                field.classList.toggle('writer-field-hidden', !isWriter);
+                field.querySelectorAll('input, select').forEach((input) => {
+                    input.disabled = !isWriter;
+                });
+            });
+            placeholders.forEach((placeholder) => {
+                placeholder.classList.toggle('writer-field-hidden', isWriter);
+            });
+        };
+        toggleWriterFields();
+        roleSelect?.addEventListener('change', toggleWriterFields);
+    });
+</script>
+
 <style>
     .form-row {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
         gap: 1.5rem;
+    }
+    .writer-only-placeholder {
+        font-size: 12px;
+        color: var(--secondary);
+        opacity: 0.75;
+        margin-top: -0.5rem;
+        margin-bottom: 1.5rem;
+    }
+    .writer-field-hidden {
+        display: none !important;
     }
     
     @media (max-width: 768px) {

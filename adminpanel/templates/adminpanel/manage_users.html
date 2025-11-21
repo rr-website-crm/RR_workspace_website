@@ -1,0 +1,280 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Manage Users - Admin Panel{% endblock %}
+
+{% block body_class %}theme-admin-3{% endblock %}
+
+{% block content %}
+<div class="dashboard-header">
+    <h1 class="dashboard-title">Manage Users</h1>
+    <p class="dashboard-subtitle">View and manage all registered users.</p>
+</div>
+
+<!-- KPI Cards -->
+<div class="stats-grid">
+    <a href="{% url 'adminpanel:manage_users' %}" class="stat-card gradient-primary kpi-card-link" title="View all approved users">
+        <div class="stat-value">{{ total_users }}</div>
+        <div class="stat-label">Number of Users</div>
+    </a>
+    
+    <a href="{% url 'adminpanel:pending_items' %}" class="stat-card gradient-warning kpi-card-link" title="Review pending approvals and profile requests">
+        <div class="stat-value">{{ pending_count }}</div>
+        <div class="stat-label">Number of Pending</div>
+    </a>
+    
+    <a href="{% url 'adminpanel:manage_users' %}" class="stat-card gradient-success kpi-card-link" title="See approved user list">
+        <div class="stat-value">{{ approved_count }}</div>
+        <div class="stat-label">Number of Approvals</div>
+    </a>
+</div>
+
+<!-- Users Table -->
+<div class="card mt-4">
+    <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
+        <h3 class="card-title">All Users</h3>
+        <div style="display: flex; gap: 1rem;">
+            <input type="text" id="searchInput" class="form-control" placeholder="Search users..." style="width: 300px;">
+        </div>
+    </div>
+    <div class="card-body">
+        <div class="table-container table-scroll-lock">
+            <table class="data-table" id="usersTable">
+                <thead>
+                    <tr>
+                        <th>SL. No</th>
+                        <th>Employee ID</th>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Update Role</th>
+                        <th>Current Role</th>
+                        <th>Category</th>
+                        <th>Level</th>
+                        <th>Action</th>
+                        <th>Profile Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for user in users %}
+                    <tr data-user-id="{{ user.id }}">
+                        <td>{{ forloop.counter }}</td>
+                        <td>{{ user.employee_id|default:'Not Assigned' }}</td>
+                        <td style="font-weight: 600;" data-column="name">{{ user.get_full_name }}</td>
+                        <td data-column="email">{{ user.email }}</td>
+                        <td>
+                            <form method="POST" action="{% url 'adminpanel:update_user_role' user.id %}" style="display: flex; gap: 0.5rem; align-items: center;">
+                                {% csrf_token %}
+                                <select name="role" class="form-control form-select" style="width: 150px; padding: 6px 12px; font-size: 13px;" data-role-select>
+                                    <option value="user" {% if user.role == 'user' %}selected{% endif %}>User</option>
+                                    <option value="Admin" {% if user.role == 'Admin' %}selected{% endif %}>Admin</option>
+                                    <option value="admin" {% if user.role == 'admin' %}selected{% endif %}>Admin</option>
+                                    <option value="marketing" {% if user.role == 'marketing' %}selected{% endif %}>Marketing</option>
+                                    <option value="allocator" {% if user.role == 'allocator' %}selected{% endif %}>Allocator</option>
+                                    <option value="writer" {% if user.role == 'writer' %}selected{% endif %}>Writer</option>
+                                    <option value="process" {% if user.role == 'process' %}selected{% endif %}>Process</option>
+                                </select>
+                                <button type="submit" class="btn btn-primary btn-sm">Update</button>
+                            </form>
+                        </td>
+                        <td>
+                            <span class="status-tag status-{{ user.role }}" style="text-transform: capitalize;">
+                                {{ user.get_role_display }}
+                            </span>
+                        </td>
+                        <td>
+                            <div class="writer-only-wrapper" data-writer-field>
+                                <form method="POST" action="{% url 'adminpanel:update_user_category' user.id %}" style="display: flex; gap: 0.5rem;">
+                                    {% csrf_token %}
+                                    <select name="category" class="form-control form-select" style="width: 120px; padding: 6px 12px; font-size: 13px;" onchange="this.form.submit()">
+                                        <option value="">Select</option>
+                                        <option value="IT" {% if user.department == 'IT' %}selected{% endif %}>IT</option>
+                                        <option value="Non-IT" {% if user.department == 'Non-IT' %}selected{% endif %}>Non-IT</option>
+                                        <option value="Finance" {% if user.department == 'Finance' %}selected{% endif %}>Finance</option>
+                                    </select>
+                                </form>
+                            </div>
+                            <span class="writer-only-placeholder" data-writer-placeholder>Only for Writer role</span>
+                        </td>
+                        <td>
+                            <div class="writer-only-wrapper" data-writer-field>
+                                <form method="POST" action="{% url 'adminpanel:update_user_level' user.id %}" style="display: flex; gap: 0.5rem;">
+                                    {% csrf_token %}
+                                    <input type="number" name="level" value="{{ user.level|default:0 }}" min="0" max="5" class="form-control" style="width: 70px; padding: 6px; font-size: 13px;">
+                                    <button type="submit" class="btn btn-primary btn-sm">Set</button>
+                                </form>
+                            </div>
+                            <span class="writer-only-placeholder" data-writer-placeholder>Only for Writer role</span>
+                        </td>
+                        <td>
+                            <a href="{% url 'adminpanel:edit_user' user.id %}" class="btn btn-outline btn-sm">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M11 4H4C3.46957 4 2.96086 4.21071 2.58579 4.58579C2.21071 4.96086 2 5.46957 2 6V20C2 20.5304 2.21071 21.0391 2.58579 21.4142C2.96086 21.7893 3.46957 22 4 22H18C18.5304 22 19.0391 21.7893 19.4142 21.4142C19.7893 21.0391 20 20.5304 20 20V13" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                    <path d="M18.5 2.50023C18.8978 2.1024 19.4374 1.87891 20 1.87891C20.5626 1.87891 21.1022 2.1024 21.5 2.50023C21.8978 2.89805 22.1213 3.43762 22.1213 4.00023C22.1213 4.56284 21.8978 5.1024 21.5 5.50023L12 15.0002L8 16.0002L9 12.0002L18.5 2.50023Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                                Edit Profile
+                            </a>
+                        </td>
+                        <td>
+                            <form method="POST" action="{% url 'adminpanel:toggle_user_status' user.id %}">
+                                {% csrf_token %}
+                                <label class="toggle-switch">
+                                    <input type="checkbox" {% if user.is_active %}checked{% endif %} onchange="this.form.submit()">
+                                    <span class="toggle-slider"></span>
+                                </label>
+                            </form>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="9" style="text-align: center; padding: 2rem; opacity: 0.6;">
+                            No users found
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        // Search functionality
+        document.getElementById('searchInput').addEventListener('keyup', function() {
+            const searchValue = this.value.toLowerCase();
+            const rows = document.querySelectorAll('#usersTable tbody tr');
+            
+            rows.forEach((row) => {
+                const nameCell = row.querySelector('[data-column="name"]');
+                const emailCell = row.querySelector('[data-column="email"]');
+                const name = nameCell?.textContent.toLowerCase() || '';
+                const email = emailCell?.textContent.toLowerCase() || '';
+                
+                row.style.display = (name.includes(searchValue) || email.includes(searchValue)) ? '' : 'none';
+            });
+        });
+
+        // Toggle category/level fields only for Writer role
+        const WRITER_ROLE = 'writer';
+        const rows = document.querySelectorAll('#usersTable tbody tr');
+
+        const toggleWriterFields = (row) => {
+            const roleSelect = row.querySelector('[data-role-select]');
+            if (!roleSelect) return;
+            const isWriter = (roleSelect.value || '').toLowerCase() === WRITER_ROLE;
+            row.querySelectorAll('[data-writer-field]').forEach((section) => {
+                section.classList.toggle('writer-field-hidden', !isWriter);
+                section.querySelectorAll('input, select, button').forEach((input) => {
+                    if (input.hasAttribute('data-keep-enabled')) return;
+                    input.disabled = !isWriter;
+                });
+            });
+            row.querySelectorAll('[data-writer-placeholder]').forEach((placeholder) => {
+                placeholder.classList.toggle('writer-field-hidden', isWriter);
+            });
+        };
+
+        rows.forEach((row) => {
+            const roleSelect = row.querySelector('[data-role-select]');
+            if (!roleSelect) return;
+            toggleWriterFields(row);
+            roleSelect.addEventListener('change', () => toggleWriterFields(row));
+        });
+    });
+</script>
+
+<style>
+    .btn-sm {
+        padding: 6px 12px;
+        font-size: 13px;
+    }
+
+    .kpi-card-link {
+        display: block;
+        text-decoration: none;
+        color: inherit;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .kpi-card-link:hover,
+    .kpi-card-link:focus-visible {
+        transform: translateY(-4px);
+        box-shadow: 0 12px 24px rgba(0,0,0,0.25);
+    }
+    
+    .toggle-switch {
+        position: relative;
+        display: inline-block;
+        width: 50px;
+        height: 24px;
+    }
+    
+    .toggle-switch input {
+        opacity: 0;
+        width: 0;
+        height: 0;
+    }
+    
+    .toggle-slider {
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: #ccc;
+        transition: 0.4s;
+        border-radius: 24px;
+    }
+    
+    .toggle-slider:before {
+        position: absolute;
+        content: "";
+        height: 18px;
+        width: 18px;
+        left: 3px;
+        bottom: 3px;
+        background-color: white;
+        transition: 0.4s;
+        border-radius: 50%;
+    }
+    
+    .toggle-switch input:checked + .toggle-slider {
+        background-color: var(--primary);
+    }
+    
+    .toggle-switch input:checked + .toggle-slider:before {
+        transform: translateX(26px);
+    }
+
+    .writer-only-placeholder {
+        display: inline-block;
+        font-size: 12px;
+        color: var(--secondary);
+        opacity: 0.7;
+    }
+
+    .writer-field-hidden {
+        display: none !important;
+    }
+
+    .writer-only-wrapper {
+        min-height: 40px;
+    }
+    
+    @media (max-width: 768px) {
+        .table-container {
+            overflow-x: auto;
+        }
+        
+        .data-table {
+            font-size: 12px;
+        }
+        
+        .data-table th,
+        .data-table td {
+            padding: 8px;
+        }
+    }
+</style>
+{% endblock %}
