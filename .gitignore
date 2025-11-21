@@ -2,4 +2,5 @@ venv/
 .venv/
 ENV/
 env/
-*.json
+rr-website-478606-8d60b4309fbb.json/
+./rr-website-478606-8d60b4309fbb.json

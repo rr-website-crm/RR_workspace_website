@@ -317,6 +317,272 @@ def save_initial_form(request):
 
 
 # 
+# @login_required
+# @role_required(['marketing'])
+# @require_http_methods(["POST"])
+# def generate_ai_summary(request):
+#     """Generate AI summary using OpenAI"""
+#     try:
+#         data = json.loads(request.body)
+#         system_id = data.get('system_id')
+        
+#         if not system_id:
+#             return JsonResponse({'success': False, 'message': 'System ID is required'}, status=400)
+        
+#         job = get_object_or_404(Job, system_id=system_id, created_by=request.user)
+        
+#         # Check if can regenerate
+#         if not job.can_regenerate_summary():
+#             return JsonResponse({
+#                 'success': False,
+#                 'message': 'Maximum 3 summary generations reached'
+#             }, status=400)
+        
+#         # Update timestamps
+#         job.ai_summary_requested_at = timezone.now()
+        
+#         # Prepare attachments content
+#         attachments_text = []
+#         for attachment in job.attachments.all():
+#             try:
+#                 if attachment.get_file_extension() in ['.pdf', '.docx']:
+#                     attachments_text.append(f"Attachment: {attachment.original_filename} (Binary file - analyze based on instruction)")
+#                 else:
+#                     attachments_text.append(f"Image: {attachment.original_filename}")
+#             except Exception as e:
+#                 logger.error(f"Error reading attachment: {str(e)}")
+        
+#         # Create OpenAI prompt
+#         prompt = f"""You are an Assignment Analysis Agent for a technical academic writing and student assignment support company. Your role is to carefully analyze the job instruction and any attachments provided.
+
+# RULE FOR ANALYSIS:
+# - If attachments are available, analyze BOTH the instruction and the attachment content.
+# - If attachments are NOT available or contain no readable text, analyze ONLY the instruction.
+# - Do NOT generate any default summary; base all analysis strictly on the given content.
+
+# Your tasks include:
+# - Identifying whether the assignment requires the use of any specific software; if yes, specify the exact software name and version (if mentioned or typically required).
+# - Providing a detailed task breakdown for any software-related work.
+# - Detecting if a PowerPoint presentation is required (e.g., “10-minute presentation”). If yes:
+#   - Approximate number of slides (default: 1 slide per minute)
+#   - Estimated words per slide (default: 100 words per slide)
+# - Detecting if a LaTeX file is required.
+# - Detecting if a poster is required.
+# - Estimating the word count if not explicitly mentioned (based on academic standards).
+# - Providing a clear structured breakdown of what needs to be written or implemented—without giving the solution itself.
+
+# Use the details below to generate the output.
+
+# INSTRUCTION:
+# {job.instruction}
+
+# ATTACHMENTS:
+# {chr(10).join(attachments_text) if attachments_text else 'No text content available'}
+
+# Generate a detailed JSON response with the following fields:
+
+# 1. **topic**: Extract or generate a clear, specific topic. If mentioned in instruction, use it. Otherwise, create based on content.
+
+# 2. **word_count**: Estimate the required word count based on the instruction. Provide a realistic number.
+
+# 3. **referencing_style**: Determine the appropriate referencing style. Choose from: harvard, apa, mla, ieee, vancouver, chicago. If not mentioned, suggest the most appropriate.
+
+# 4. **writing_style**: Identify the writing style required. Choose from: proposal, report, essay, dissertation, business_report, personal_development, reflection_writing, case_study.
+
+# 5. **job_summary**: Write a DETAILED summary (minimum 200 words) that includes:
+#    - Full analysis of assignment requirements based on instruction and attachments
+#    - Whether any software is required (with software name and version if relevant)
+#    - If software is required, provide a detailed breakdown of software-based tasks
+#    - Whether a PowerPoint is needed, number of slides, and estimated words per slide
+#    - Whether a LaTeX file or poster is needed
+#    - Specific tools, frameworks, or technical environments required
+#    - Any case studies, companies, datasets, or examples referenced
+#    - Key deliverables and expected outputs
+#    - Structure, format, and academic expectations
+#    - Any timelines, milestones, or special notes
+
+# IMPORTANT: Never generate the actual solution. Only analyze the requirements clearly and professionally.
+
+
+
+
+
+# Return ONLY valid JSON in this format:
+# {{
+#     "topic": "...",
+#     "word_count": 0,
+#     "referencing_style": "...",
+#     "writing_style": "...",
+#     "job_summary": "..."
+# }}"""
+
+#         # Call OpenAI API - FIXED: Remove proxy settings and use explicit API key
+#         # Clear any proxy environment variables that might interfere
+#         import os
+#         api_key = os.getenv('OPENAI_API_KEY')
+        
+#         if not api_key:
+#             return JsonResponse({
+#                 'success': False,
+#                 'message': 'OpenAI API key not configured'
+#             }, status=500)
+        
+#         # Initialize client with explicit settings to avoid proxy issues
+#         from openai import OpenAI
+#         client = OpenAI(
+#             api_key=api_key,
+#             timeout=60.0,  # Explicit timeout
+#             max_retries=2   # Explicit retry count
+#         )
+        
+#         response = client.chat.completions.create(
+#             model="gpt-4o-mini",
+#             messages=[
+#                 {"role": "system", "content": "You are an expert academic job analyzer. Always return valid JSON."},
+#                 {"role": "user", "content": prompt}
+#             ],
+#             temperature=0.7,
+#             max_tokens=2000
+#         )
+        
+#         # Parse response
+#         ai_response = response.choices[0].message.content.strip()
+        
+#         # Remove markdown code blocks if present
+#         if ai_response.startswith('```'):
+#             ai_response = ai_response.split('```')[1]
+#             if ai_response.startswith('json'):
+#                 ai_response = ai_response[4:]
+#             ai_response = ai_response.strip()
+        
+#         summary_data = json.loads(ai_response)
+        
+#         # Update job with AI summary
+#         with transaction.atomic():
+#             job.topic = summary_data.get('topic')
+#             job.word_count = summary_data.get('word_count')
+#             job.referencing_style = summary_data.get('referencing_style')
+#             job.writing_style = summary_data.get('writing_style')
+#             job.job_summary = summary_data.get('job_summary')
+            
+#             # Increment version
+#             job.ai_summary_version += 1
+            
+#             # Add generation timestamp
+#             generation_timestamps = job.ai_summary_generated_at or []
+#             generation_timestamps.append(timezone.now().isoformat())
+#             job.ai_summary_generated_at = generation_timestamps
+            
+#             # Calculate degree
+#             degree = job.calculate_degree()
+            
+#             # Save version
+#             JobSummaryVersion.objects.create(
+#                 job=job,
+#                 version_number=job.ai_summary_version,
+#                 topic=job.topic,
+#                 word_count=job.word_count,
+#                 referencing_style=job.referencing_style,
+#                 writing_style=job.writing_style,
+#                 job_summary=job.job_summary,
+#                 degree=degree,
+#                 performed_by='system',
+#                 ai_model_used='gpt-4o-mini'
+#             )
+            
+#             # Log action
+#             JobActionLog.objects.create(
+#                 job=job,
+#                 action='ai_summary_generated',
+#                 performed_by=request.user,
+#                 performed_by_type='system',
+#                 details={
+#                     'version': job.ai_summary_version,
+#                     'degree': degree,
+#                     'model': 'gpt-4o-mini'
+#                 }
+#             )
+            
+#             # Log to ActivityLog
+#             ActivityLog.objects.create(
+#                 event_key=JOB_EVENTS['summary_generated'],
+#                 category='job_management',
+#                 subject_user=request.user,
+#                 performed_by=request.user,
+#                 metadata={
+#                     'job_system_id': job.system_id,
+#                     'job_id': job.job_id,
+#                     'version': job.ai_summary_version,
+#                     'degree': degree,
+#                     'model': 'gpt-4o-mini',
+#                     'topic': job.topic,
+#                     'word_count': job.word_count,
+#                     'referencing_style': job.referencing_style,
+#                     'writing_style': job.writing_style
+#                 }
+#             )
+            
+#             # Check if should auto-accept
+#             auto_accept = job.should_auto_accept()
+#             if auto_accept:
+#                 job.ai_summary_accepted_at = timezone.now()
+#                 job.status = 'pending'
+                
+#                 JobActionLog.objects.create(
+#                     job=job,
+#                     action='ai_summary_accepted',
+#                     performed_by=request.user,
+#                     performed_by_type='system',
+#                     details={
+#                         'auto_accepted': True,
+#                         'reason': 'degree_0' if degree == 0 else 'version_3'
+#                     }
+#                 )
+                
+#                 # Log auto-acceptance
+#                 ActivityLog.objects.create(
+#                     event_key=JOB_EVENTS['summary_accepted'],
+#                     category='job_management',
+#                     subject_user=request.user,
+#                     performed_by=request.user,
+#                     metadata={
+#                         'job_system_id': job.system_id,
+#                         'job_id': job.job_id,
+#                         'auto_accepted': True,
+#                         'reason': 'degree_0' if degree == 0 else 'version_3',
+#                         'version': job.ai_summary_version,
+#                         'degree': degree
+#                     }
+#                 )
+            
+#             job.save()
+            
+#             return JsonResponse({
+#                 'success': True,
+#                 'message': 'AI summary generated successfully',
+#                 'data': {
+#                     'topic': job.topic,
+#                     'word_count': job.word_count,
+#                     'referencing_style': job.referencing_style,
+#                     'writing_style': job.writing_style,
+#                     'job_summary': job.job_summary,
+#                     'version': job.ai_summary_version,
+#                     'degree': degree,
+#                     'auto_accepted': auto_accept,
+#                     'can_regenerate': job.can_regenerate_summary()
+#                 }
+#             })
+            
+#     except Job.DoesNotExist:
+#         return JsonResponse({'success': False, 'message': 'Job not found'}, status=404)
+#     except json.JSONDecodeError as e:
+#         logger.error(f"Error parsing AI response: {str(e)}")
+#         return JsonResponse({'success': False, 'message': 'Error parsing AI response'}, status=500)
+#     except Exception as e:
+#         logger.error(f"Error generating AI summary: {str(e)}")
+#         return JsonResponse({'success': False, 'message': f'Error: {str(e)}'}, status=500)
+
+
 @login_required
 @role_required(['marketing'])
 @require_http_methods(["POST"])
@@ -340,59 +606,155 @@ def generate_ai_summary(request):
         
         # Update timestamps
         job.ai_summary_requested_at = timezone.now()
-        
-        # Prepare attachments content
+
+        # -------------------------------------------------------------------
+        # UPDATED: Extract REAL TEXT from PDF, DOCX and Image OCR
+        # -------------------------------------------------------------------
         attachments_text = []
         for attachment in job.attachments.all():
             try:
-                if attachment.get_file_extension() in ['.pdf', '.docx']:
-                    attachments_text.append(f"Attachment: {attachment.original_filename} (Binary file - analyze based on instruction)")
+                ext = attachment.get_file_extension().lower()
+                file_path = attachment.file.path
+
+                # -------- PDF Extraction --------
+                if ext == ".pdf":
+                    try:
+                        from pdfminer.high_level import extract_text
+                        pdf_text = extract_text(file_path)
+
+                        if pdf_text.strip():
+                            attachments_text.append(
+                                f"[PDF TEXT - {attachment.original_filename}]\n{pdf_text}"
+                            )
+                        else:
+                            attachments_text.append(
+                                f"[PDF - {attachment.original_filename}] (No extractable text)"
+                            )
+                    except Exception:
+                        attachments_text.append(
+                            f"[PDF - {attachment.original_filename}] (Unable to extract text)"
+                        )
+
+                # -------- DOCX Extraction --------
+                elif ext == ".docx":
+                    try:
+                        import docx
+                        doc = docx.Document(file_path)
+
+                        docx_text = "\n".join(
+                            [p.text for p in doc.paragraphs if p.text.strip()]
+                        )
+
+                        if docx_text.strip():
+                            attachments_text.append(
+                                f"[DOCX TEXT - {attachment.original_filename}]\n{docx_text}"
+                            )
+                        else:
+                            attachments_text.append(
+                                f"[DOCX - {attachment.original_filename}] (Empty or unreadable)"
+                            )
+                    except:
+                        attachments_text.append(
+                            f"[DOCX - {attachment.original_filename}] (Unable to extract text)"
+                        )
+
+                # -------- IMAGE OCR --------
+                elif ext in ['.png', '.jpg', '.jpeg']:
+                    try:
+                        from PIL import Image
+                        import pytesseract
+
+                        img_text = pytesseract.image_to_string(Image.open(file_path))
+
+                        if img_text.strip():
+                            attachments_text.append(
+                                f"[IMAGE OCR - {attachment.original_filename}]\n{img_text}"
+                            )
+                        else:
+                            attachments_text.append(
+                                f"[IMAGE - {attachment.original_filename}] (No readable text)"
+                            )
+                    except Exception:
+                        attachments_text.append(
+                            f"[IMAGE - {attachment.original_filename}] (OCR not available)"
+                        )
+
                 else:
-                    attachments_text.append(f"Image: {attachment.original_filename}")
+                    attachments_text.append(
+                        f"[Unsupported File - {attachment.original_filename}]"
+                    )
+
             except Exception as e:
-                logger.error(f"Error reading attachment: {str(e)}")
-        
-        # Create OpenAI prompt
-        prompt = f"""You are an expert academic job analyzer. Analyze the following job instruction and attachments to generate a comprehensive job summary.
+                logger.error(f"Error processing attachment: {str(e)}")
+                attachments_text.append(
+                    f"[Error reading {attachment.original_filename}]"
+                )
 
-INSTRUCTION:
-{job.instruction}
+        # -------------------------------------------------------------------
+        # OpenAI Prompt (UNCHANGED BY REQUEST)
+        # -------------------------------------------------------------------
+        prompt = f"""You are an Assignment Analysis Agent for a technical academic writing and student assignment support company. Your role is to carefully analyze the job instruction and any attachments provided.
 
-ATTACHMENTS:
-{chr(10).join(attachments_text) if attachments_text else 'No text content available'}
+            RULE FOR ANALYSIS:
+            - If attachments are available, analyze BOTH the instruction and the attachment content.
+            - If attachments are NOT available or contain no readable text, analyze ONLY the instruction.
+            - Do NOT generate any default summary; base all analysis strictly on the given content.
 
-Generate a detailed JSON response with the following fields:
+            Your tasks include:
+            - Identifying whether the assignment requires the use of any specific software; if yes, specify the exact software name and version (if mentioned or typically required).
+            - Providing a detailed task breakdown for any software-related work.
+            - Detecting if a PowerPoint presentation is required (e.g., “10-minute presentation”). If yes:
+            - Approximate number of slides (default: 1 slide per minute)
+            - Estimated words per slide (default: 100 words per slide)
+            - Detecting if a LaTeX file is required.
+            - Detecting if a poster is required.
+            - Estimating the word count if not explicitly mentioned (based on academic standards).
+            - Providing a clear structured breakdown of what needs to be written or implemented—without giving the solution itself.
 
-1. **topic**: Extract or generate a clear, specific topic. If mentioned in instruction, use it. Otherwise, create based on content.
+            Use the details below to generate the output.
 
-2. **word_count**: Estimate the required word count based on the instruction. Provide a realistic number.
+            INSTRUCTION:
+            {job.instruction}
 
-3. **referencing_style**: Determine the appropriate referencing style. Choose from: harvard, apa, mla, ieee, vancouver, chicago. If not mentioned, suggest the most appropriate.
+            ATTACHMENTS:
+            {chr(10).join(attachments_text) if attachments_text else 'No text content available'}
 
-4. **writing_style**: Identify the writing style required. Choose from: proposal, report, essay, dissertation, business_report, personal_development, reflection_writing, case_study.
+            Generate a detailed JSON response with the following fields:
 
-5. **job_summary**: Write a DETAILED summary (minimum 200 words) that includes:
-   - Clear understanding of the job requirements
-   - Specific software/tools needed (e.g., "Use Microsoft Excel for data analysis", "SPSS for statistical analysis")
-   - Any company names, case studies, or specific examples mentioned
-   - Key deliverables and expectations
-   - Special requirements or considerations
-   - Structure and format requirements
-   - Any deadlines or milestones mentioned
+            1. **topic**: Extract or generate a clear, specific topic. If mentioned in instruction, use it. Otherwise, create based on content.
 
-IMPORTANT: Be as specific as possible. If software is needed, name it. If examples are mentioned, include them. Make the summary actionable and clear.
+            2. **word_count**: use the word count that provide in the instruction or attachment , dont assume any wordcount.
 
-Return ONLY valid JSON in this format:
-{{
-    "topic": "...",
-    "word_count": 0,
-    "referencing_style": "...",
-    "writing_style": "...",
-    "job_summary": "..."
-}}"""
+            3. **referencing_style**: use the referencing style  that provide in the instruction or attachment , dont assume any referencing style.
 
-        # Call OpenAI API - FIXED: Remove proxy settings and use explicit API key
-        # Clear any proxy environment variables that might interfere
+            4. **writing_style**: Identify the writing style required. Choose from: proposal, report, essay, dissertation, business_report, personal_development, reflection_writing, case_study from attachment or instrution , if there is not present dont assume any.
+
+            5. **job_summary**: Write a DETAILED summary (minimum 200 words) that includes:
+            - Full analysis of assignment requirements based on instruction and attachments
+            - Whether any software is required (with software name and version if relevant)
+            - If software is required, provide a detailed breakdown of software-based tasks
+            - Whether a PowerPoint is needed, number of slides, and estimated words per slide
+            - Whether a LaTeX file or poster is needed
+            - Specific tools, frameworks, or technical environments required
+            - Any case studies, companies, datasets, or examples referenced
+            - Key deliverables and expected outputs
+            - Structure, format, and academic expectations
+            - Any timelines, milestones, or special notes
+
+            IMPORTANT: Never generate the actual solution. Only analyze the requirements clearly and professionally.
+
+            Return ONLY valid JSON in this format:
+            {{
+                "topic": "...",
+                "word_count": 0,
+                "referencing_style": "...",
+                "writing_style": "...",
+                "job_summary": "..."
+            }}"""
+
+        # -------------------------------------------------------------------
+        # OpenAI CLIENT (UNCHANGED)
+        # -------------------------------------------------------------------
         import os
         api_key = os.getenv('OPENAI_API_KEY')
         
@@ -402,12 +764,11 @@ Return ONLY valid JSON in this format:
                 'message': 'OpenAI API key not configured'
             }, status=500)
         
-        # Initialize client with explicit settings to avoid proxy issues
         from openai import OpenAI
         client = OpenAI(
             api_key=api_key,
-            timeout=60.0,  # Explicit timeout
-            max_retries=2   # Explicit retry count
+            timeout=60.0,
+            max_retries=2
         )
         
         response = client.chat.completions.create(
@@ -420,10 +781,9 @@ Return ONLY valid JSON in this format:
             max_tokens=2000
         )
         
-        # Parse response
         ai_response = response.choices[0].message.content.strip()
         
-        # Remove markdown code blocks if present
+        # Clean JSON
         if ai_response.startswith('```'):
             ai_response = ai_response.split('```')[1]
             if ai_response.startswith('json'):
@@ -431,8 +791,10 @@ Return ONLY valid JSON in this format:
             ai_response = ai_response.strip()
         
         summary_data = json.loads(ai_response)
-        
-        # Update job with AI summary
+
+        # -------------------------------------------------------------------
+        # SAVE SUMMARY (UNCHANGED)
+        # -------------------------------------------------------------------
         with transaction.atomic():
             job.topic = summary_data.get('topic')
             job.word_count = summary_data.get('word_count')
@@ -443,15 +805,12 @@ Return ONLY valid JSON in this format:
             # Increment version
             job.ai_summary_version += 1
             
-            # Add generation timestamp
             generation_timestamps = job.ai_summary_generated_at or []
             generation_timestamps.append(timezone.now().isoformat())
             job.ai_summary_generated_at = generation_timestamps
             
-            # Calculate degree
             degree = job.calculate_degree()
             
-            # Save version
             JobSummaryVersion.objects.create(
                 job=job,
                 version_number=job.ai_summary_version,
@@ -465,7 +824,6 @@ Return ONLY valid JSON in this format:
                 ai_model_used='gpt-4o-mini'
             )
             
-            # Log action
             JobActionLog.objects.create(
                 job=job,
                 action='ai_summary_generated',
@@ -477,56 +835,69 @@ Return ONLY valid JSON in this format:
                     'model': 'gpt-4o-mini'
                 }
             )
-            
-            # Log to ActivityLog
-            ActivityLog.objects.create(
-                event_key=JOB_EVENTS['summary_generated'],
-                category='job_management',
-                subject_user=request.user,
-                performed_by=request.user,
-                metadata={
-                    'job_system_id': job.system_id,
-                    'job_id': job.job_id,
-                    'version': job.ai_summary_version,
-                    'degree': degree,
-                    'model': 'gpt-4o-mini',
-                    'topic': job.topic,
-                    'word_count': job.word_count,
-                    'referencing_style': job.referencing_style,
-                    'writing_style': job.writing_style
-                }
-            )
-            
-            # Check if should auto-accept
-            auto_accept = job.should_auto_accept()
+
+            # -----------------------------
+            # AUTO ACCEPT & REDIRECT LOGIC
+            # -----------------------------
+            auto_accept = False
+            auto_redirect = False
+
+            # Rule 1: Perfect summary (degree 0) → Auto accept AND redirect
+            if degree == 0:
+                auto_accept = True
+                auto_redirect = True
+
+            # Rule 2: Version 3 reached → Auto accept but NO redirect
+            elif job.ai_summary_version >= 3:
+                auto_accept = True
+                auto_redirect = False
+
+            # Apply auto-accept
             if auto_accept:
                 job.ai_summary_accepted_at = timezone.now()
-                job.status = 'pending'
-                
+                job.status = "pending"
+
                 JobActionLog.objects.create(
                     job=job,
-                    action='ai_summary_accepted',
+                    action="ai_summary_accepted",
                     performed_by=request.user,
-                    performed_by_type='system',
+                    performed_by_type="system",
                     details={
-                        'auto_accepted': True,
-                        'reason': 'degree_0' if degree == 0 else 'version_3'
+                        "version": job.ai_summary_version,
+                        "degree": degree,
+                        "auto_accepted": True,
+                        "redirect": auto_redirect
                     }
                 )
+
+            
+            # auto_accept = job.should_auto_accept()
+            # if auto_accept:
+            #     job.ai_summary_accepted_at = timezone.now()
+            #     job.status = 'pending'
                 
-                # Log auto-acceptance
+            #     JobActionLog.objects.create(
+            #         job=job,
+            #         action='ai_summary_accepted',
+            #         performed_by=request.user,
+            #         performed_by_type='system',
+            #         details={
+            #             'auto_accepted': True,
+            #             'reason': 'degree_0' if degree == 0 else 'version_3'
+            #         }
+            #     )
+                
                 ActivityLog.objects.create(
-                    event_key=JOB_EVENTS['summary_accepted'],
+                    event_key=JOB_EVENTS['summary_generated'],
                     category='job_management',
                     subject_user=request.user,
                     performed_by=request.user,
                     metadata={
                         'job_system_id': job.system_id,
                         'job_id': job.job_id,
-                        'auto_accepted': True,
-                        'reason': 'degree_0' if degree == 0 else 'version_3',
                         'version': job.ai_summary_version,
-                        'degree': degree
+                        'degree': degree,
+                        'model': 'gpt-4o-mini'
                     }
                 )
             
@@ -544,18 +915,21 @@ Return ONLY valid JSON in this format:
                     'version': job.ai_summary_version,
                     'degree': degree,
                     'auto_accepted': auto_accept,
+                    'auto_redirect': auto_redirect,
                     'can_regenerate': job.can_regenerate_summary()
+
                 }
             })
-            
+
     except Job.DoesNotExist:
         return JsonResponse({'success': False, 'message': 'Job not found'}, status=404)
-    except json.JSONDecodeError as e:
-        logger.error(f"Error parsing AI response: {str(e)}")
+    except json.JSONDecodeError:
         return JsonResponse({'success': False, 'message': 'Error parsing AI response'}, status=500)
     except Exception as e:
         logger.error(f"Error generating AI summary: {str(e)}")
         return JsonResponse({'success': False, 'message': f'Error: {str(e)}'}, status=500)
+
+
 
 
 @login_required

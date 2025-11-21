@@ -10,7 +10,9 @@ from accounts.services import log_activity_event
 import logging
 from datetime import datetime, time
 
-from .models import Holiday
+from .models import Holiday,PriceMaster,ReferencingMaster,AcademicWritingMaster
+from bson import ObjectId
+from bson.errors import InvalidId
 from .services.google_calendar_service import GoogleCalendarService
 from datetime import datetime, timedelta
 
@@ -942,3 +944,627 @@ def delete_holiday(request, holiday_id):
         messages.error(request, 'An error occurred while deleting the holiday.')
 
     return redirect('holiday_master')
+
+
+@login_required
+@superadmin_required
+def price_master(request):
+    """Price Master - List all prices (Djongo-safe)"""
+    try:
+        raw_prices = list(PriceMaster.objects.all().order_by('-created_at'))
+        prices = [
+            price for price in raw_prices
+            if not getattr(price, 'is_deleted', False)
+        ]
+        context = {
+            'prices': prices,
+            'total_prices': len(prices),
+        }
+        return render(request, 'price_master.html', context)
+        
+    except Exception as e:
+        logger.exception(f"Error loading price master: {str(e)}")
+        messages.error(request, 'Error loading prices.')
+        return render(request, 'price_master.html', {'prices': [], 'total_prices': 0})
+
+
+@login_required
+@superadmin_required
+def create_price(request):
+    """Create a new price entry (Djongo-safe)"""
+    if request.method == 'POST':
+        try:
+            category = request.POST.get('category', '').strip()
+            level = request.POST.get('level', '').strip()
+            price_per_word = request.POST.get('price_per_word', '').strip()
+            
+            # Validation
+            if not category or not level or not price_per_word:
+                messages.error(request, 'All fields are required.')
+                return redirect('price_master')
+            
+            try:
+                price_per_word = float(price_per_word)
+                if price_per_word <= 0:
+                    messages.error(request, 'Price per word must be greater than 0.')
+                    return redirect('price_master')
+            except ValueError:
+                messages.error(request, 'Invalid price format.')
+                return redirect('price_master')
+            
+            # Check for existing combination (Djongo-safe approach)
+            all_matching = list(PriceMaster.objects.filter(
+                category=category,
+                level=level
+            ))
+            
+            # Filter in Python to avoid Djongo NOT operator issues
+            existing = next(
+                (item for item in all_matching if not getattr(item, 'is_deleted', False)),
+                None
+            )
+            
+            if existing:
+                messages.error(request, f'Price already exists for {category} - {level}.')
+                return redirect('price_master')
+            
+            with transaction.atomic():
+                price_obj = PriceMaster()
+                price_obj.category = category
+                price_obj.level = level
+                price_obj.price_per_word = price_per_word
+                price_obj.created_by = request.user
+                price_obj.created_at = timezone.now()
+                price_obj.save()
+                
+                log_activity_event(
+                    'price.created_at',
+                    subject_user=None,
+                    performed_by=request.user,
+                    metadata={
+                        'price_id': str(price_obj.id),
+                        'category': category,
+                        'level': level,
+                        'price_per_word': str(price_per_word),
+                    },
+                )
+                
+                logger.info(f"Price created for {category} - {level} by {request.user.email}")
+                messages.success(request, f'Price for {category} - {level} created successfully!')
+            
+            return redirect('price_master')
+            
+        except Exception as e:
+            logger.exception(f"Error creating price: {str(e)}")
+            messages.error(request, 'An error occurred while creating the price.')
+            return redirect('price_master')
+    
+    return redirect('price_master')
+
+
+@login_required
+@superadmin_required
+def edit_price(request, price_id):
+    """Update an existing price entry (Djongo-safe)"""
+    if request.method != 'POST':
+        return redirect('price_master')
+    
+    # Djongo-safe lookup
+    all_prices = list(PriceMaster.objects.filter(id=price_id))
+    price_obj = next(
+        (item for item in all_prices if not getattr(item, 'is_deleted', False)),
+        None
+    )
+    
+    if not price_obj:
+        messages.error(request, 'Price entry not found.')
+        return redirect('price_master')
+    
+    try:
+        category = request.POST.get('category', '').strip()
+        level = request.POST.get('level', '').strip()
+        price_per_word = request.POST.get('price_per_word', '').strip()
+        
+        if not category or not level or not price_per_word:
+            messages.error(request, 'All fields are required.')
+            return redirect('price_master')
+        
+        try:
+            price_per_word = float(price_per_word)
+            if price_per_word <= 0:
+                messages.error(request, 'Price per word must be greater than 0.')
+                return redirect('price_master')
+        except ValueError:
+            messages.error(request, 'Invalid price format.')
+            return redirect('price_master')
+        
+        # Check for duplicate combination (excluding current record) - Djongo-safe
+        all_matching = list(PriceMaster.objects.filter(
+            category=category,
+            level=level
+        ))
+        
+        # Filter in Python to avoid Djongo issues
+        existing = next(
+            (item for item in all_matching 
+             if item.id != price_id and not getattr(item, 'is_deleted', False)),
+            None
+        )
+        
+        if existing:
+            messages.error(request, f'Price already exists for {category} - {level}.')
+            return redirect('price_master')
+        
+        with transaction.atomic():
+            price_obj.category = category
+            price_obj.level = level
+            price_obj.price_per_word = price_per_word
+            price_obj.updated_by = request.user
+            price_obj.updated_at = timezone.now()
+            price_obj.save()
+            
+            log_activity_event(
+                'price.updated_at',
+                subject_user=None,
+                performed_by=request.user,
+                metadata={
+                    'price_id': str(price_obj.id),
+                    'category': category,
+                    'level': level,
+                    'price_per_word': str(price_per_word),
+                },
+            )
+        
+        messages.success(request, f'Price for {category} - {level} updated successfully.')
+    except Exception as e:
+        logger.exception(f"Error updating price: {str(e)}")
+        messages.error(request, 'An error occurred while updating the price.')
+    
+    return redirect('price_master')
+
+
+@login_required
+@superadmin_required
+def delete_price(request, price_id):
+    """Delete a price entry (Djongo-safe)"""
+    if request.method != 'POST':
+        return redirect('price_master')
+    
+    # Safe lookup
+    price_obj = None
+    try:
+        price_obj = PriceMaster.objects.get(id=price_id)
+    except PriceMaster.DoesNotExist:
+        messages.error(request, 'Price entry not found.')
+        return redirect('price_master')
+    
+    price_id_ref = str(price_obj.id)
+    category_ref = price_obj.category
+    level_ref = price_obj.level
+    
+    try:
+        with transaction.atomic():
+            price_obj.delete()
+            
+            log_activity_event(
+                'price.deleted',
+                subject_user=None,
+                performed_by=request.user,
+                metadata={
+                    'price_id': price_id_ref,
+                    'category': category_ref,
+                    'level': level_ref,
+                },
+            )
+        
+        messages.success(request, f'Price for {category_ref} - {level_ref} deleted successfully.')
+    except Exception as e:
+        logger.exception(f"Error deleting price: {str(e)}")
+        messages.error(request, 'An error occurred while deleting the price.')
+    
+    return redirect('price_master')
+
+
+@login_required
+@superadmin_required
+def referencing_master(request):
+    """Referencing Master - List all references (Djongo-safe)"""
+    try:
+        raw_references = list(ReferencingMaster.objects.all().order_by('-created_at'))
+        references = [
+            reference for reference in raw_references
+            if not getattr(reference, 'is_deleted', False)
+        ]
+        context = {
+            'references': references,
+            'total_references': len(references),
+        }
+        return render(request, 'referencing_master.html', context)
+        
+    except Exception as e:
+        logger.exception(f"Error loading referencing master: {str(e)}")
+        messages.error(request, 'Error loading references.')
+        return render(request, 'referencing_master.html', {'references': [], 'total_references': 0})
+
+
+@login_required
+@superadmin_required
+def create_reference(request):
+    """Create a new reference entry (Djongo-safe)"""
+    if request.method == 'POST':
+        try:
+            referencing_style = request.POST.get('referencing_style', '').strip()
+            used_in = request.POST.get('used_in', '').strip()
+            
+            # Validation
+            if not referencing_style or not used_in:
+                messages.error(request, 'All fields are required.')
+                return redirect('referencing_master')
+            
+            # Check for existing combination (Djongo-safe approach)
+            all_matching = list(ReferencingMaster.objects.filter(
+                referencing_style=referencing_style,
+                used_in=used_in
+            ))
+            
+            # Filter in Python to avoid Djongo NOT operator issues
+            existing = next(
+                (item for item in all_matching if not getattr(item, 'is_deleted', False)),
+                None
+            )
+            
+            if existing:
+                messages.error(request, f'Reference already exists for {referencing_style} - {used_in}.')
+                return redirect('referencing_master')
+            
+            with transaction.atomic():
+                reference_obj = ReferencingMaster()
+                reference_obj.referencing_style = referencing_style
+                reference_obj.used_in = used_in
+                reference_obj.created_by = request.user
+                reference_obj.created_at = timezone.now()
+                reference_obj.save()
+                
+                log_activity_event(
+                    'reference.created_at',
+                    subject_user=None,
+                    performed_by=request.user,
+                    metadata={
+                        'reference_id': str(reference_obj.id),
+                        'referencing_style': referencing_style,
+                        'used_in': used_in,
+                    },
+                )
+                
+                logger.info(f"Reference created for {referencing_style} - {used_in} by {request.user.email}")
+                messages.success(request, f'Reference for {referencing_style} - {used_in} created successfully!')
+            
+            return redirect('referencing_master')
+            
+        except Exception as e:
+            logger.exception(f"Error creating reference: {str(e)}")
+            messages.error(request, 'An error occurred while creating the reference.')
+            return redirect('referencing_master')
+    
+    return redirect('referencing_master')
+
+
+@login_required
+@superadmin_required
+def edit_reference(request, reference_id):
+    """Update an existing reference entry (Djongo-safe)"""
+    if request.method != 'POST':
+        return redirect('referencing_master')
+    
+    # Djongo-safe lookup using helper function
+    reference_obj = _find_reference_by_id(reference_id)
+    
+    if not reference_obj:
+        messages.error(request, 'Reference entry not found.')
+        return redirect('referencing_master')
+    
+    try:
+        referencing_style = request.POST.get('referencing_style', '').strip()
+        used_in = request.POST.get('used_in', '').strip()
+        
+        if not referencing_style or not used_in:
+            messages.error(request, 'All fields are required.')
+            return redirect('referencing_master')
+        
+        # Check for duplicate combination (excluding current record) - Djongo-safe
+        all_matching = list(ReferencingMaster.objects.filter(
+            referencing_style=referencing_style,
+            used_in=used_in
+        ))
+        
+        # Filter in Python to avoid Djongo issues
+        existing = next(
+            (item for item in all_matching 
+             if str(item.id) != str(reference_id) and not getattr(item, 'is_deleted', False)),
+            None
+        )
+        
+        if existing:
+            messages.error(request, f'Reference already exists for {referencing_style} - {used_in}.')
+            return redirect('referencing_master')
+        
+        with transaction.atomic():
+            reference_obj.referencing_style = referencing_style
+            reference_obj.used_in = used_in
+            reference_obj.updated_by = request.user
+            reference_obj.updated_at = timezone.now()
+            reference_obj.save()
+            
+            log_activity_event(
+                'reference.updated_at',
+                subject_user=None,
+                performed_by=request.user,
+                metadata={
+                    'reference_id': str(reference_obj.id),
+                    'referencing_style': referencing_style,
+                    'used_in': used_in,
+                },
+            )
+        
+        messages.success(request, f'Reference for {referencing_style} - {used_in} updated successfully.')
+    except Exception as e:
+        logger.exception(f"Error updating reference: {str(e)}")
+        messages.error(request, 'An error occurred while updating the reference.')
+    
+    return redirect('referencing_master')
+
+
+@login_required
+@superadmin_required
+def delete_reference(request, reference_id):
+    """Delete a reference entry (Djongo-safe)"""
+    if request.method != 'POST':
+        return redirect('referencing_master')
+    
+    # Safe lookup using helper function
+    reference_obj = _find_reference_by_id(reference_id)
+    
+    if not reference_obj:
+        messages.error(request, 'Reference entry not found.')
+        return redirect('referencing_master')
+    
+    reference_id_ref = str(reference_obj.id)
+    referencing_style_ref = reference_obj.referencing_style
+    used_in_ref = reference_obj.used_in
+    
+    try:
+        with transaction.atomic():
+            reference_obj.delete()
+            
+            log_activity_event(
+                'reference.deleted',
+                subject_user=None,
+                performed_by=request.user,
+                metadata={
+                    'reference_id': reference_id_ref,
+                    'referencing_style': referencing_style_ref,
+                    'used_in': used_in_ref,
+                },
+            )
+        
+        messages.success(request, f'Reference for {referencing_style_ref} - {used_in_ref} deleted successfully.')
+    except Exception as e:
+        logger.exception(f"Error deleting reference: {str(e)}")
+        messages.error(request, 'An error occurred while deleting the reference.')
+    
+    return redirect('referencing_master')
+
+
+@login_required
+@superadmin_required
+def academic_writing_master(request):
+    """Academic Writing Master - List all writing styles (Djongo-safe)"""
+    try:
+        raw_writings = list(AcademicWritingMaster.objects.all().order_by('-created_at'))
+        writings = [
+            writing for writing in raw_writings
+            if not getattr(writing, 'is_deleted', False)
+        ]
+        context = {
+            'writings': writings,
+            'total_writings': len(writings),
+        }
+        return render(request, 'academic_writing_master.html', context)
+        
+    except Exception as e:
+        logger.exception(f"Error loading academic writing master: {str(e)}")
+        messages.error(request, 'Error loading writing styles.')
+        return render(request, 'academic_writing_master.html', {'writings': [], 'total_writings': 0})
+
+
+@login_required
+@superadmin_required
+def create_writing(request):
+    """Create a new writing style entry (Djongo-safe)"""
+    if request.method == 'POST':
+        try:
+            writing_style = request.POST.get('writing_style', '').strip()
+            
+            # Validation
+            if not writing_style:
+                messages.error(request, 'Writing style is required.')
+                return redirect('academic_writing_master')
+            
+            # Check for existing writing style (Djongo-safe approach)
+            all_matching = list(AcademicWritingMaster.objects.filter(
+                writing_style=writing_style
+            ))
+            
+            # Filter in Python to avoid Djongo NOT operator issues
+            existing = next(
+                (item for item in all_matching if not getattr(item, 'is_deleted', False)),
+                None
+            )
+            
+            if existing:
+                messages.error(request, f'Writing style "{writing_style}" already exists.')
+                return redirect('academic_writing_master')
+            
+            with transaction.atomic():
+                writing_obj = AcademicWritingMaster()
+                writing_obj.writing_style = writing_style
+                writing_obj.created_by = request.user
+                writing_obj.created_at = timezone.now()
+                writing_obj.save()
+                
+                log_activity_event(
+                    'writing.created_at',
+                    subject_user=None,
+                    performed_by=request.user,
+                    metadata={
+                        'writing_id': str(writing_obj.id),
+                        'writing_style': writing_style,
+                    },
+                )
+                
+                logger.info(f"Writing style '{writing_style}' created by {request.user.email}")
+                messages.success(request, f'Writing style "{writing_style}" created successfully!')
+            
+            return redirect('academic_writing_master')
+            
+        except Exception as e:
+            logger.exception(f"Error creating writing style: {str(e)}")
+            messages.error(request, 'An error occurred while creating the writing style.')
+            return redirect('academic_writing_master')
+    
+    return redirect('academic_writing_master')
+
+
+@login_required
+@superadmin_required
+def edit_writing(request, writing_id):
+    """Update an existing writing style entry (Djongo-safe)"""
+    if request.method != 'POST':
+        return redirect('academic_writing_master')
+    
+    # Djongo-safe lookup using helper function
+    writing_obj = _find_writing_by_id(writing_id)
+    
+    if not writing_obj:
+        messages.error(request, 'Writing style not found.')
+        return redirect('academic_writing_master')
+    
+    try:
+        writing_style = request.POST.get('writing_style', '').strip()
+        
+        if not writing_style:
+            messages.error(request, 'Writing style is required.')
+            return redirect('academic_writing_master')
+        
+        # Check for duplicate (excluding current record) - Djongo-safe
+        all_matching = list(AcademicWritingMaster.objects.filter(
+            writing_style=writing_style
+        ))
+        
+        # Filter in Python to avoid Djongo issues
+        existing = next(
+            (item for item in all_matching 
+             if str(item.id) != str(writing_id) and not getattr(item, 'is_deleted', False)),
+            None
+        )
+        
+        if existing:
+            messages.error(request, f'Writing style "{writing_style}" already exists.')
+            return redirect('academic_writing_master')
+        
+        with transaction.atomic():
+            writing_obj.writing_style = writing_style
+            writing_obj.updated_by = request.user
+            writing_obj.updated_at = timezone.now()
+            writing_obj.save()
+            
+            log_activity_event(
+                'writing.updated_at',
+                subject_user=None,
+                performed_by=request.user,
+                metadata={
+                    'writing_id': str(writing_obj.id),
+                    'writing_style': writing_style,
+                },
+            )
+        
+        messages.success(request, f'Writing style "{writing_style}" updated successfully.')
+    except Exception as e:
+        logger.exception(f"Error updating writing style: {str(e)}")
+        messages.error(request, 'An error occurred while updating the writing style.')
+    
+    return redirect('academic_writing_master')
+
+
+@login_required
+@superadmin_required
+def delete_writing(request, writing_id):
+    """Delete a writing style entry (Djongo-safe)"""
+    if request.method != 'POST':
+        return redirect('academic_writing_master')
+    
+    # Safe lookup using helper function
+    writing_obj = _find_writing_by_id(writing_id)
+    
+    if not writing_obj:
+        messages.error(request, 'Writing style not found.')
+        return redirect('academic_writing_master')
+    
+    writing_id_ref = str(writing_obj.id)
+    writing_style_ref = writing_obj.writing_style
+    
+    try:
+        with transaction.atomic():
+            writing_obj.delete()
+            
+            log_activity_event(
+                'writing.deleted',
+                subject_user=None,
+                performed_by=request.user,
+                metadata={
+                    'writing_id': writing_id_ref,
+                    'writing_style': writing_style_ref,
+                },
+            )
+        
+        messages.success(request, f'Writing style "{writing_style_ref}" deleted successfully.')
+    except Exception as e:
+        logger.exception(f"Error deleting writing style: {str(e)}")
+        messages.error(request, 'An error occurred while deleting the writing style.')
+    
+    return redirect('academic_writing_master')
+
+
+def _find_writing_by_id(writing_id):
+    """
+    Djongo-safe lookup that supports integer and ObjectId primary keys.
+    """
+    if not writing_id:
+        return None
+
+    candidates = []
+    try:
+        candidates = list(AcademicWritingMaster.objects.filter(id=writing_id))
+    except Exception:
+        candidates = []
+
+    if not candidates:
+        # Try int conversion
+        if isinstance(writing_id, str) and writing_id.isdigit():
+            try:
+                candidates = list(AcademicWritingMaster.objects.filter(id=int(writing_id)))
+            except Exception:
+                candidates = []
+
+    if not candidates:
+        # Try ObjectId conversion
+        try:
+            object_id = ObjectId(str(writing_id))
+            candidates = list(AcademicWritingMaster.objects.filter(id=object_id))
+        except (InvalidId, Exception):
+            candidates = []
+
+    return next(
+        (item for item in candidates if not getattr(item, 'is_deleted', False)),
+        None
+    )

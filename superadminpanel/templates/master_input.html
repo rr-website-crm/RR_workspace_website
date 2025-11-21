@@ -35,7 +35,7 @@
         </div>
 
         <!-- Price Master -->
-        <div class="card" style="opacity: 0.5; cursor: not-allowed;">
+        {% comment %} <div class="card" style="opacity: 0.5; cursor: not-allowed;">
             <div class="card-header">
                 <h3 class="card-title">Price Master</h3>
             </div>
@@ -43,10 +43,18 @@
                 <p style="opacity: 0.8;">Maintain pricing information</p>
                 <span class="status-tag status-pending" style="font-size: 11px;">Coming Soon</span>
             </div>
-        </div>
+        </div> {% endcomment %}
+        <a href="{% url 'price_master' %}" class="card" style="text-decoration: none;">
+            <div class="card-header">
+                <h3 class="card-title">Price Master</h3>
+            </div>
+            <div class="card-body">
+                <p style="opacity: 0.8;">Maintain pricing information</p>
+            </div>
+        </a>
 
         <!-- Academic Writing Style Master -->
-        <div class="card" style="opacity: 0.5; cursor: not-allowed;">
+        {% comment %} <div class="card" style="opacity: 0.5; cursor: not-allowed;">
             <div class="card-header">
                 <h3 class="card-title">Academic Writing Style Master</h3>
             </div>
@@ -54,10 +62,18 @@
                 <p style="opacity: 0.8;">Define academic writing standards</p>
                 <span class="status-tag status-pending" style="font-size: 11px;">Coming Soon</span>
             </div>
-        </div>
+        </div> {% endcomment %}
+        <a href="{% url 'academic_writing_master' %}" class="card" style="text-decoration: none;">
+            <div class="card-header">
+                <h3 class="card-title">Academic Writing Style Master</h3>
+            </div>
+            <div class="card-body">
+                <p style="opacity: 0.8;">Define academic writing standards</p>
+            </div>
+        </a>
 
         <!-- Referencing Master -->
-        <div class="card" style="opacity: 0.5; cursor: not-allowed;">
+        {% comment %} <div class="card" style="opacity: 0.5; cursor: not-allowed;">
             <div class="card-header">
                 <h3 class="card-title">Referencing Master</h3>
             </div>
@@ -65,7 +81,15 @@
                 <p style="opacity: 0.8;">Manage referencing formats and styles</p>
                 <span class="status-tag status-pending" style="font-size: 11px;">Coming Soon</span>
             </div>
-        </div>
+        </div> {% endcomment %}
+        <a href="{% url 'referencing_master' %}" class="card" style="text-decoration: none;">
+            <div class="card-header">
+                <h3 class="card-title">Referencing Master</h3>
+            </div>
+            <div class="card-body">
+                <p style="opacity: 0.8;">Manage referencing formats and styles</p>
+            </div>
+        </a>
 
         <!-- Employee Status Master -->
         <div class="card" style="opacity: 0.5; cursor: not-allowed;">

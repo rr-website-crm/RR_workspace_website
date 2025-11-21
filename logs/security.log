@@ -175,3 +175,30 @@ WARNING 2025-11-19 14:57:44,856 middleware Unauthorized access attempt to /favic
 ERROR 2025-11-19 15:00:49,378 views Error during logout for srijabiswas3001@gmail.com: 
 ERROR 2025-11-19 15:06:21,121 views Error during logout for admin@gmail.com: 
 WARNING 2025-11-19 16:16:22,241 middleware Unauthorized access attempt to /accounts/logout/ from IP: 127.0.0.1
+WARNING 2025-11-20 10:58:10,465 middleware Unauthorized access attempt to /favicon.ico from IP: 127.0.0.1
+ERROR 2025-11-20 11:02:32,270 views Error during logout for srijabiswas3001@gmail.com: 
+WARNING 2025-11-20 11:02:32,989 middleware Unauthorized access attempt to /favicon.ico from IP: 127.0.0.1
+ERROR 2025-11-20 12:55:16,636 views Error during logout for admin@gmail.com: 
+ERROR 2025-11-20 12:55:38,676 views Error during logout for srijabiswas3001@gmail.com: 
+WARNING 2025-11-20 14:03:25,016 middleware Unauthorized access attempt to /favicon.ico from IP: 127.0.0.1
+WARNING 2025-11-20 14:03:36,338 views Failed login attempt for: admin@gmail.com from IP: 127.0.0.1
+WARNING 2025-11-20 14:03:36,854 middleware Unauthorized access attempt to /favicon.ico from IP: 127.0.0.1
+WARNING 2025-11-20 15:04:27,316 middleware Unauthorized access attempt to /favicon.ico from IP: 127.0.0.1
+WARNING 2025-11-20 16:02:27,589 middleware Unauthorized access attempt to /favicon.ico from IP: 127.0.0.1
+ERROR 2025-11-20 16:17:15,176 views Error during logout for admin@gmail.com: 
+WARNING 2025-11-20 16:17:16,461 middleware Unauthorized access attempt to /favicon.ico from IP: 127.0.0.1
+WARNING 2025-11-20 17:35:53,980 middleware Unauthorized access attempt to /favicon.ico from IP: 127.0.0.1
+ERROR 2025-11-20 17:57:25,964 views Error during logout for admin@gmail.com: 
+WARNING 2025-11-20 17:57:28,987 middleware Unauthorized access attempt to /favicon.ico from IP: 127.0.0.1
+WARNING 2025-11-20 17:57:40,358 views Failed login attempt for: srijabiswas3001@gmail.com from IP: 127.0.0.1
+WARNING 2025-11-20 17:57:40,871 middleware Unauthorized access attempt to /favicon.ico from IP: 127.0.0.1
+ERROR 2025-11-20 18:08:20,986 views Error during logout for srijabiswas3001@gmail.com: 
+ERROR 2025-11-20 18:09:01,656 views Error during logout for admin@gmail.com: 
+ERROR 2025-11-20 18:33:05,625 views Error during logout for srijabiswas3001@gmail.com: 
+ERROR 2025-11-20 18:33:33,231 views Error during logout for admin@gmail.com: 
+ERROR 2025-11-20 18:38:30,404 views Error during logout for srijabiswas3001@gmail.com: 
+WARNING 2025-11-21 10:54:04,803 middleware Unauthorized access attempt to /favicon.ico from IP: 127.0.0.1
+ERROR 2025-11-21 11:27:48,751 views Error during logout for admin@gmail.com: 
+WARNING 2025-11-21 11:27:49,418 middleware Unauthorized access attempt to /favicon.ico from IP: 127.0.0.1
+WARNING 2025-11-21 11:28:04,594 views Failed login attempt for: srijabiswas3001@gmail.com from IP: 127.0.0.1
+WARNING 2025-11-21 11:28:05,101 middleware Unauthorized access attempt to /favicon.ico from IP: 127.0.0.1

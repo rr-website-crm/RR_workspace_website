@@ -28,4 +28,24 @@ urlpatterns = [
     path('holiday-master/create/', views.create_holiday, name='create_holiday'),
     path('holiday-master/<int:holiday_id>/edit/', views.edit_holiday, name='edit_holiday'),
     path('holiday-master/delete/<int:holiday_id>/', views.delete_holiday, name='delete_holiday'),
+
+    # Price Master
+    path('price-master/', views.price_master, name='price_master'),
+    path('price-master/create/', views.create_price, name='create_price'),
+    path('price-master/<int:price_id>/edit/', views.edit_price, name='edit_price'),
+    path('price-master/delete/<int:price_id>/', views.delete_price, name='delete_price'),
+
+    # Referencing Master
+    path('referencing-master/', views.referencing_master, name='referencing_master'),
+    path('referencing-master/create/', views.create_reference, name='create_reference'),
+    path('referencing-master/<str:reference_id>/edit/', views.edit_reference, name='edit_reference'),
+    path('referencing-master/delete/<str:reference_id>/', views.delete_reference, name='delete_reference'),
+
+    # Add these URLs to your superadminpanel/urls.py
+
+# Academic Writing Style Master
+path('academic-writing-master/', views.academic_writing_master, name='academic_writing_master'),
+path('academic-writing-master/create/', views.create_writing, name='create_writing'),
+path('academic-writing-master/<str:writing_id>/edit/', views.edit_writing, name='edit_writing'),
+path('academic-writing-master/delete/<str:writing_id>/', views.delete_writing, name='delete_writing'),
 ]

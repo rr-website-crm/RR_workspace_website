@@ -26,7 +26,9 @@ def log_activity_event(event_key, subject_user=None, performed_by=None, metadata
         elif event_key.startswith('employee_id.'):
             category = ActivityLog.CATEGORY_EMPLOYEE
         elif event_key.startswith('holiday.'):
-            category = 'holiday_master'
+            category = ActivityLog.CATEGORY_HOLIDAY
+        elif event_key.startswith('job.'):
+            category = ActivityLog.CATEGORY_JOB
         
         # Create activity log
         ActivityLog.objects.create(

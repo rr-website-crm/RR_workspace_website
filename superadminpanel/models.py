@@ -60,3 +60,155 @@ class Holiday(models.Model):
         if self.date_type == 'single':
             return f"{self.holiday_name} - {self.date}"
         return f"{self.holiday_name} - {self.from_date} to {self.to_date}"
+    
+
+class PriceMaster(models.Model):
+    """Price Master Model"""
+    
+    CATEGORY_CHOICES = [
+        ('IT', 'IT'),
+        ('NON-IT', 'NON-IT'),
+    ]
+    
+    LEVEL_CHOICES = [
+        ('basic', 'Basic'),
+        ('intermediate', 'Intermediate'),
+        ('advance', 'Advance'),
+    ]
+    
+    # Basic Information
+    category = models.CharField(max_length=20, choices=CATEGORY_CHOICES)
+    level = models.CharField(max_length=20, choices=LEVEL_CHOICES)
+    price_per_word = models.DecimalField(max_digits=10, decimal_places=2)
+    
+    # Lifecycle Timestamps
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    deleted_at = models.DateTimeField(null=True, blank=True)
+    
+    # User tracking
+    created_by = models.ForeignKey(
+        CustomUser, 
+        on_delete=models.SET_NULL, 
+        null=True, 
+        related_name='prices_created'
+    )
+    updated_by = models.ForeignKey(
+        CustomUser, 
+        on_delete=models.SET_NULL, 
+        null=True, 
+        blank=True, 
+        related_name='prices_updated'
+    )
+    deleted_by = models.ForeignKey(
+        CustomUser, 
+        on_delete=models.SET_NULL, 
+        null=True, 
+        blank=True, 
+        related_name='prices_deleted'
+    )
+    
+    # Soft delete
+    is_deleted = models.BooleanField(default=False)
+    
+    class Meta:
+        db_table = 'price_master'
+        ordering = ['-created_at']
+        verbose_name = 'Price Master'
+        verbose_name_plural = 'Price Masters'
+        unique_together = ['category', 'level']
+    
+    def __str__(self):
+        return f"{self.get_category_display()} - {self.get_level_display()} - ₹{self.price_per_word}/word"
+
+
+class ReferencingMaster(models.Model):
+    """Referencing Master Model"""
+    
+    # Basic Information
+    referencing_style = models.CharField(max_length=100)
+    used_in = models.CharField(max_length=255)
+    
+    # Lifecycle Timestamps
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    deleted_at = models.DateTimeField(null=True, blank=True)
+    
+    # User tracking
+    created_by = models.ForeignKey(
+        CustomUser, 
+        on_delete=models.SET_NULL, 
+        null=True, 
+        related_name='references_created'
+    )
+    updated_by = models.ForeignKey(
+        CustomUser, 
+        on_delete=models.SET_NULL, 
+        null=True, 
+        blank=True, 
+        related_name='references_updated'
+    )
+    deleted_by = models.ForeignKey(
+        CustomUser, 
+        on_delete=models.SET_NULL, 
+        null=True, 
+        blank=True, 
+        related_name='references_deleted'
+    )
+    
+    # Soft delete
+    is_deleted = models.BooleanField(default=False)
+    
+    class Meta:
+        db_table = 'referencing_master'
+        ordering = ['-created_at']
+        verbose_name = 'Referencing Master'
+        verbose_name_plural = 'Referencing Masters'
+    
+    def __str__(self):
+        return f"{self.referencing_style} - {self.used_in}"
+    
+class AcademicWritingMaster(models.Model):
+    """Academic Writing Style Master Model"""
+    
+    # Basic Information
+    writing_style = models.CharField(max_length=100)
+    
+    # Lifecycle Timestamps
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    deleted_at = models.DateTimeField(null=True, blank=True)
+    
+    # User tracking
+    created_by = models.ForeignKey(
+        CustomUser, 
+        on_delete=models.SET_NULL, 
+        null=True, 
+        related_name='writings_created'
+    )
+    updated_by = models.ForeignKey(
+        CustomUser, 
+        on_delete=models.SET_NULL, 
+        null=True, 
+        blank=True, 
+        related_name='writings_updated'
+    )
+    deleted_by = models.ForeignKey(
+        CustomUser, 
+        on_delete=models.SET_NULL, 
+        null=True, 
+        blank=True, 
+        related_name='writings_deleted'
+    )
+    
+    # Soft delete
+    is_deleted = models.BooleanField(default=False)
+    
+    class Meta:
+        db_table = 'academic_writing_master'
+        ordering = ['-created_at']
+        verbose_name = 'Academic Writing Style'
+        verbose_name_plural = 'Academic Writing Styles'
+    
+    def __str__(self):
+        return self.writing_style
