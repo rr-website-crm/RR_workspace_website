@@ -252,3 +252,7 @@ ERROR 2025-11-21 13:37:40,323 views Error during logout for paulritabrata2@gmail
 WARNING 2025-11-21 13:37:41,149 middleware Unauthorized access attempt to /favicon.ico from IP: 127.0.0.1
 WARNING 2025-11-21 13:37:42,932 middleware Unauthorized access attempt to /favicon.ico from IP: 127.0.0.1
 WARNING 2025-11-21 13:38:55,825 middleware Unauthorized access attempt to /favicon.ico from IP: 127.0.0.1
+WARNING 2025-11-21 14:46:41,612 middleware Unauthorized access attempt to /accounts/logout/ from IP: 127.0.0.1
+WARNING 2025-11-21 14:46:44,335 middleware Unauthorized access attempt to /favicon.ico from IP: 127.0.0.1
+WARNING 2025-11-21 14:54:08,777 middleware Unauthorized access attempt to /favicon.ico from IP: 127.0.0.1
+WARNING 2025-11-21 15:18:08,935 middleware Unauthorized access attempt to /favicon.ico from IP: 127.0.0.1
