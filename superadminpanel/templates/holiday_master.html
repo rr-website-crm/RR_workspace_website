@@ -4,6 +4,8 @@
 {% block title %}Holiday Master - CRM Portal{% endblock %}
 
 {% block extra_css %}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/themes/dark.css">
 <style>
     .modal-overlay {
         display: none;
@@ -38,6 +40,28 @@
     
     .date-group.active {
         display: block;
+    }
+
+        /* Custom Flatpickr styling to match your theme */
+    .flatpickr-calendar {
+        background: var(--card-bg) !important;
+        border: 2px solid var(--primary) !important;
+        box-shadow: var(--shadow-lg) !important;
+    }
+    
+    .flatpickr-day.disabled {
+        color: rgba(255, 255, 255, 0.2) !important;
+        cursor: not-allowed !important;
+    }
+    
+    .flatpickr-day.sunday {
+        color: #ff6b6b !important;
+        background: rgba(255, 107, 107, 0.1) !important;
+    }
+    
+    .flatpickr-day.selected {
+        background: var(--primary) !important;
+        border-color: var(--primary) !important;
     }
 </style>
 {% endblock %}
@@ -221,28 +245,34 @@
             <!-- Single Date -->
             <div class="form-group date-group active" id="singleDateGroup">
                 <label for="date" class="form-label required">Choose Date</label>
-                <input type="date" 
-                       id="date" 
-                       name="date" 
-                       class="form-control">
+                <input type="text" 
+                    id="date" 
+                    name="date" 
+                    class="form-control"
+                    placeholder="Select date"
+                    readonly>
             </div>
-            
+
             <!-- Consecutive Dates -->
             <div class="date-group" id="consecutiveDateGroup">
                 <div class="form-row">
                     <div class="form-group">
                         <label for="from_date" class="form-label required">From Date</label>
-                        <input type="date" 
-                               id="from_date" 
-                               name="from_date" 
-                               class="form-control">
+                        <input type="text" 
+                            id="from_date" 
+                            name="from_date" 
+                            class="form-control"
+                            placeholder="Select from date"
+                            readonly>
                     </div>
                     <div class="form-group">
                         <label for="to_date" class="form-label required">To Date</label>
-                        <input type="date" 
-                               id="to_date" 
-                               name="to_date" 
-                               class="form-control">
+                        <input type="text" 
+                            id="to_date" 
+                            name="to_date" 
+                            class="form-control"
+                            placeholder="Select to date"
+                            readonly>
                     </div>
                 </div>
             </div>
@@ -272,115 +302,189 @@
 {% endblock %}
 
 {% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 <script>
-    const holidayModalState = {
-        modalId: 'createHolidayModal',
-        createAction: '{% url "create_holiday" %}',
-        form: null,
-        title: null,
-        submitBtn: null,
+// Modal Functions
+function openModal(modalId) {
+    const modal = document.getElementById(modalId);
+    if (modal) {
+        modal.classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
+}
+
+function closeModal(modalId) {
+    const modal = document.getElementById(modalId);
+    if (modal) {
+        modal.classList.remove('active');
+        document.body.style.overflow = '';
+    }
+}
+
+// Holiday Modal State
+const holidayModalState = {
+    modalId: 'createHolidayModal',
+    createAction: '{% url "create_holiday" %}',
+    form: null,
+    title: null,
+    submitBtn: null,
+};
+
+// Toggle Date Fields
+function toggleDateFields(type) {
+    const singleGroup = document.getElementById('singleDateGroup');
+    const consecutiveGroup = document.getElementById('consecutiveDateGroup');
+    const singleDateInput = document.getElementById('date');
+    const fromDateInput = document.getElementById('from_date');
+    const toDateInput = document.getElementById('to_date');
+    
+    if (type === 'single') {
+        singleGroup.classList.add('active');
+        consecutiveGroup.classList.remove('active');
+        if (singleDateInput) singleDateInput.required = true;
+        if (fromDateInput) fromDateInput.required = false;
+        if (toDateInput) toDateInput.required = false;
+    } else {
+        singleGroup.classList.remove('active');
+        consecutiveGroup.classList.add('active');
+        if (singleDateInput) singleDateInput.required = false;
+        if (fromDateInput) fromDateInput.required = true;
+        if (toDateInput) toDateInput.required = true;
+    }
+}
+
+// Set Date Type
+function setDateType(type) {
+    const radio = document.querySelector('input[name="date_type"][value="' + type + '"]');
+    if (radio) {
+        radio.checked = true;
+    }
+    toggleDateFields(type);
+}
+
+// Reset Holiday Form
+function resetHolidayForm() {
+    if (!holidayModalState.form) return;
+    holidayModalState.form.reset();
+    holidayModalState.form.action = holidayModalState.createAction;
+    setDateType('single');
+    
+    const descriptionInput = document.getElementById('description');
+    if (descriptionInput) {
+        descriptionInput.value = '';
+    }
+}
+
+// Show Create Holiday Modal
+function showCreateHolidayModal() {
+    resetHolidayForm();
+    
+    if (holidayModalState.title) {
+        holidayModalState.title.textContent = 'Create Holiday';
+    }
+    if (holidayModalState.submitBtn) {
+        holidayModalState.submitBtn.textContent = 'Create Holiday';
+    }
+    
+    openModal(holidayModalState.modalId);
+}
+
+// Show Edit Holiday Modal
+function showEditHolidayModal(button) {
+    if (!holidayModalState.form || !button) return;
+    
+    resetHolidayForm();
+    
+    if (holidayModalState.title) {
+        holidayModalState.title.textContent = 'Edit Holiday';
+    }
+    if (holidayModalState.submitBtn) {
+        holidayModalState.submitBtn.textContent = 'Update Holiday';
+    }
+    
+    holidayModalState.form.action = button.dataset.action || holidayModalState.createAction;
+    
+    document.getElementById('holiday_name').value = button.dataset.name || '';
+    document.getElementById('holiday_type').value = button.dataset.type || 'full_day';
+    document.getElementById('description').value = button.dataset.description || '';
+    
+    const selectedDateType = button.dataset.dateType || 'single';
+    setDateType(selectedDateType);
+    
+    if (selectedDateType === 'single') {
+        document.getElementById('date').value = button.dataset.date || '';
+    } else {
+        document.getElementById('from_date').value = button.dataset.fromDate || '';
+        document.getElementById('to_date').value = button.dataset.toDate || '';
+    }
+    
+    openModal(holidayModalState.modalId);
+}
+
+// Initialize on DOM Load
+document.addEventListener('DOMContentLoaded', function() {
+    // Initialize modal state
+    holidayModalState.form = document.getElementById('holidayForm');
+    holidayModalState.title = document.getElementById('holidayModalTitle');
+    holidayModalState.submitBtn = document.getElementById('holidaySubmitBtn');
+    
+    // Flatpickr configuration
+    const flatpickrConfig = {
+        dateFormat: "Y-m-d",
+        minDate: "today",
+        disable: [
+            function(date) {
+                // Disable Sundays (0 = Sunday)
+                return (date.getDay() === 0);
+            }
+        ],
+        onDayCreate: function(dObj, dStr, fp, dayElem) {
+            // Add visual indicator for Sundays
+            if (dayElem.dateObj.getDay() === 0) {
+                dayElem.classList.add('sunday');
+            }
+        },
+        locale: {
+            firstDayOfWeek: 1 // Start week on Monday
+        }
     };
-
-    function toggleDateFields(type) {
-        const singleGroup = document.getElementById('singleDateGroup');
-        const consecutiveGroup = document.getElementById('consecutiveDateGroup');
-        const singleDateInput = document.getElementById('date');
-        const fromDateInput = document.getElementById('from_date');
-        const toDateInput = document.getElementById('to_date');
-        
-        if (type === 'single') {
-            singleGroup.classList.add('active');
-            consecutiveGroup.classList.remove('active');
-            if (singleDateInput) singleDateInput.required = true;
-            if (fromDateInput) fromDateInput.required = false;
-            if (toDateInput) toDateInput.required = false;
-        } else {
-            singleGroup.classList.remove('active');
-            consecutiveGroup.classList.add('active');
-            if (singleDateInput) singleDateInput.required = false;
-            if (fromDateInput) fromDateInput.required = true;
-            if (toDateInput) toDateInput.required = true;
-        }
+    
+    // Initialize date pickers for Create Modal
+    flatpickr("#date", flatpickrConfig);
+    flatpickr("#from_date", flatpickrConfig);
+    flatpickr("#to_date", flatpickrConfig);
+    
+    // Date validation for consecutive dates
+    const fromDateInput = document.getElementById('from_date');
+    const toDateInput = document.getElementById('to_date');
+    
+    if (fromDateInput && toDateInput) {
+        fromDateInput.addEventListener('change', function() {
+            const fromDate = this.value;
+            if (fromDate) {
+                toDateInput.min = fromDate;
+                // Update flatpickr instance
+                toDateInput._flatpickr.set('minDate', fromDate);
+            }
+        });
     }
-
-    function setDateType(type) {
-        const radio = document.querySelector(`input[name="date_type"][value="${type}"]`);
-        if (radio) {
-            radio.checked = true;
-        }
-        toggleDateFields(type);
+    
+    // Close modal on overlay click
+    const modalOverlay = document.getElementById('createHolidayModal');
+    if (modalOverlay) {
+        modalOverlay.addEventListener('click', function(e) {
+            if (e.target === modalOverlay) {
+                closeModal('createHolidayModal');
+            }
+        });
     }
-
-    function resetHolidayForm() {
-        if (!holidayModalState.form) return;
-        holidayModalState.form.reset();
-        holidayModalState.form.action = holidayModalState.createAction;
-        setDateType('single');
-        const descriptionInput = document.getElementById('description');
-        if (descriptionInput) {
-            descriptionInput.value = '';
-        }
-    }
-
-    function showCreateHolidayModal() {
-        resetHolidayForm();
-        if (holidayModalState.title) {
-            holidayModalState.title.textContent = 'Create Holiday';
-        }
-        if (holidayModalState.submitBtn) {
-            holidayModalState.submitBtn.textContent = 'Create Holiday';
-        }
-        openModal(holidayModalState.modalId);
-    }
-
-    function showEditHolidayModal(button) {
-        if (!holidayModalState.form || !button) return;
-        resetHolidayForm();
-
-        if (holidayModalState.title) {
-            holidayModalState.title.textContent = 'Edit Holiday';
-        }
-        if (holidayModalState.submitBtn) {
-            holidayModalState.submitBtn.textContent = 'Update Holiday';
-        }
-
-        holidayModalState.form.action = button.dataset.action || holidayModalState.createAction;
-
-        document.getElementById('holiday_name').value = button.dataset.name || '';
-        document.getElementById('holiday_type').value = button.dataset.type || 'full_day';
-        document.getElementById('description').value = button.dataset.description || '';
-
-        const selectedDateType = button.dataset.dateType || 'single';
-        setDateType(selectedDateType);
-        if (selectedDateType === 'single') {
-            document.getElementById('date').value = button.dataset.date || '';
-        } else {
-            document.getElementById('from_date').value = button.dataset.fromDate || '';
-            document.getElementById('to_date').value = button.dataset.toDate || '';
-        }
-
-        openModal(holidayModalState.modalId);
-    }
-
-    document.addEventListener('DOMContentLoaded', function() {
-        holidayModalState.form = document.getElementById('holidayForm');
-        holidayModalState.title = document.getElementById('holidayModalTitle');
-        holidayModalState.submitBtn = document.getElementById('holidaySubmitBtn');
-
-        const today = new Date().toISOString().split('T')[0];
-        const singleDateInput = document.getElementById('date');
-        const fromDateInput = document.getElementById('from_date');
-        const toDateInput = document.getElementById('to_date');
-
-        if (singleDateInput) singleDateInput.min = today;
-        if (fromDateInput) fromDateInput.min = today;
-        if (toDateInput) toDateInput.min = today;
-        
-        if (fromDateInput && toDateInput) {
-            fromDateInput.addEventListener('change', function() {
-                toDateInput.min = this.value || today;
-            });
+    
+    // Close modal on Escape key
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            closeModal('createHolidayModal');
         }
     });
+});
 </script>
 {% endblock %}

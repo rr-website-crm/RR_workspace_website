@@ -16062,3 +16062,211 @@ INFO 2025-11-21 13:40:05,459 basehttp "GET /dashboard/ HTTP/1.1" 200 22245
 WARNING 2025-11-21 13:40:05,491 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
 INFO 2025-11-21 13:40:07,912 basehttp "GET /process/dashboard/ HTTP/1.1" 200 19203
 WARNING 2025-11-21 13:40:07,951 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
+INFO 2025-11-21 14:46:36,138 autoreload Watching for file changes with StatReloader
+WARNING 2025-11-21 14:46:41,612 middleware Unauthorized access attempt to /accounts/logout/ from IP: 127.0.0.1
+INFO 2025-11-21 14:46:41,614 basehttp "GET /accounts/logout/ HTTP/1.1" 302 0
+INFO 2025-11-21 14:46:41,640 basehttp "GET /accounts/login/ HTTP/1.1" 200 7658
+INFO 2025-11-21 14:46:41,909 basehttp "GET /static/css/base.css HTTP/1.1" 200 39302
+INFO 2025-11-21 14:46:41,961 basehttp "GET /static/css/style.css HTTP/1.1" 200 14133
+WARNING 2025-11-21 14:46:44,335 middleware Unauthorized access attempt to /favicon.ico from IP: 127.0.0.1
+INFO 2025-11-21 14:46:44,336 basehttp "GET /favicon.ico HTTP/1.1" 302 0
+INFO 2025-11-21 14:46:44,366 basehttp "GET /accounts/login/ HTTP/1.1" 200 7338
+INFO 2025-11-21 14:54:08,696 middleware Session expired for user: admin@gmail.com
+INFO 2025-11-21 14:54:08,705 basehttp "GET /superadmin/master-input/ HTTP/1.1" 302 0
+INFO 2025-11-21 14:54:08,711 basehttp "GET /accounts/login/ HTTP/1.1" 200 8566
+INFO 2025-11-21 14:54:08,738 basehttp "GET /static/css/base.css HTTP/1.1" 200 39302
+INFO 2025-11-21 14:54:08,743 basehttp "GET /static/css/style.css HTTP/1.1" 200 14133
+WARNING 2025-11-21 14:54:08,777 middleware Unauthorized access attempt to /favicon.ico from IP: 127.0.0.1
+INFO 2025-11-21 14:54:08,777 basehttp "GET /favicon.ico HTTP/1.1" 302 0
+INFO 2025-11-21 14:54:08,782 basehttp "GET /accounts/login/ HTTP/1.1" 200 7338
+INFO 2025-11-21 14:54:18,807 views Successful login for user: admin@gmail.com from IP: 127.0.0.1
+INFO 2025-11-21 14:54:18,821 basehttp "POST /accounts/login/ HTTP/1.1" 302 0
+INFO 2025-11-21 14:54:19,264 basehttp "GET /dashboard/ HTTP/1.1" 200 23712
+WARNING 2025-11-21 14:54:19,325 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
+INFO 2025-11-21 14:54:19,625 basehttp "GET /media/logo.png HTTP/1.1" 200 1275213
+INFO 2025-11-21 14:54:21,537 basehttp "GET /superadmin/master-input/ HTTP/1.1" 200 25258
+WARNING 2025-11-21 14:54:21,569 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
+INFO 2025-11-21 14:54:22,859 basehttp "GET /superadmin/holiday-master/ HTTP/1.1" 200 34435
+WARNING 2025-11-21 14:54:22,893 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
+INFO 2025-11-21 14:54:37,171 basehttp "POST /superadmin/holiday-master/8/edit/ HTTP/1.1" 302 0
+INFO 2025-11-21 14:54:37,427 basehttp "GET /superadmin/holiday-master/ HTTP/1.1" 200 34435
+INFO 2025-11-21 14:54:37,455 basehttp "GET /static/css/base.css HTTP/1.1" 304 0
+WARNING 2025-11-21 14:54:37,477 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
+INFO 2025-11-21 14:54:37,849 basehttp "GET /media/logo.png HTTP/1.1" 200 1275213
+INFO 2025-11-21 14:55:18,448 basehttp "POST /superadmin/holiday-master/delete/8/ HTTP/1.1" 302 0
+INFO 2025-11-21 14:55:18,919 basehttp "GET /superadmin/holiday-master/ HTTP/1.1" 200 31461
+INFO 2025-11-21 14:55:18,958 basehttp "GET /static/css/base.css HTTP/1.1" 304 0
+WARNING 2025-11-21 14:55:18,964 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
+INFO 2025-11-21 14:55:19,437 basehttp "GET /media/logo.png HTTP/1.1" 200 1275213
+INFO 2025-11-21 14:56:12,857 basehttp "GET /superadmin/master-input/ HTTP/1.1" 200 25258
+INFO 2025-11-21 14:56:12,886 basehttp "GET /static/css/base.css HTTP/1.1" 304 0
+WARNING 2025-11-21 14:56:12,888 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
+INFO 2025-11-21 14:56:14,569 basehttp "GET /superadmin/price-master/ HTTP/1.1" 200 41571
+WARNING 2025-11-21 14:56:14,600 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
+INFO 2025-11-21 14:57:51,869 basehttp "GET /superadmin/holiday-master/ HTTP/1.1" 200 31461
+INFO 2025-11-21 14:57:52,005 basehttp "GET /static/css/base.css HTTP/1.1" 304 0
+WARNING 2025-11-21 14:57:52,173 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
+INFO 2025-11-21 15:13:17,631 autoreload C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\superadminpanel\views.py changed, reloading.
+INFO 2025-11-21 15:13:19,404 autoreload Watching for file changes with StatReloader
+ERROR 2025-11-21 15:13:53,032 log Internal Server Error: /superadmin/holiday-master/
+Traceback (most recent call last):
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\superadminpanel\views.py", line 181, in holiday_master
+    return render(request, 'holiday_master.html', context)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\shortcuts.py", line 19, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\template\loader.py", line 61, in render_to_string
+    template = get_template(template_name, using=using)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\template\loader.py", line 15, in get_template
+    return engine.get_template(template_name)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\template\backends\django.py", line 34, in get_template
+    return Template(self.engine.get_template(template_name), self)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\template\engine.py", line 143, in get_template
+    template, origin = self.find_template(template_name)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\template\engine.py", line 125, in find_template
+    template = loader.get_template(name, skip=skip)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\template\loaders\base.py", line 29, in get_template
+    return Template(
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\template\base.py", line 155, in __init__
+    self.nodelist = self.compile_nodelist()
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\template\base.py", line 193, in compile_nodelist
+    return parser.parse()
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\template\base.py", line 478, in parse
+    raise self.error(token, e)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\template\base.py", line 476, in parse
+    compiled_result = compile_func(self, token)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\template\loader_tags.py", line 270, in do_extends
+    nodelist = parser.parse()
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\template\base.py", line 478, in parse
+    raise self.error(token, e)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\template\base.py", line 476, in parse
+    compiled_result = compile_func(self, token)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\template\loader_tags.py", line 213, in do_block
+    nodelist = parser.parse(('endblock',))
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\template\base.py", line 478, in parse
+    raise self.error(token, e)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\template\base.py", line 476, in parse
+    compiled_result = compile_func(self, token)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\template\loader_tags.py", line 209, in do_block
+    raise TemplateSyntaxError("'%s' tag with name '%s' appears more than once" % (bits[0], block_name))
+django.template.exceptions.TemplateSyntaxError: 'block' tag with name 'extra_css' appears more than once
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\core\handlers\exception.py", line 47, in inner
+    response = get_response(request)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\core\handlers\base.py", line 181, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\contrib\auth\decorators.py", line 21, in _wrapped_view
+    return view_func(request, *args, **kwargs)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\superadminpanel\views.py", line 32, in wrapper
+    return view_func(request, *args, **kwargs)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\superadminpanel\views.py", line 186, in holiday_master
+    return render(request, 'holiday_master.html', {'holidays': []})
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\shortcuts.py", line 19, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\template\loader.py", line 61, in render_to_string
+    template = get_template(template_name, using=using)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\template\loader.py", line 15, in get_template
+    return engine.get_template(template_name)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\template\backends\django.py", line 34, in get_template
+    return Template(self.engine.get_template(template_name), self)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\template\engine.py", line 143, in get_template
+    template, origin = self.find_template(template_name)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\template\engine.py", line 125, in find_template
+    template = loader.get_template(name, skip=skip)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\template\loaders\base.py", line 29, in get_template
+    return Template(
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\template\base.py", line 155, in __init__
+    self.nodelist = self.compile_nodelist()
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\template\base.py", line 193, in compile_nodelist
+    return parser.parse()
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\template\base.py", line 478, in parse
+    raise self.error(token, e)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\template\base.py", line 476, in parse
+    compiled_result = compile_func(self, token)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\template\loader_tags.py", line 270, in do_extends
+    nodelist = parser.parse()
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\template\base.py", line 478, in parse
+    raise self.error(token, e)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\template\base.py", line 476, in parse
+    compiled_result = compile_func(self, token)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\template\loader_tags.py", line 213, in do_block
+    nodelist = parser.parse(('endblock',))
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\template\base.py", line 478, in parse
+    raise self.error(token, e)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\template\base.py", line 476, in parse
+    compiled_result = compile_func(self, token)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM\venv\lib\site-packages\django\template\loader_tags.py", line 209, in do_block
+    raise TemplateSyntaxError("'%s' tag with name '%s' appears more than once" % (bits[0], block_name))
+django.template.exceptions.TemplateSyntaxError: 'block' tag with name 'extra_css' appears more than once
+ERROR 2025-11-21 15:13:53,034 basehttp "GET /superadmin/holiday-master/ HTTP/1.1" 500 308013
+WARNING 2025-11-21 15:13:53,238 log Not Found: /favicon.ico
+WARNING 2025-11-21 15:13:53,238 basehttp "GET /favicon.ico HTTP/1.1" 404 3336
+INFO 2025-11-21 15:14:51,372 basehttp "GET /superadmin/holiday-master/ HTTP/1.1" 200 33342
+WARNING 2025-11-21 15:14:51,408 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
+INFO 2025-11-21 15:14:51,478 basehttp "GET /static/css/base.css HTTP/1.1" 200 40434
+INFO 2025-11-21 15:14:51,844 basehttp "GET /media/logo.png HTTP/1.1" 200 1275213
+INFO 2025-11-21 15:14:57,524 basehttp "GET /superadmin/holiday-master/ HTTP/1.1" 200 33342
+INFO 2025-11-21 15:14:57,558 basehttp "GET /static/css/base.css HTTP/1.1" 200 40434
+WARNING 2025-11-21 15:14:57,559 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
+INFO 2025-11-21 15:14:58,018 basehttp "GET /media/logo.png HTTP/1.1" 200 1275213
+INFO 2025-11-21 15:14:58,546 basehttp "GET /superadmin/holiday-master/ HTTP/1.1" 200 33342
+INFO 2025-11-21 15:14:58,581 basehttp "GET /static/css/base.css HTTP/1.1" 200 40434
+WARNING 2025-11-21 15:14:58,583 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
+INFO 2025-11-21 15:14:59,053 basehttp "GET /media/logo.png HTTP/1.1" 200 1275213
+INFO 2025-11-21 15:15:05,869 autoreload Watching for file changes with StatReloader
+INFO 2025-11-21 15:15:09,341 basehttp "GET /superadmin/holiday-master/ HTTP/1.1" 200 33342
+WARNING 2025-11-21 15:15:09,377 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
+INFO 2025-11-21 15:15:13,049 basehttp "GET /superadmin/holiday-master/ HTTP/1.1" 200 33342
+WARNING 2025-11-21 15:15:13,087 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
+INFO 2025-11-21 15:15:13,145 basehttp "GET /static/css/base.css HTTP/1.1" 200 40434
+INFO 2025-11-21 15:15:13,659 basehttp "GET /superadmin/holiday-master/ HTTP/1.1" 200 33342
+INFO 2025-11-21 15:15:13,672 basehttp "GET /media/logo.png HTTP/1.1" 200 1275213
+INFO 2025-11-21 15:15:13,693 basehttp "GET /static/css/base.css HTTP/1.1" 200 40434
+WARNING 2025-11-21 15:15:13,713 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
+INFO 2025-11-21 15:15:14,575 basehttp "GET /media/logo.png HTTP/1.1" 200 1275213
+INFO 2025-11-21 15:18:03,574 autoreload Watching for file changes with StatReloader
+INFO 2025-11-21 15:18:08,477 middleware Session expired for user: admin@gmail.com
+INFO 2025-11-21 15:18:08,484 basehttp "GET /superadmin/manage-users/ HTTP/1.1" 302 0
+INFO 2025-11-21 15:18:08,503 basehttp "GET /accounts/login/ HTTP/1.1" 200 8247
+INFO 2025-11-21 15:18:08,642 basehttp "GET /static/css/style.css HTTP/1.1" 200 14133
+INFO 2025-11-21 15:18:08,648 basehttp "GET /static/css/base.css HTTP/1.1" 200 40434
+WARNING 2025-11-21 15:18:08,935 middleware Unauthorized access attempt to /favicon.ico from IP: 127.0.0.1
+INFO 2025-11-21 15:18:08,935 basehttp "GET /favicon.ico HTTP/1.1" 302 0
+INFO 2025-11-21 15:18:08,943 basehttp "GET /accounts/login/ HTTP/1.1" 200 7338
+INFO 2025-11-21 15:18:13,827 views Successful login for user: admin@gmail.com from IP: 127.0.0.1
+INFO 2025-11-21 15:18:13,840 basehttp "POST /accounts/login/ HTTP/1.1" 302 0
+INFO 2025-11-21 15:18:14,214 basehttp "GET /dashboard/ HTTP/1.1" 200 23712
+WARNING 2025-11-21 15:18:14,254 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
+INFO 2025-11-21 15:18:14,630 basehttp "GET /media/logo.png HTTP/1.1" 200 1275213
+INFO 2025-11-21 15:18:20,625 basehttp "GET /superadmin/master-input/ HTTP/1.1" 200 25258
+WARNING 2025-11-21 15:18:20,650 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
+INFO 2025-11-21 15:18:21,367 basehttp "GET /superadmin/holiday-master/ HTTP/1.1" 200 34118
+WARNING 2025-11-21 15:18:21,395 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
+INFO 2025-11-21 15:20:04,487 basehttp "POST /superadmin/holiday-master/create/ HTTP/1.1" 302 0
+INFO 2025-11-21 15:20:04,664 basehttp "GET /superadmin/holiday-master/ HTTP/1.1" 200 37132
+INFO 2025-11-21 15:20:04,694 basehttp "GET /static/css/base.css HTTP/1.1" 304 0
+WARNING 2025-11-21 15:20:04,711 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
+INFO 2025-11-21 15:20:05,084 basehttp "GET /media/logo.png HTTP/1.1" 200 1275213
+INFO 2025-11-21 15:20:47,610 basehttp "POST /superadmin/holiday-master/9/edit/ HTTP/1.1" 302 0
+INFO 2025-11-21 15:20:47,854 basehttp "GET /superadmin/holiday-master/ HTTP/1.1" 200 37102
+INFO 2025-11-21 15:20:47,883 basehttp "GET /static/css/base.css HTTP/1.1" 304 0
+WARNING 2025-11-21 15:20:47,896 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
+INFO 2025-11-21 15:20:48,346 basehttp "GET /media/logo.png HTTP/1.1" 200 1275213
+INFO 2025-11-21 15:21:36,160 basehttp "POST /superadmin/holiday-master/create/ HTTP/1.1" 302 0
+INFO 2025-11-21 15:21:36,693 basehttp "GET /superadmin/holiday-master/ HTTP/1.1" 200 40176
+INFO 2025-11-21 15:21:36,731 basehttp "GET /static/css/base.css HTTP/1.1" 304 0
+WARNING 2025-11-21 15:21:36,767 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
+INFO 2025-11-21 15:21:37,175 basehttp "GET /media/logo.png HTTP/1.1" 200 1275213
+INFO 2025-11-21 15:21:47,322 basehttp "POST /superadmin/holiday-master/delete/9/ HTTP/1.1" 302 0
+INFO 2025-11-21 15:21:47,598 basehttp "GET /superadmin/holiday-master/ HTTP/1.1" 200 37089
+WARNING 2025-11-21 15:21:47,641 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
+INFO 2025-11-21 15:21:48,110 basehttp "GET /media/logo.png HTTP/1.1" 200 1275213
+INFO 2025-11-21 15:23:04,148 basehttp "POST /superadmin/holiday-master/10/edit/ HTTP/1.1" 302 0
+INFO 2025-11-21 15:23:04,388 basehttp "GET /superadmin/holiday-master/ HTTP/1.1" 200 37089
+INFO 2025-11-21 15:23:04,422 basehttp "GET /static/css/base.css HTTP/1.1" 304 0
+WARNING 2025-11-21 15:23:04,424 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
+INFO 2025-11-21 15:23:18,491 basehttp "GET /superadmin/master-input/ HTTP/1.1" 200 25258
+WARNING 2025-11-21 15:23:18,528 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
+INFO 2025-11-21 15:23:19,011 basehttp "GET /media/logo.png HTTP/1.1" 200 1275213

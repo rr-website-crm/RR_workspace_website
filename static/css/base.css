@@ -736,6 +736,53 @@ textarea.form-control {
   flex-wrap: wrap;
 }
 
+
+
+/* Flatpickr Custom Styling */
+.flatpickr-calendar {
+    border-radius: var(--radius-lg) !important;
+    font-family: var(--font-primary) !important;
+}
+
+.flatpickr-months {
+    background: var(--primary) !important;
+    border-radius: var(--radius-lg) var(--radius-lg) 0 0 !important;
+}
+
+.flatpickr-current-month .flatpickr-monthDropdown-months,
+.flatpickr-current-month input.cur-year {
+    color: white !important;
+    font-weight: 600 !important;
+}
+
+.flatpickr-day {
+    color: var(--text-color) !important;
+    border-radius: 8px !important;
+    margin: 2px !important;
+}
+
+.flatpickr-day:hover:not(.disabled):not(.sunday) {
+    background: var(--hover-bg) !important;
+    border-color: var(--primary) !important;
+}
+
+.flatpickr-day.today {
+    border: 2px solid var(--accent) !important;
+    font-weight: 600 !important;
+}
+
+.flatpickr-day.disabled,
+.flatpickr-day.sunday {
+    text-decoration: line-through !important;
+    opacity: 0.3 !important;
+}
+
+.flatpickr-weekday {
+    color: var(--secondary) !important;
+    font-weight: 600 !important;
+    font-size: 13px !important;
+}
+
 /* ========================================
    9. CARDS & CONTAINERS
    ======================================== */
