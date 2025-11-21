@@ -212,3 +212,49 @@ class AcademicWritingMaster(models.Model):
     
     def __str__(self):
         return self.writing_style
+    
+class ProjectGroupMaster(models.Model):
+    """Project Group Master Model"""
+    
+    # Basic Information
+    project_group_name = models.CharField(max_length=255)
+    project_group_prefix = models.CharField(max_length=50, unique=True)
+    
+    # Lifecycle Timestamps
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    deleted_at = models.DateTimeField(null=True, blank=True)
+    
+    # User tracking
+    created_by = models.ForeignKey(
+        CustomUser, 
+        on_delete=models.SET_NULL, 
+        null=True, 
+        related_name='project_groups_created'
+    )
+    updated_by = models.ForeignKey(
+        CustomUser, 
+        on_delete=models.SET_NULL, 
+        null=True, 
+        blank=True, 
+        related_name='project_groups_updated'
+    )
+    deleted_by = models.ForeignKey(
+        CustomUser, 
+        on_delete=models.SET_NULL, 
+        null=True, 
+        blank=True, 
+        related_name='project_groups_deleted'
+    )
+    
+    # Soft delete
+    is_deleted = models.BooleanField(default=False)
+    
+    class Meta:
+        db_table = 'project_group_master'
+        ordering = ['-created_at']
+        verbose_name = 'Project Group Master'
+        verbose_name_plural = 'Project Group Masters'
+    
+    def __str__(self):
+        return f"{self.project_group_name} ({self.project_group_prefix})"

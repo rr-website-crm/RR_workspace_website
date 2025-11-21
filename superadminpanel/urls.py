@@ -50,4 +50,10 @@ urlpatterns = [
     path('academic-writing-master/create/', views.create_writing, name='create_writing'),
     path('academic-writing-master/<str:writing_id>/edit/', views.edit_writing, name='edit_writing'),
     path('academic-writing-master/delete/<str:writing_id>/', views.delete_writing, name='delete_writing'),
+    
+    # Project Group Master
+    path('project-group-master/', views.project_group_master, name='project_group_master'),
+    path('project-group-master/create/', views.create_project_group, name='create_project_group'),
+    path('project-group-master/<int:group_id>/edit/', views.edit_project_group, name='edit_project_group'),
+    path('project-group-master/delete/<int:group_id>/', views.delete_project_group, name='delete_project_group'),
 ]

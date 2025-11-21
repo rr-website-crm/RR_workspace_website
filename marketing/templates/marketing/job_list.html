@@ -22,7 +22,7 @@
     </div>
 </div>
 
-<div class="card">
+{% comment %} <div class="card">
     <div class="card-header job-list-header">
         <div>
             <h2 class="card-title">{{ page_title }}</h2>
@@ -115,6 +115,136 @@
                 <p>{{ empty_state.description }}</p>
                 <a href="{{ empty_state.cta_url }}" class="btn btn-primary">{{ empty_state.cta_label }}</a>
             </div>
+        {% endif %}
+    </div>
+</div> {% endcomment %}
+<div class="card mt-4">
+    <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
+        <div>
+            <h3 class="card-title">{{ page_title }}</h3>
+            <p class="dashboard-subtitle">Showing {{ jobs|length }} of {{ total_jobs }} jobs</p>
+        </div>
+
+        <div class="total-chip">
+            <span>Total</span>
+            <strong>{{ total_jobs }}</strong>
+        </div>
+    </div>
+
+    <div class="card-body">
+        {% if jobs %}
+        <div class="table-container table-scroll-lock">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>SL. No</th>
+                        <th>System ID</th>
+                        <th>Job ID</th>
+                        <th>Topic</th>
+                        <th>Word Count</th>
+                        <th>Status</th>
+                        <th>Deadline</th>
+                        <th>Allocated To</th>
+                        <th>Last Updated</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for job in jobs %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+
+                        <td>{{ job.system_id }}</td>
+
+                        <td>{{ job.job_id }}</td>
+
+                        <td style="font-weight: 600;" data-column="topic">
+                            {{ job.topic|default:"Awaiting summary" }}
+                        </td>
+
+                        <td>
+                            {% if job.word_count %}
+                                {{ job.word_count|floatformat:0 }}
+                            {% else %}
+                                —
+                            {% endif %}
+                        </td>
+
+                        <td>
+                            <span class="status-tag status-{{ job.status|default:'pending' }}">
+                                {{ job.get_status_display|default:job.status|default:"Unknown" }}
+                            </span>
+                        </td>
+
+                        <td>
+                            {% if job.deadline %}
+                                {{ job.deadline|date:"d M Y" }}
+                            {% else %}
+                                —
+                            {% endif %}
+                        </td>
+
+                        <td>
+                            {% if job.allocated_to %}
+                                {{ job.allocated_to.get_full_name|default:job.allocated_to.email }}
+                            {% else %}
+                                <span class="text-muted">Not allocated</span>
+                            {% endif %}
+                        </td>
+
+                        <td>{{ job.updated_at|date:"d M Y, H:i" }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Pagination -->
+        {% if jobs.has_other_pages %}
+        <div class="table-pagination">
+
+            <div class="table-pagination__controls">
+                {% if jobs.has_previous %}
+                <a href="?page={{ jobs.previous_page_number }}" class="table-pagination__btn">‹</a>
+                {% else %}
+                <button class="table-pagination__btn" disabled>‹</button>
+                {% endif %}
+            </div>
+
+            <span>Page {{ jobs.number }} of {{ jobs.paginator.num_pages }}</span>
+
+            <div class="table-pagination__controls">
+                {% if jobs.has_next %}
+                <a href="?page={{ jobs.next_page_number }}" class="table-pagination__btn">›</a>
+                {% else %}
+                <button class="table-pagination__btn" disabled>›</button>
+                {% endif %}
+            </div>
+        </div>
+        {% endif %}
+
+        {% else %}
+        <!-- EMPTY STATE -->
+        <div class="empty-state" style="text-align: center; padding: 4rem 2rem;">
+            <svg width="80" height="80" viewBox="0 0 24 24" fill="none"
+                 stroke="currentColor" stroke-width="2"
+                 style="margin-bottom: 1.5rem; opacity: 0.4;">
+                <path d="M20 7H4C2.895 7 2 7.895 2 9V19C2 20.105 
+                         2.895 21 4 21H20C21.105 21 22 20.105 
+                         22 19V9C22 7.895 21.105 7 20 7Z" />
+                <path d="M16 21V5C16 4.47 15.789 3.961 
+                         15.414 3.586C15.039 3.211 14.53 3 
+                         14 3H10C9.47 3 8.961 3.211 
+                         8.586 3.586C8.211 3.961 8 4.47 8 5V21" />
+            </svg>
+
+            <h3>{{ empty_state.title }}</h3>
+            <p>{{ empty_state.description }}</p>
+
+            <a href="{{ empty_state.cta_url }}" class="btn btn-primary">
+                {{ empty_state.cta_label }}
+            </a>
+        </div>
         {% endif %}
     </div>
 </div>

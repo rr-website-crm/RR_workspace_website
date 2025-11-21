@@ -256,3 +256,15 @@ WARNING 2025-11-21 14:46:41,612 middleware Unauthorized access attempt to /accou
 WARNING 2025-11-21 14:46:44,335 middleware Unauthorized access attempt to /favicon.ico from IP: 127.0.0.1
 WARNING 2025-11-21 14:54:08,777 middleware Unauthorized access attempt to /favicon.ico from IP: 127.0.0.1
 WARNING 2025-11-21 15:18:08,935 middleware Unauthorized access attempt to /favicon.ico from IP: 127.0.0.1
+WARNING 2025-11-21 17:00:10,663 middleware Unauthorized access attempt to /favicon.ico from IP: 127.0.0.1
+ERROR 2025-11-21 17:31:26,022 views Error during logout for admin@gmail.com: 
+WARNING 2025-11-21 17:31:26,106 middleware Unauthorized access attempt to /favicon.ico from IP: 127.0.0.1
+ERROR 2025-11-21 17:39:45,287 views Error during logout for srijabiswas3001@gmail.com: 
+WARNING 2025-11-21 17:39:47,088 middleware Unauthorized access attempt to /accounts/logout/ from IP: 127.0.0.1
+WARNING 2025-11-21 17:39:52,357 middleware Unauthorized access attempt to / from IP: 127.0.0.1
+WARNING 2025-11-21 17:39:52,515 middleware Unauthorized access attempt to /favicon.ico from IP: 127.0.0.1
+ERROR 2025-11-21 17:45:31,120 views Error during logout for srijabiswas3001@gmail.com: 
+WARNING 2025-11-21 17:45:31,223 middleware Unauthorized access attempt to /favicon.ico from IP: 127.0.0.1
+ERROR 2025-11-21 17:46:04,813 views Error during logout for admin@gmail.com: 
+WARNING 2025-11-21 17:46:04,886 middleware Unauthorized access attempt to /favicon.ico from IP: 127.0.0.1
+WARNING 2025-11-21 17:48:53,871 middleware Unauthorized access attempt to / from IP: 127.0.0.1

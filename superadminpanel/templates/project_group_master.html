@@ -1,0 +1,365 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Project Group Master - CRM Portal{% endblock %}
+
+{% block extra_css %}
+<style>
+    .modal-overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.7);
+        z-index: 2000;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .modal-overlay.active {
+        display: flex;
+    }
+    
+    .modal-content {
+        background: var(--card-bg);
+        border-radius: var(--radius-lg);
+        padding: var(--spacing-xl);
+        max-width: 600px;
+        width: 90%;
+        max-height: 90vh;
+        overflow-y: auto;
+    }
+    
+    .prefix-badge {
+        display: inline-block;
+        padding: 6px 12px;
+        border-radius: 6px;
+        font-size: 13px;
+        font-weight: 700;
+        font-family: 'Courier New', monospace;
+        background: linear-gradient(135deg, var(--accent) 0%, var(--primary) 100%);
+        color: white;
+        letter-spacing: 1px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="fade-in">
+    <!-- Back Button -->
+    <div style="margin-bottom: var(--spacing-lg);">
+        <a href="{% url 'master_input' %}" class="btn btn-outline">
+            <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+            </svg>
+            Back to Master Input
+        </a>
+    </div>
+
+    <!-- Page Header -->
+    <div class="dashboard-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--spacing-xl);">
+        <div>
+            <h1 class="dashboard-title">Project Group Master</h1>
+            <p class="dashboard-subtitle">Manage project groups and prefixes</p>
+        </div>
+        <button onclick="showCreateGroupModal()" class="btn btn-primary">
+            <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+            </svg>
+            Create Project Group
+        </button>
+    </div>
+
+    {% comment %} <!-- Project Groups History -->
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">Project Groups</h3>
+            <p style="font-size: 14px; opacity: 0.7; margin-top: 4px;">All project groups ({{ total_groups }})</p>
+        </div>
+        <div class="card-body" style="padding: 0;">
+            {% if project_groups %}
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Project Group Name</th>
+                            <th>Prefix</th>
+                            <th>Created Date</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for group in project_groups %}
+                        <tr>
+                            <td style="font-weight: 500;">{{ group.project_group_name }}</td>
+                            <td>
+                                <span class="prefix-badge">{{ group.project_group_prefix }}</span>
+                            </td>
+                            <td>{{ group.created_at|date:"M d, Y" }}</td>
+                            <td>
+                                <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                                    <button type="button"
+                                            class="btn btn-sm btn-outline"
+                                            data-id="{{ group.id }}"
+                                            data-action="{% url 'edit_project_group' group.id %}"
+                                            data-name="{{ group.project_group_name|escape }}"
+                                            data-prefix="{{ group.project_group_prefix|escape }}"
+                                            onclick="showEditGroupModal(this)">
+                                        Edit
+                                    </button>
+                                    <form method="POST"
+                                          action="{% url 'delete_project_group' group.id %}"
+                                          onsubmit="return confirm('Are you sure you want to delete this project group?');">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn btn-sm btn-danger" title="Delete Project Group">
+                                            <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                                            </svg>
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <div style="text-align: center; padding: var(--spacing-xl);">
+                <svg width="64" height="64" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="opacity: 0.3; margin-bottom: var(--spacing-md);">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
+                </svg>
+                <p style="color: var(--text-color); opacity: 0.7; font-size: 16px;">No project groups created yet</p>
+                <p style="color: var(--text-color); opacity: 0.5; font-size: 14px; margin-top: 8px;">Click "Create Project Group" to add your first project group</p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div> {% endcomment %}
+
+
+<!-- Project Groups Section -->
+<div class="card mt-4">
+    <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
+        <div>
+            <h3 class="card-title">Project Groups</h3>
+            <p class="dashboard-subtitle">All project groups ({{ total_groups }})</p>
+        </div>
+
+        <div style="display: flex; gap: 1rem;">
+            <input type="text" id="groupSearchInput" class="form-control" placeholder="Search groups..." style="width: 300px;">
+        </div>
+    </div>
+
+    <div class="card-body">
+        <div class="table-container table-scroll-lock">
+            {% if project_groups %}
+            <table class="data-table" id="groupsTable">
+                <thead>
+                    <tr>
+                        <th>SL. No</th>
+                        <th>Project Group Name</th>
+                        <th>Prefix</th>
+                        <th>Created Date</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for group in project_groups %}
+                    <tr data-group-id="{{ group.id }}">
+                        <td>{{ forloop.counter }}</td>
+
+                        <td style="background-color: rgba(var(--primary), 0.2); color: var(--secondary);" data-column="group_name">
+                            {{ group.project_group_name }}
+                        </td>
+
+                        <td>
+                            <span class="status-tag status-admin">
+                                {{ group.project_group_prefix }}
+                            </span>
+                        </td>
+
+                        <td>{{ group.created_at|date:"M d, Y" }}</td>
+
+                        <td>
+                            <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+
+                                <!-- EDIT BUTTON -->
+                                <button 
+                                    type="button"
+                                    class="btn btn-outline btn-sm"
+                                    data-id="{{ group.id }}"
+                                    data-action="{% url 'edit_project_group' group.id %}"
+                                    data-name="{{ group.project_group_name|escape }}"
+                                    data-prefix="{{ group.project_group_prefix|escape }}"
+                                    onclick="showEditGroupModal(this)">
+                                    Edit
+                                </button>
+
+                                <!-- DELETE BUTTON -->
+                                <form method="POST"
+                                      action="{% url 'delete_project_group' group.id %}"
+                                      onsubmit="return confirm('Are you sure you want to delete this project group?');">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-danger btn-sm">
+                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                  d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 
+                                                  1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                                        </svg>
+                                    </button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+
+                    {% endfor %}
+                </tbody>
+            </table>
+
+            {% else %}
+
+            <div style="text-align: center; padding: 2rem; opacity: 0.7;">
+                <svg width="64" height="64" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="opacity: 0.3;">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="M19 11H5m14 0a2 2 0 012 2v6a2 
+                          2 0 01-2 2H5a2 2 0 01-2-2v-6a2 
+                          2 0 012-2m14 0V9a2 2 0 00-2-2M5 
+                          11V9a2 2 0 012-2m0 0V5a2 2 0 
+                          012-2h6a2 2 0 012 2v2M7 7h10"/>
+                </svg>
+
+                <p style="font-size: 16px;">No project groups created yet</p>
+                <p style="font-size: 14px; opacity: 0.6; margin-top: 6px;">Click “Create Project Group” to add your first one</p>
+            </div>
+
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<!-- Create/Edit Project Group Modal -->
+<div class="modal-overlay" id="createGroupModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2 class="modal-title" id="groupModalTitle">Create Project Group</h2>
+            <button type="button" class="modal-close" onclick="closeModal('createGroupModal')">&times;</button>
+        </div>
+        
+        <form method="POST" action="{% url 'create_project_group' %}" id="groupForm">
+            {% csrf_token %}
+            
+            <!-- Project Group Name -->
+            <div class="form-group">
+                <label for="project_group_name" class="form-label required">Project Group Name</label>
+                <input type="text" 
+                       id="project_group_name" 
+                       name="project_group_name" 
+                       class="form-control" 
+                       placeholder="e.g., Dissertation, Assignment, Essay"
+                       required>
+            </div>
+            
+            <!-- Project Group Prefix -->
+            <div class="form-group">
+                <label for="project_group_prefix" class="form-label required">Project Group Prefix</label>
+                <input type="text" 
+                       id="project_group_prefix" 
+                       name="project_group_prefix" 
+                       class="form-control" 
+                       placeholder="e.g., DISS, ASGN, ESY"
+                       maxlength="50"
+                       style="text-transform: uppercase;"
+                       required>
+                <p style="font-size: 12px; opacity: 0.7; margin-top: 6px;">
+                    Use letters and numbers only. Will be converted to uppercase.
+                </p>
+            </div>
+            
+            <!-- Action Buttons -->
+            <div class="btn-group">
+                <button type="button" class="btn btn-outline" onclick="closeModal('createGroupModal')">
+                    Cancel
+                </button>
+                <button type="submit" class="btn btn-primary" id="groupSubmitBtn">
+                    Create Project Group
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    const groupModalState = {
+        modalId: 'createGroupModal',
+        createAction: '{% url "create_project_group" %}',
+        form: null,
+        title: null,
+        submitBtn: null,
+    };
+
+    function resetGroupForm() {
+        if (!groupModalState.form) return;
+        groupModalState.form.reset();
+        groupModalState.form.action = groupModalState.createAction;
+    }
+
+    function showCreateGroupModal() {
+        resetGroupForm();
+        if (groupModalState.title) {
+            groupModalState.title.textContent = 'Create Project Group';
+        }
+        if (groupModalState.submitBtn) {
+            groupModalState.submitBtn.textContent = 'Create Project Group';
+        }
+        openModal(groupModalState.modalId);
+    }
+
+    function showEditGroupModal(button) {
+        if (!groupModalState.form || !button) return;
+        
+        resetGroupForm();
+        
+        if (groupModalState.title) {
+            groupModalState.title.textContent = 'Edit Project Group';
+        }
+        if (groupModalState.submitBtn) {
+            groupModalState.submitBtn.textContent = 'Update Project Group';
+        }
+        
+        groupModalState.form.action = button.dataset.action || groupModalState.createAction;
+        
+        document.getElementById('project_group_name').value = button.dataset.name || '';
+        document.getElementById('project_group_prefix').value = button.dataset.prefix || '';
+        
+        openModal(groupModalState.modalId);
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        groupModalState.form = document.getElementById('groupForm');
+        groupModalState.title = document.getElementById('groupModalTitle');
+        groupModalState.submitBtn = document.getElementById('groupSubmitBtn');
+        
+        // Auto-uppercase prefix input
+        const prefixInput = document.getElementById('project_group_prefix');
+        if (prefixInput) {
+            prefixInput.addEventListener('input', function() {
+                this.value = this.value.toUpperCase();
+            });
+        }
+    });
+    document.getElementById("groupSearchInput").addEventListener("keyup", function () {
+    let filter = this.value.toLowerCase();
+    let rows = document.querySelectorAll("#groupsTable tbody tr");
+
+    rows.forEach(row => {
+        let name = row.querySelector('[data-column="group_name"]').innerText.toLowerCase();
+        row.style.display = name.includes(filter) ? "" : "none";
+    });
+});
+</script>
+{% endblock %}

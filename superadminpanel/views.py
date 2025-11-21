@@ -12,7 +12,7 @@ import logging
 
 from accounts.models import CustomUser
 from accounts.services import log_activity_event
-from .models import Holiday, PriceMaster, ReferencingMaster, AcademicWritingMaster
+from .models import Holiday, PriceMaster, ReferencingMaster, AcademicWritingMaster,ProjectGroupMaster
 from . import user_services as portal_services
 
 logger = logging.getLogger('superadmin')
@@ -1197,3 +1197,208 @@ def _find_writing_by_id(writing_id):
         (item for item in candidates if not getattr(item, 'is_deleted', False)),
         None
     )
+
+@login_required
+@superadmin_required
+def project_group_master(request):
+    """Project Group Master - List all project groups (Djongo-safe)"""
+    try:
+        raw_groups = list(ProjectGroupMaster.objects.all().order_by('-created_at'))
+        project_groups = [
+            group for group in raw_groups
+            if not getattr(group, 'is_deleted', False)
+        ]
+        context = {
+            'project_groups': project_groups,
+            'total_groups': len(project_groups),
+        }
+        return render(request, 'project_group_master.html', context)
+        
+    except Exception as e:
+        logger.exception(f"Error loading project group master: {str(e)}")
+        messages.error(request, 'Error loading project groups.')
+        return render(request, 'project_group_master.html', {
+            'project_groups': [],
+            'total_groups': 0
+        })
+
+
+@login_required
+@superadmin_required
+def create_project_group(request):
+    """Create a new project group (Djongo-safe)"""
+    if request.method == 'POST':
+        try:
+            project_group_name = request.POST.get('project_group_name', '').strip()
+            project_group_prefix = request.POST.get('project_group_prefix', '').strip().upper()
+            
+            # Validation
+            if not project_group_name or not project_group_prefix:
+                messages.error(request, 'All fields are required.')
+                return redirect('project_group_master')
+            
+            # Validate prefix format (alphanumeric only)
+            if not project_group_prefix.isalnum():
+                messages.error(request, 'Project Group Prefix must contain only letters and numbers.')
+                return redirect('project_group_master')
+            
+            # Check for existing prefix (Djongo-safe approach)
+            all_matching = list(ProjectGroupMaster.objects.filter(
+                project_group_prefix=project_group_prefix
+            ))
+            
+            # Filter in Python to avoid Djongo NOT operator issues
+            existing = next(
+                (item for item in all_matching if not getattr(item, 'is_deleted', False)),
+                None
+            )
+            
+            if existing:
+                messages.error(request, f'Project Group with prefix "{project_group_prefix}" already exists.')
+                return redirect('project_group_master')
+            
+            with transaction.atomic():
+                group = ProjectGroupMaster()
+                group.project_group_name = project_group_name
+                group.project_group_prefix = project_group_prefix
+                group.created_by = request.user
+                group.created_at = timezone.now()
+                group.save()
+                
+                log_activity_event(
+                    'project_group.created_at',
+                    subject_user=None,
+                    performed_by=request.user,
+                    metadata={
+                        'project_group_id': str(group.id),
+                        'project_group_name': project_group_name,
+                        'project_group_prefix': project_group_prefix,
+                    },
+                )
+                
+                logger.info(f"Project Group '{project_group_name}' created by {request.user.email}")
+                messages.success(request, f'Project Group "{project_group_name}" created successfully!')
+            
+            return redirect('project_group_master')
+            
+        except Exception as e:
+            logger.exception(f"Error creating project group: {str(e)}")
+            messages.error(request, 'An error occurred while creating the project group.')
+            return redirect('project_group_master')
+    
+    return redirect('project_group_master')
+
+
+@login_required
+@superadmin_required
+def edit_project_group(request, group_id):
+    """Update an existing project group (Djongo-safe)"""
+    if request.method != 'POST':
+        return redirect('project_group_master')
+    
+    # Djongo-safe lookup
+    all_groups = list(ProjectGroupMaster.objects.filter(id=group_id))
+    group = next(
+        (item for item in all_groups if not getattr(item, 'is_deleted', False)),
+        None
+    )
+    
+    if not group:
+        messages.error(request, 'Project Group not found.')
+        return redirect('project_group_master')
+    
+    try:
+        project_group_name = request.POST.get('project_group_name', '').strip()
+        project_group_prefix = request.POST.get('project_group_prefix', '').strip().upper()
+        
+        if not project_group_name or not project_group_prefix:
+            messages.error(request, 'All fields are required.')
+            return redirect('project_group_master')
+        
+        # Validate prefix format
+        if not project_group_prefix.isalnum():
+            messages.error(request, 'Project Group Prefix must contain only letters and numbers.')
+            return redirect('project_group_master')
+        
+        # Check for duplicate prefix (excluding current record) - Djongo-safe
+        all_matching = list(ProjectGroupMaster.objects.filter(
+            project_group_prefix=project_group_prefix
+        ))
+        
+        # Filter in Python to avoid Djongo issues
+        existing = next(
+            (item for item in all_matching 
+             if item.id != group_id and not getattr(item, 'is_deleted', False)),
+            None
+        )
+        
+        if existing:
+            messages.error(request, f'Project Group with prefix "{project_group_prefix}" already exists.')
+            return redirect('project_group_master')
+        
+        with transaction.atomic():
+            group.project_group_name = project_group_name
+            group.project_group_prefix = project_group_prefix
+            group.updated_by = request.user
+            group.updated_at = timezone.now()
+            group.save()
+            
+            log_activity_event(
+                'project_group.updated_at',
+                subject_user=None,
+                performed_by=request.user,
+                metadata={
+                    'project_group_id': str(group.id),
+                    'project_group_name': project_group_name,
+                    'project_group_prefix': project_group_prefix,
+                },
+            )
+        
+        messages.success(request, f'Project Group "{project_group_name}" updated successfully.')
+    except Exception as e:
+        logger.exception(f"Error updating project group: {str(e)}")
+        messages.error(request, 'An error occurred while updating the project group.')
+    
+    return redirect('project_group_master')
+
+
+@login_required
+@superadmin_required
+def delete_project_group(request, group_id):
+    """Delete a project group (Djongo-safe)"""
+    if request.method != 'POST':
+        return redirect('project_group_master')
+    
+    # Safe lookup
+    group = None
+    try:
+        group = ProjectGroupMaster.objects.get(id=group_id)
+    except ProjectGroupMaster.DoesNotExist:
+        messages.error(request, 'Project Group not found.')
+        return redirect('project_group_master')
+    
+    group_id_ref = str(group.id)
+    group_name_ref = group.project_group_name
+    group_prefix_ref = group.project_group_prefix
+    
+    try:
+        with transaction.atomic():
+            group.delete()
+            
+            log_activity_event(
+                'project_group.deleted',
+                subject_user=None,
+                performed_by=request.user,
+                metadata={
+                    'project_group_id': group_id_ref,
+                    'project_group_name': group_name_ref,
+                    'project_group_prefix': group_prefix_ref,
+                },
+            )
+        
+        messages.success(request, f'Project Group "{group_name_ref}" deleted successfully.')
+    except Exception as e:
+        logger.exception(f"Error deleting project group: {str(e)}")
+        messages.error(request, 'An error occurred while deleting the project group.')
+    
+    return redirect('project_group_master')

@@ -833,6 +833,41 @@ textarea.form-control {
 /* ========================================
    10. TABLES & DATA DISPLAY
    ======================================== */
+/* ========================================
+   TABLE HORIZONTAL SCROLLBAR (ENHANCED)
+   ======================================== */
+
+/* Force horizontal scroll on table container */
+.table-container {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-gutter: stable both-edges;
+    padding-bottom: 8px;
+    overflow-x: auto;
+}
+
+/* Ensure table does not shrink */
+.table-container .data-table {
+    min-width: 1000px; /* adjust if needed */
+}
+
+/* Custom horizontal scrollbar styling */
+.table-container::-webkit-scrollbar {
+    height: 10px;
+}
+
+.table-container::-webkit-scrollbar-thumb {
+    background: var(--primary);
+    border-radius: 10px;
+    border: 2px solid transparent;
+    background-clip: padding-box;
+}
+
+.table-container::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 10px;
+}
+
 .table-container {
   width: 100%;
   background-color: var(--card-bg);
@@ -1805,7 +1840,43 @@ body::-webkit-scrollbar-track {
     right: var(--spacing-md);
   }
 }
-
 /* ========================================
    END OF STYLESHEET
-   ========================================
+   ======================================== */
+
+.text-center { text-align: center; }
+.text-right { text-align: right; }
+.text-left { text-align: left; }
+
+.mt-1 { margin-top: var(--spacing-sm); }
+.mt-2 { margin-top: var(--spacing-md); }
+.mt-3 { margin-top: var(--spacing-lg); }
+.mt-4 { margin-top: var(--spacing-xl); }
+
+.mb-1 { margin-bottom: var(--spacing-sm); }
+.mb-2 { margin-bottom: var(--spacing-md); }
+.mb-3 { margin-bottom: var(--spacing-lg); }
+.mb-4 { margin-bottom: var(--spacing-xl); }
+
+.p-1 { padding: var(--spacing-sm); }
+.p-2 { padding: var(--spacing-md); }
+.p-3 { padding: var(--spacing-lg); }
+.p-4 { padding: var(--spacing-xl); }
+
+.d-none { display: none; }
+.d-block { display: block; }
+.d-flex { display: flex; }
+.d-grid { display: grid; }
+
+.flex-column { flex-direction: column; }
+.flex-wrap { flex-wrap: wrap; }
+.justify-center { justify-content: center; }
+.align-center { align-items: center; }
+.gap-1 { gap: var(--spacing-sm); }
+.gap-2 { gap: var(--spacing-md); }
+.gap-3 { gap: var(--spacing-lg); }
+
+.w-100 { width: 100%; }
+.h-100 { height: 100%; }
+
+.hidden { display: none !important; }
