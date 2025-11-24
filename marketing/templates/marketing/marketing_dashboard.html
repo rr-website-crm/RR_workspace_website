@@ -125,16 +125,16 @@
                         </td>
                         <td>
                             <div class="btn-group-sm" style="display: flex; gap: 0.5rem;">
-                                <a href="{% url 'view_job_details' activity.system_id %}" class="btn btn-sm btn-primary" title="View Details">
+                                <a href="{% url 'view_job_details' job.system_id %}" class="btn btn-sm btn-primary" title="View Details">
                                     VIEW
                                 </a>
                                 
-                                {% if activity.status == 'draft' %}
-                                    <a href="{% url 'create_job' %}?job_id={{ activity.system_id %}" class="btn btn-sm btn-warning" title="Edit Initial Form">
+                                {% if job.status == 'draft' %}
+                                    <a href="{% url 'create_job' %}?job_id={{ job.system_id }}" class="btn btn-sm btn-warning" title="Edit Initial Form">
                                         EDIT
                                     </a>
-                                {% elif activity.status == 'pending' %}
-                                    <a href="{% url 'final_job_form' system_id=activity.system_id %}" class="btn btn-sm btn-success" title="Complete Final Step">
+                                {% elif job.status == 'pending' %}
+                                    <a href="{% url 'final_job_form' system_id=job.system_id %}" class="btn btn-sm btn-success" title="Complete Final Step">
                                         COMPLETE
                                     </a>
                                 {% endif %}

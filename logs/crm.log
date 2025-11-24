@@ -18619,3 +18619,109 @@ INFO 2025-11-24 11:07:46,470 basehttp "GET /marketing/dashboard/ HTTP/1.1" 200 4
 INFO 2025-11-24 11:08:01,508 basehttp "GET /marketing/jobs/CH-1763805413418/view/ HTTP/1.1" 200 55084
 INFO 2025-11-24 11:08:40,727 basehttp "GET /marketing/jobs/CH-1763709886722/final-form/ HTTP/1.1" 200 46894
 INFO 2025-11-24 11:08:41,041 basehttp "GET /media/logo.png HTTP/1.1" 200 1275213
+INFO 2025-11-24 12:47:33,874 autoreload Watching for file changes with StatReloader
+WARNING 2025-11-24 12:47:35,559 middleware Unauthorized access attempt to /marketing/jobs/create/ from IP: 127.0.0.1
+INFO 2025-11-24 12:47:35,560 basehttp "GET /marketing/jobs/create/ HTTP/1.1" 302 0
+INFO 2025-11-24 12:47:35,580 basehttp "GET /accounts/login/ HTTP/1.1" 200 7653
+INFO 2025-11-24 12:47:35,608 basehttp "GET /static/css/style.css HTTP/1.1" 304 0
+INFO 2025-11-24 12:47:35,698 basehttp "GET /static/css/base.css HTTP/1.1" 200 42424
+WARNING 2025-11-24 12:47:35,774 middleware Unauthorized access attempt to /favicon.ico from IP: 127.0.0.1
+INFO 2025-11-24 12:47:35,774 basehttp "GET /favicon.ico HTTP/1.1" 302 0
+INFO 2025-11-24 12:47:35,780 basehttp "GET /accounts/login/ HTTP/1.1" 200 7338
+INFO 2025-11-24 12:47:36,253 basehttp "GET /accounts/login/ HTTP/1.1" 200 7338
+WARNING 2025-11-24 12:47:36,284 middleware Unauthorized access attempt to /favicon.ico from IP: 127.0.0.1
+INFO 2025-11-24 12:47:36,284 basehttp "GET /favicon.ico HTTP/1.1" 302 0
+INFO 2025-11-24 12:47:36,289 basehttp "GET /accounts/login/ HTTP/1.1" 200 7338
+INFO 2025-11-24 12:47:43,962 views Successful login for user: srijabiswas3001@gmail.com from IP: 127.0.0.1
+INFO 2025-11-24 12:47:43,975 basehttp "POST /accounts/login/ HTTP/1.1" 302 0
+INFO 2025-11-24 12:47:44,395 basehttp "GET /dashboard/ HTTP/1.1" 200 26297
+INFO 2025-11-24 12:47:44,817 basehttp "GET /media/profile/EMPMK378939_srija-ai.jfif HTTP/1.1" 200 8803
+INFO 2025-11-24 12:47:44,826 basehttp "GET /media/logo.png HTTP/1.1" 200 1275213
+INFO 2025-11-24 12:47:45,882 basehttp "GET /marketing/dashboard/ HTTP/1.1" 200 41206
+INFO 2025-11-24 12:47:48,300 basehttp "GET /marketing/jobs/my-jobs/ HTTP/1.1" 200 34428
+INFO 2025-11-24 12:47:49,194 basehttp "GET /marketing/jobs/create/ HTTP/1.1" 200 54606
+INFO 2025-11-24 12:47:52,773 basehttp "POST /marketing/jobs/check-job-id/ HTTP/1.1" 200 50
+INFO 2025-11-24 12:47:53,680 basehttp "POST /marketing/jobs/check-job-id/ HTTP/1.1" 200 50
+INFO 2025-11-24 12:47:55,100 basehttp "POST /marketing/jobs/check-job-id/ HTTP/1.1" 200 50
+INFO 2025-11-24 12:48:24,278 basehttp "POST /marketing/jobs/save-initial/ HTTP/1.1" 200 119
+ERROR 2025-11-24 12:48:26,109 log Internal Server Error: /marketing/jobs/generate-summary/
+ERROR 2025-11-24 12:48:26,111 basehttp "POST /marketing/jobs/generate-summary/ HTTP/1.1" 500 287
+INFO 2025-11-24 12:48:45,004 basehttp "POST /marketing/jobs/save-initial/ HTTP/1.1" 200 119
+ERROR 2025-11-24 12:48:47,236 log Internal Server Error: /marketing/jobs/generate-summary/
+ERROR 2025-11-24 12:48:47,237 basehttp "POST /marketing/jobs/generate-summary/ HTTP/1.1" 500 287
+INFO 2025-11-24 12:48:53,696 autoreload Watching for file changes with StatReloader
+INFO 2025-11-24 12:48:55,158 basehttp "GET /marketing/jobs/create/ HTTP/1.1" 200 54606
+ERROR 2025-11-24 12:49:04,918 log Internal Server Error: /marketing/dashboard/
+Traceback (most recent call last):
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM - Copy\venv\lib\site-packages\django\core\handlers\exception.py", line 47, in inner
+    response = get_response(request)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM - Copy\venv\lib\site-packages\django\core\handlers\base.py", line 181, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM - Copy\venv\lib\site-packages\django\contrib\auth\decorators.py", line 21, in _wrapped_view
+    return view_func(request, *args, **kwargs)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM - Copy\marketing\views.py", line 58, in wrapper
+    return view_func(request, *args, **kwargs)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM - Copy\marketing\views.py", line 98, in marketing_dashboard
+    return render(request, 'marketing/marketing_dashboard.html', context)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM - Copy\venv\lib\site-packages\django\shortcuts.py", line 19, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM - Copy\venv\lib\site-packages\django\template\loader.py", line 62, in render_to_string
+    return template.render(context, request)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM - Copy\venv\lib\site-packages\django\template\backends\django.py", line 61, in render
+    return self.template.render(context)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM - Copy\venv\lib\site-packages\django\template\base.py", line 170, in render
+    return self._render(context)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM - Copy\venv\lib\site-packages\django\template\base.py", line 162, in _render
+    return self.nodelist.render(context)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM - Copy\venv\lib\site-packages\django\template\base.py", line 938, in render
+    bit = node.render_annotated(context)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM - Copy\venv\lib\site-packages\django\template\base.py", line 905, in render_annotated
+    return self.render(context)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM - Copy\venv\lib\site-packages\django\template\loader_tags.py", line 150, in render
+    return compiled_parent._render(context)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM - Copy\venv\lib\site-packages\django\template\base.py", line 162, in _render
+    return self.nodelist.render(context)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM - Copy\venv\lib\site-packages\django\template\base.py", line 938, in render
+    bit = node.render_annotated(context)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM - Copy\venv\lib\site-packages\django\template\base.py", line 905, in render_annotated
+    return self.render(context)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM - Copy\venv\lib\site-packages\django\template\loader_tags.py", line 62, in render
+    result = block.nodelist.render(context)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM - Copy\venv\lib\site-packages\django\template\base.py", line 938, in render
+    bit = node.render_annotated(context)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM - Copy\venv\lib\site-packages\django\template\base.py", line 905, in render_annotated
+    return self.render(context)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM - Copy\venv\lib\site-packages\django\template\defaulttags.py", line 312, in render
+    return nodelist.render(context)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM - Copy\venv\lib\site-packages\django\template\base.py", line 938, in render
+    bit = node.render_annotated(context)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM - Copy\venv\lib\site-packages\django\template\base.py", line 905, in render_annotated
+    return self.render(context)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM - Copy\venv\lib\site-packages\django\template\defaulttags.py", line 211, in render
+    nodelist.append(node.render_annotated(context))
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM - Copy\venv\lib\site-packages\django\template\base.py", line 905, in render_annotated
+    return self.render(context)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM - Copy\venv\lib\site-packages\django\template\defaulttags.py", line 446, in render
+    url = reverse(view_name, args=args, kwargs=kwargs, current_app=current_app)
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM - Copy\venv\lib\site-packages\django\urls\base.py", line 87, in reverse
+    return iri_to_uri(resolver._reverse_with_prefix(view, prefix, *args, **kwargs))
+  File "C:\Users\User\Downloads\kk\1763367171541_NCRM\NCRM - Copy\venv\lib\site-packages\django\urls\resolvers.py", line 685, in _reverse_with_prefix
+    raise NoReverseMatch(msg)
+django.urls.exceptions.NoReverseMatch: Reverse for 'view_job_details' with arguments '('',)' not found. 2 pattern(s) tried: ['allocator/job/(?P<job_id>[0-9]+)/$', 'marketing/jobs/(?P<system_id>[^/]+)/view/$']
+ERROR 2025-11-24 12:49:04,924 basehttp "GET /marketing/dashboard/ HTTP/1.1" 500 242489
+WARNING 2025-11-24 12:49:05,121 log Not Found: /favicon.ico
+WARNING 2025-11-24 12:49:05,122 basehttp "GET /favicon.ico HTTP/1.1" 404 3336
+INFO 2025-11-24 12:50:21,611 basehttp "GET /marketing/dashboard/ HTTP/1.1" 200 43526
+INFO 2025-11-24 12:50:21,633 basehttp "GET /static/css/base.css HTTP/1.1" 304 0
+INFO 2025-11-24 12:50:27,881 basehttp "GET /marketing/jobs/CH-1763968704024/view/ HTTP/1.1" 200 36797
+INFO 2025-11-24 12:50:30,916 basehttp "GET /marketing/jobs/create/?job_id=CH-1763968704024 HTTP/1.1" 200 55405
+INFO 2025-11-24 12:50:36,125 basehttp "POST /marketing/jobs/save-initial/ HTTP/1.1" 200 119
+INFO 2025-11-24 12:50:44,026 basehttp "POST /marketing/jobs/generate-summary/ HTTP/1.1" 200 2034
+INFO 2025-11-24 12:50:44,220 basehttp "GET /marketing/jobs/summary-versions/CH-1763968704024/ HTTP/1.1" 200 1996
+INFO 2025-11-24 12:50:46,195 basehttp "GET /marketing/dashboard/ HTTP/1.1" 200 43238
+INFO 2025-11-24 12:50:51,958 basehttp "GET /marketing/jobs/CH-1763968704024/final-form/ HTTP/1.1" 200 44710
+INFO 2025-11-24 12:51:07,287 basehttp "GET /marketing/jobs/my-jobs/ HTTP/1.1" 200 35797
+INFO 2025-11-24 12:51:19,354 basehttp "GET /marketing/jobs/CH-1763968704024/view/ HTTP/1.1" 200 45578
+INFO 2025-11-24 12:51:35,797 basehttp "GET /dashboard/ HTTP/1.1" 200 26297
+INFO 2025-11-24 12:51:37,556 basehttp "GET /marketing/dashboard/ HTTP/1.1" 200 43238
+INFO 2025-11-24 12:51:39,641 basehttp "GET /marketing/jobs/CH-1763968704024/final-form/ HTTP/1.1" 200 44710

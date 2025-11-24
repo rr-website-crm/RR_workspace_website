@@ -286,3 +286,6 @@ WARNING 2025-11-24 11:06:10,786 middleware Unauthorized access attempt to /marke
 WARNING 2025-11-24 11:06:14,118 middleware Unauthorized access attempt to /favicon.ico from IP: 127.0.0.1
 ERROR 2025-11-24 11:07:31,256 views Error during logout for admin@gmail.com: 
 WARNING 2025-11-24 11:07:32,089 middleware Unauthorized access attempt to /favicon.ico from IP: 127.0.0.1
+WARNING 2025-11-24 12:47:35,559 middleware Unauthorized access attempt to /marketing/jobs/create/ from IP: 127.0.0.1
+WARNING 2025-11-24 12:47:35,774 middleware Unauthorized access attempt to /favicon.ico from IP: 127.0.0.1
+WARNING 2025-11-24 12:47:36,284 middleware Unauthorized access attempt to /favicon.ico from IP: 127.0.0.1
