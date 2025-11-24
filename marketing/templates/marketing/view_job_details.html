@@ -1,0 +1,588 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Job Details - {{ job.job_id }}{% endblock %}
+
+{% block content %}
+<div class="dashboard-header" style="margin-bottom: 2rem;">
+    <div style="display: flex; justify-content: space-between; align-items: center;">
+        <div>
+            <h1 class="dashboard-title">Job Details</h1>
+            <p class="dashboard-subtitle">{{ job.job_id }} - {{ job.get_status_display }}</p>
+        </div>
+        <a href="{% url 'marketing_dashboard' %}" class="btn btn-outline">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M19 12H5M5 12L12 19M5 12L12 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            Back to Dashboard
+        </a>
+    </div>
+</div>
+
+<div style="display: grid; grid-template-columns: 350px 1fr 320px; gap: 1.5rem; margin-bottom: 2rem;">
+    
+    <!-- LEFT SIDE: AI Summary -->
+    <div class="card" style="height: fit-content; position: sticky; top: 20px;">
+        <div class="card-header">
+            <h2 class="card-title" style="margin: 0;">AI Generated Summary</h2>
+        </div>
+        <div class="card-body" style="max-height: 80vh; overflow-y: auto;">
+            <div class="summary-field">
+                <label class="summary-label">System ID</label>
+                <div class="summary-value">{{ job.system_id }}</div>
+            </div>
+            
+            <div class="summary-field">
+                <label class="summary-label">Topic</label>
+                <div class="summary-value">{{ job.topic|default:"Not generated" }}</div>
+            </div>
+            
+            <div class="summary-field">
+                <label class="summary-label">Category</label>
+                <div class="summary-value">{{ job.get_category_display|default:"Not specified" }}</div>
+            </div>
+            
+            <div class="summary-field">
+                <label class="summary-label">Word Count</label>
+                <div class="summary-value">{{ job.word_count|default:"Not specified" }}</div>
+            </div>
+            
+            <div class="summary-field">
+                <label class="summary-label">Referencing Style</label>
+                <div class="summary-value">{{ job.get_referencing_style_display|default:"Not specified" }}</div>
+            </div>
+            
+            <div class="summary-field">
+                <label class="summary-label">Writing Style</label>
+                <div class="summary-value">{{ job.get_writing_style_display|default:"Not specified" }}</div>
+            </div>
+            
+            <div class="summary-field">
+                <label class="summary-label">Job Summary</label>
+                <div class="summary-value" style="white-space: pre-wrap; max-height: 300px; overflow-y: auto;">{{ job.job_summary|default:"Not generated" }}</div>
+            </div>
+            
+            <div class="summary-field">
+                <label class="summary-label">Summary Version</label>
+                <div class="summary-value">
+                    <span class="badge badge-info">v{{ job.ai_summary_version }}</span>
+                    <span class="badge badge-secondary">Degree: {{ job.job_card_degree }}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- MIDDLE: Job Details -->
+    <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+        
+        <!-- Initial Form Details -->
+        <div class="card">
+            <div class="card-header">
+                <h2 class="card-title" style="margin: 0;">Initial Form Details</h2>
+            </div>
+            <div class="card-body">
+                <div class="detail-grid">
+                    <div class="detail-item">
+                        <label class="detail-label">Job ID</label>
+                        <div class="detail-value">{{ job.job_id }}</div>
+                    </div>
+                    
+                    <div class="detail-item">
+                        <label class="detail-label">Status</label>
+                        <div class="detail-value">
+                            <span class="status-badge status-{{ job.status }}">{{ job.get_status_display }}</span>
+                        </div>
+                    </div>
+                    
+                    <div class="detail-item full-width">
+                        <label class="detail-label">Instruction</label>
+                        <div class="detail-value" style="white-space: pre-wrap;">{{ job.instruction }}</div>
+                    </div>
+                    
+                    <div class="detail-item full-width">
+                        <label class="detail-label">Attachments ({{ attachments.count }})</label>
+                        <div class="detail-value">
+                            {% if attachments %}
+                                <ul style="list-style: none; padding: 0; margin: 0;">
+                                    {% for attachment in attachments %}
+                                    <li style="padding: 0.5rem; background: rgba(255,255,255,0.05); border-radius: 4px; margin-bottom: 0.5rem; display: flex; justify-content: space-between; align-items: center;">
+                                        <div>
+                                            <svg width="16" height="16" style="vertical-align: middle; margin-right: 0.5rem;" viewBox="0 0 24 24" fill="none">
+                                                <path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z" stroke="currentColor" stroke-width="2"/>
+                                                <polyline points="13 2 13 9 20 9" stroke="currentColor" stroke-width="2"/>
+                                            </svg>
+                                            {{ attachment.original_filename }}
+                                        </div>
+                                        <span style="color: rgba(255,255,255,0.6); font-size: 0.875rem;">{{ attachment.file_size|filesizeformat }}</span>
+                                    </li>
+                                    {% endfor %}
+                                </ul>
+                            {% else %}
+                                <span style="color: rgba(255,255,255,0.6);">No attachments</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Final Form Details -->
+        {% if job.final_form_submitted_at %}
+        <div class="card">
+            <div class="card-header">
+                <h2 class="card-title" style="margin: 0;">Final Form Details</h2>
+            </div>
+            <div class="card-body">
+                <div class="detail-grid">
+                    {% if job_template %}
+                    <div class="detail-item">
+                        <label class="detail-label">Masking ID</label>
+                        <div class="detail-value">
+                            <span style="font-family: monospace; background: rgba(139, 92, 246, 0.2); padding: 0.25rem 0.5rem; border-radius: 4px; color: #a78bfa;">
+                                {{ job_template.masking_id }}
+                            </span>
+                        </div>
+                    </div>
+                    {% endif %}
+                    
+                    <div class="detail-item">
+                        <label class="detail-label">Template</label>
+                        <div class="detail-value">{{ job.template.template_name|default:"N/A" }}</div>
+                    </div>
+                    
+                    <div class="detail-item">
+                        <label class="detail-label">Project Group</label>
+                        <div class="detail-value">{{ job.project_group.project_group_name|default:"N/A" }}</div>
+                    </div>
+                    
+                    <div class="detail-item">
+                        <label class="detail-label">Expected Deadline</label>
+                        <div class="detail-value">
+                            {% if job.expected_deadline %}
+                                {{ job.expected_deadline|date:"d M Y, g:i A" }}
+                            {% else %}
+                                N/A
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <div class="detail-item">
+                        <label class="detail-label">Strict Deadline</label>
+                        <div class="detail-value">
+                            {% if job.strict_deadline %}
+                                <span style="color: #ef4444;">{{ job.strict_deadline|date:"d M Y, g:i A" }}</span>
+                            {% else %}
+                                N/A
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <div class="detail-item">
+                        <label class="detail-label">Amount</label>
+                        <div class="detail-value">
+                            {% if job_amount_display is not None %}
+                                ₹{{ job_amount_display }}
+                            {% else %}
+                                N/A
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <div class="detail-item">
+                        <label class="detail-label">System Expected Amount</label>
+                        <div class="detail-value">
+                            {% if job_system_amount_display is not None %}
+                                ₹{{ job_system_amount_display }}
+                            {% else %}
+                                N/A
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    {% if job.software %}
+                    <div class="detail-item full-width">
+                        <label class="detail-label">Software Requirements</label>
+                        <div class="detail-value" style="white-space: pre-wrap;">{{ job.software }}</div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        
+        <!-- Tasks (if any) -->
+        {% if tasks %}
+        <div class="card">
+            <div class="card-header">
+                <h2 class="card-title" style="margin: 0;">Tasks</h2>
+            </div>
+            <div class="card-body">
+                <div style="display: flex; flex-direction: column; gap: 1rem;">
+                    {% for task in tasks %}
+                    <div style="padding: 1rem; background: rgba(255,255,255,0.05); border-radius: 8px; border-left: 3px solid #8b5cf6;">
+                        <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 0.5rem;">
+                            <div>
+                                <div style="font-weight: 500; margin-bottom: 0.25rem;">{{ task.task_name }}</div>
+                                <div style="font-size: 0.875rem; color: rgba(255,255,255,0.6);">Task ID: {{ task.task_id }}</div>
+                            </div>
+                            <span class="status-badge status-{{ task.status }}">{{ task.get_status_display }}</span>
+                        </div>
+                        {% if task.assigned_to %}
+                        <div style="font-size: 0.875rem; color: rgba(255,255,255,0.6);">
+                            Assigned to: {{ task.assigned_to.get_full_name }}
+                        </div>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        {% endif %}
+        {% endif %}
+        
+        <!-- Summary Versions -->
+        {% if summary_versions %}
+        <div class="card">
+            <div class="card-header">
+                <h2 class="card-title" style="margin: 0;">Summary Versions ({{ summary_versions.count }})</h2>
+            </div>
+            <div class="card-body">
+                <div style="display: flex; flex-direction: column; gap: 1rem;">
+                    {% for version in summary_versions %}
+                    <div style="padding: 1rem; background: rgba(255,255,255,0.05); border-radius: 8px; {% if version.version_number == job.ai_summary_version %}border: 1px solid #10b981;{% endif %}">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                            <div>
+                                <span class="badge badge-info">Version {{ version.version_number }}</span>
+                                <span class="badge badge-secondary">Degree: {{ version.degree }}</span>
+                                {% if version.version_number == job.ai_summary_version %}
+                                <span class="badge badge-success">Current</span>
+                                {% endif %}
+                            </div>
+                            <span style="font-size: 0.875rem; color: rgba(255,255,255,0.6);">{{ version.generated_at|date:"d M, g:i A" }}</span>
+                        </div>
+                        <div style="font-size: 0.875rem; color: rgba(255,255,255,0.8); margin-top: 0.5rem;">
+                            <strong>Topic:</strong> {{ version.topic|default:"N/A" }}
+                        </div>
+                        <div style="font-size: 0.875rem; color: rgba(255,255,255,0.8); margin-top: 0.25rem;">
+                            <strong>Word Count:</strong> {{ version.word_count|default:"N/A" }}
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+    
+    <!-- RIGHT SIDE: Timeline -->
+    <div class="card" style="height: fit-content; position: sticky; top: 20px;">
+        <div class="card-header">
+            <h2 class="card-title" style="margin: 0;">Timeline</h2>
+        </div>
+        <div class="card-body" style="max-height: 80vh; overflow-y: auto;">
+            <div class="timeline">
+                {% for event in timeline_events %}
+                <div class="timeline-item">
+                    <div class="timeline-marker timeline-marker-{{ event.color }}">
+                        {% if event.icon == 'plus-circle' %}
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                            <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/>
+                            <line x1="12" y1="8" x2="12" y2="16" stroke="currentColor" stroke-width="2"/>
+                            <line x1="8" y1="12" x2="16" y2="12" stroke="currentColor" stroke-width="2"/>
+                        </svg>
+                        {% elif event.icon == 'check-circle' %}
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                            <polyline points="22 4 12 14.01 9 11.01" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                        </svg>
+                        {% elif event.icon == 'file-text' %}
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" stroke="currentColor" stroke-width="2"/>
+                            <polyline points="14 2 14 8 20 8" stroke="currentColor" stroke-width="2"/>
+                            <line x1="16" y1="13" x2="8" y2="13" stroke="currentColor" stroke-width="2"/>
+                            <line x1="16" y1="17" x2="8" y2="17" stroke="currentColor" stroke-width="2"/>
+                        </svg>
+                        {% elif event.icon == 'cpu' %}
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                            <rect x="4" y="4" width="16" height="16" rx="2" stroke="currentColor" stroke-width="2"/>
+                            <rect x="9" y="9" width="6" height="6" stroke="currentColor" stroke-width="2"/>
+                            <line x1="9" y1="1" x2="9" y2="4" stroke="currentColor" stroke-width="2"/>
+                            <line x1="15" y1="1" x2="15" y2="4" stroke="currentColor" stroke-width="2"/>
+                            <line x1="9" y1="20" x2="9" y2="23" stroke="currentColor" stroke-width="2"/>
+                            <line x1="15" y1="20" x2="15" y2="23" stroke="currentColor" stroke-width="2"/>
+                            <line x1="20" y1="9" x2="23" y2="9" stroke="currentColor" stroke-width="2"/>
+                            <line x1="20" y1="14" x2="23" y2="14" stroke="currentColor" stroke-width="2"/>
+                            <line x1="1" y1="9" x2="4" y2="9" stroke="currentColor" stroke-width="2"/>
+                            <line x1="1" y1="14" x2="4" y2="14" stroke="currentColor" stroke-width="2"/>
+                        </svg>
+                        {% elif event.icon == 'zap' %}
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                            <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                        {% elif event.icon == 'check' %}
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                            <polyline points="20 6 9 17 4 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                        {% elif event.icon == 'eye' %}
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" stroke="currentColor" stroke-width="2"/>
+                            <circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="2"/>
+                        </svg>
+                        {% elif event.icon == 'send' %}
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                            <line x1="22" y1="2" x2="11" y2="13" stroke="currentColor" stroke-width="2"/>
+                            <polygon points="22 2 15 22 11 13 2 9 22 2" stroke="currentColor" stroke-width="2"/>
+                        </svg>
+                        {% elif event.icon == 'hash' %}
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                            <line x1="4" y1="9" x2="20" y2="9" stroke="currentColor" stroke-width="2"/>
+                            <line x1="4" y1="15" x2="20" y2="15" stroke="currentColor" stroke-width="2"/>
+                            <line x1="10" y1="3" x2="8" y2="21" stroke="currentColor" stroke-width="2"/>
+                            <line x1="16" y1="3" x2="14" y2="21" stroke="currentColor" stroke-width="2"/>
+                        </svg>
+                        {% endif %}
+                    </div>
+                    <div class="timeline-content">
+                        <div class="timeline-title">{{ event.title }}</div>
+                        <div class="timeline-description">{{ event.description }}</div>
+                        <div class="timeline-time">{{ event.timestamp|date:"d M Y, g:i A" }}</div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .summary-field {
+        margin-bottom: 1.5rem;
+        padding-bottom: 1rem;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    .summary-field:last-child {
+        border-bottom: none;
+        margin-bottom: 0;
+        padding-bottom: 0;
+    }
+    
+    .summary-label {
+        display: block;
+        font-size: 0.875rem;
+        color: rgba(255, 255, 255, 0.6);
+        margin-bottom: 0.5rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        font-weight: 500;
+    }
+    
+    .summary-value {
+        color: var(--text-color);
+        font-size: 0.95rem;
+        line-height: 1.6;
+    }
+    
+    .detail-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1.5rem;
+    }
+    
+    .detail-item {
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .detail-item.full-width {
+        grid-column: 1 / -1;
+    }
+    
+    .detail-label {
+        font-size: 0.875rem;
+        color: rgba(255, 255, 255, 0.6);
+        margin-bottom: 0.5rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        font-weight: 500;
+    }
+    
+    .detail-value {
+        color: var(--text-color);
+        font-size: 0.95rem;
+        line-height: 1.6;
+    }
+    
+    .status-badge {
+        display: inline-block;
+        padding: 0.25rem 0.75rem;
+        border-radius: 12px;
+        font-size: 0.875rem;
+        font-weight: 500;
+        text-transform: capitalize;
+    }
+    
+    .status-draft {
+        background: rgba(156, 163, 175, 0.2);
+        color: #9ca3af;
+    }
+    
+    .status-pending {
+        background: rgba(251, 191, 36, 0.2);
+        color: #fbbf24;
+    }
+    
+    .status-allocated, .status-in_progress {
+        background: rgba(59, 130, 246, 0.2);
+        color: #3b82f6;
+    }
+    
+    .status-completed {
+        background: rgba(16, 185, 129, 0.2);
+        color: #10b981;
+    }
+    
+    .status-hold, .status-query {
+        background: rgba(239, 68, 68, 0.2);
+        color: #ef4444;
+    }
+    
+    .status-unallocated {
+        background: rgba(168, 85, 247, 0.2);
+        color: #a855f7;
+    }
+    
+    .badge {
+        display: inline-block;
+        padding: 0.25rem 0.5rem;
+        border-radius: 4px;
+        font-size: 0.75rem;
+        font-weight: 500;
+        margin-right: 0.5rem;
+    }
+    
+    .badge-info {
+        background: rgba(59, 130, 246, 0.2);
+        color: #3b82f6;
+    }
+    
+    .badge-secondary {
+        background: rgba(156, 163, 175, 0.2);
+        color: #9ca3af;
+    }
+    
+    .badge-success {
+        background: rgba(16, 185, 129, 0.2);
+        color: #10b981;
+    }
+    
+    /* Timeline Styles */
+    .timeline {
+        position: relative;
+        padding-left: 2rem;
+    }
+    
+    .timeline::before {
+        content: '';
+        position: absolute;
+        left: 0.5rem;
+        top: 0;
+        bottom: 0;
+        width: 2px;
+        background: rgba(255, 255, 255, 0.1);
+    }
+    
+    .timeline-item {
+        position: relative;
+        padding-bottom: 1.5rem;
+    }
+    
+    .timeline-item:last-child {
+        padding-bottom: 0;
+    }
+    
+    .timeline-marker {
+        position: absolute;
+        left: -1.5rem;
+        top: 0;
+        width: 2rem;
+        height: 2rem;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 1;
+    }
+    
+    .timeline-marker-blue {
+        background: rgba(59, 130, 246, 0.2);
+        color: #3b82f6;
+        border: 2px solid #3b82f6;
+    }
+    
+    .timeline-marker-green {
+        background: rgba(16, 185, 129, 0.2);
+        color: #10b981;
+        border: 2px solid #10b981;
+    }
+    
+    .timeline-marker-purple {
+        background: rgba(139, 92, 246, 0.2);
+        color: #8b5cf6;
+        border: 2px solid #8b5cf6;
+    }
+    
+    .timeline-marker-yellow {
+        background: rgba(251, 191, 36, 0.2);
+        color: #fbbf24;
+        border: 2px solid #fbbf24;
+    }
+    
+    .timeline-marker-gray {
+        background: rgba(156, 163, 175, 0.2);
+        color: #9ca3af;
+        border: 2px solid #9ca3af;
+    }
+    
+    .timeline-content {
+        background: rgba(255, 255, 255, 0.05);
+        padding: 1rem;
+        border-radius: 8px;
+        margin-left: 1rem;
+    }
+    
+    .timeline-title {
+        font-weight: 600;
+        font-size: 0.95rem;
+        margin-bottom: 0.25rem;
+        color: var(--text-color);
+    }
+    
+    .timeline-description {
+        font-size: 0.875rem;
+        color: rgba(255, 255, 255, 0.7);
+        margin-bottom: 0.5rem;
+    }
+    
+    .timeline-time {
+        font-size: 0.75rem;
+        color: rgba(255, 255, 255, 0.5);
+        font-family: monospace;
+    }
+    
+    @media (max-width: 1280px) {
+        div[style*="grid-template-columns: 350px 1fr 320px"] {
+            grid-template-columns: 1fr !important;
+        }
+        
+        .card[style*="position: sticky"] {
+            position: relative !important;
+        }
+    }
+    
+    @media (max-width: 768px) {
+        .detail-grid {
+            grid-template-columns: 1fr !important;
+        }
+    }
+</style>
+{% endblock %}

@@ -92,7 +92,7 @@
         </button>
     </div>
 
-    <!-- Holiday History -->
+    {% comment %} <!-- Holiday History -->
     <div class="card">
         <div class="card-header">
             <h3 class="card-title">Holiday History</h3>
@@ -183,7 +183,140 @@
             {% endif %}
         </div>
     </div>
+</div> {% endcomment %}
+<!-- Holiday History -->
+<div class="card mt-4">
+    <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
+        <div>
+            <h3 class="card-title">Holiday History</h3>
+            <p class="dashboard-subtitle">All created holidays ({{ total_holidays }})</p>
+        </div>
+
+        <div style="display: flex; gap: 1rem;">
+            <input type="text" id="holidaySearchInput" class="form-control" placeholder="Search holidays..." style="width: 300px;">
+        </div>
+    </div>
+
+    <div class="card-body">
+        <div class="table-container table-scroll-lock">
+            {% if holidays %}
+            <table class="data-table" id="holidaysTable">
+                <thead>
+                    <tr>
+                        <th>SL. No</th>
+                        <th>Holiday Name</th>
+                        <th>Type</th>
+                        <th>Date Type</th>
+                        <th>Date(s)</th>
+                        <th>Google Calendar</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for holiday in holidays %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+
+                        <!-- Holiday Name -->
+                        <td style="font-weight: 600;" data-column="holiday_name">
+                            {{ holiday.holiday_name }}
+                        </td>
+
+                        <!-- Type -->
+                        <td>
+                            <span class="status-tag" style="background-color: rgba(var(--primary), 0.2); color: var(--secondary);">
+                                {{ holiday.get_holiday_type_display }}
+                            </span>
+                        </td>
+
+                        <!-- Date type -->
+                        <td>{{ holiday.get_date_type_display }}</td>
+
+                        <!-- Dates -->
+                        <td>
+                            {% if holiday.date_type == 'single' %}
+                                {{ holiday.date|date:"F d, Y" }}
+                            {% else %}
+                                {{ holiday.from_date|date:"M d" }} - {{ holiday.to_date|date:"M d, Y" }}
+                            {% endif %}
+                        </td>
+
+                        <!-- Google Calendar Sync -->
+                        <td>
+                            {% if holiday.is_synced_to_calendar %}
+                                <span class="status-tag status-completed">Synced</span>
+                            {% elif holiday.google_calendar_sync_failed_at %}
+                                <span class="status-tag status-cancelled">Failed</span>
+                            {% else %}
+                                <span class="status-tag status-pending">Not Synced</span>
+                            {% endif %}
+                        </td>
+
+                        <!-- Actions -->
+                        <td>
+                            <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+
+                                <!-- Edit Button -->
+                                <button type="button"
+                                        class="btn btn-outline btn-sm"
+                                        data-id="{{ holiday.id }}"
+                                        data-action="{% url 'edit_holiday' holiday.id %}"
+                                        data-name="{{ holiday.holiday_name|escape }}"
+                                        data-type="{{ holiday.holiday_type }}"
+                                        data-date-type="{{ holiday.date_type }}"
+                                        data-date="{{ holiday.date|date:'Y-m-d' }}"
+                                        data-from-date="{{ holiday.from_date|date:'Y-m-d' }}"
+                                        data-to-date="{{ holiday.to_date|date:'Y-m-d' }}"
+                                        data-description="{{ holiday.description|default:''|escape }}"
+                                        onclick="showEditHolidayModal(this)">
+                                    Edit
+                                </button>
+
+                                <!-- Delete Button -->
+                                <form method="POST"
+                                      action="{% url 'delete_holiday' holiday.id %}"
+                                      onsubmit="return confirm('Are you sure you want to delete this holiday?');">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-danger btn-sm">
+                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                  d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 
+                                                  2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 
+                                                  1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                                        </svg>
+                                    </button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+            {% else %}
+
+            <!-- Empty State -->
+            <div style="text-align: center; padding: 2rem; opacity: 0.7;">
+                <svg width="64" height="64" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="opacity: 0.3;">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="M8 7V3m8 4V3m-9 8h10M5 
+                          21h14a2 2 0 002-2V7a2 2 0 
+                          00-2-2H5a2 2 0 00-2 2v12a2 
+                          2 0 002 2z"/>
+                </svg>
+
+                <p style="font-size: 16px;">No holidays created yet</p>
+                <p style="font-size: 14px; opacity: 0.6; margin-top: 6px;">
+                    Click “Create Holiday” to add your first holiday
+                </p>
+            </div>
+
+            {% endif %}
+        </div>
+    </div>
 </div>
+
 
 <!-- Create Holiday Modal -->
 <div class="modal-overlay" id="createHolidayModal">
@@ -484,6 +617,15 @@ document.addEventListener('DOMContentLoaded', function() {
         if (e.key === 'Escape') {
             closeModal('createHolidayModal');
         }
+    });
+});
+document.getElementById("holidaySearchInput").addEventListener("keyup", function () {
+    let filter = this.value.toLowerCase();
+    let rows = document.querySelectorAll("#holidaysTable tbody tr");
+
+    rows.forEach(row => {
+        let name = row.querySelector('[data-column="holiday_name"]').innerText.toLowerCase();
+        row.style.display = name.includes(filter) ? "" : "none";
     });
 });
 </script>

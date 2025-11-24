@@ -45,9 +45,21 @@ urlpatterns = [
 
     # Add these URLs to your superadminpanel/urls.py
 
+    # Template Master
+    path('template-master/', views.template_master, name='template_master'),
+    path('template-master/create/', views.create_template, name='create_template'),
+    path('template-master/<int:template_id>/edit/', views.edit_template, name='edit_template'),
+    path('template-master/delete/<int:template_id>/', views.delete_template, name='delete_template'),
+
     # Academic Writing Style Master
     path('academic-writing-master/', views.academic_writing_master, name='academic_writing_master'),
     path('academic-writing-master/create/', views.create_writing, name='create_writing'),
     path('academic-writing-master/<str:writing_id>/edit/', views.edit_writing, name='edit_writing'),
     path('academic-writing-master/delete/<str:writing_id>/', views.delete_writing, name='delete_writing'),
+    
+    # Project Group Master
+    path('project-group-master/', views.project_group_master, name='project_group_master'),
+    path('project-group-master/create/', views.create_project_group, name='create_project_group'),
+    path('project-group-master/<int:group_id>/edit/', views.edit_project_group, name='edit_project_group'),
+    path('project-group-master/delete/<int:group_id>/', views.delete_project_group, name='delete_project_group'),
 ]

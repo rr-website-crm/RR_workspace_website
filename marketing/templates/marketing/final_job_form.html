@@ -1,0 +1,364 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Final Job Form - {{ job.job_id }}{% endblock %}
+
+{% block content %}
+<div class="dashboard-header">
+    <h1 class="dashboard-title">Final Job Drop Form</h1>
+    <p class="dashboard-subtitle">Complete the final details for Job ID: {{ job.job_id }}</p>
+</div>
+
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-bottom: 2rem;">
+    
+    <!-- LEFT SIDE: Summary Generator Details -->
+    <div class="card">
+        <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
+            <h2 class="card-title" style="margin: 0;">AI Generated Summary</h2>
+            <button type="button" class="btn btn-sm btn-primary" onclick="copySummaryToForm()">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <rect x="9" y="9" width="13" height="13" rx="2" stroke="currentColor" stroke-width="2"/>
+                    <path d="M5 15H4C2.89543 15 2 14.1046 2 13V4C2 2.89543 2.89543 2 4 2H13C14.1046 2 15 2.89543 15 4V5" stroke="currentColor" stroke-width="2"/>
+                </svg>
+                Copy to Form
+            </button>
+        </div>
+        <div class="card-body">
+            <div class="summary-field">
+                <label class="summary-label">System ID</label>
+                <div class="summary-value">{{ job.system_id }}</div>
+            </div>
+            
+            <div class="summary-field">
+                <label class="summary-label">Job ID</label>
+                <div class="summary-value">{{ job.job_id }}</div>
+            </div>
+            
+            <div class="summary-field">
+                <label class="summary-label">Topic</label>
+                <div class="summary-value">{{ job.topic|default:"Not generated" }}</div>
+            </div>
+            
+            <div class="summary-field">
+                <label class="summary-label">Word Count</label>
+                <div class="summary-value">{{ job.word_count|default:"Not specified" }}</div>
+            </div>
+            
+            <div class="summary-field">
+                <label class="summary-label">Referencing Style</label>
+                <div class="summary-value">{{ job.get_referencing_style_display|default:"Not specified" }}</div>
+            </div>
+            
+            <div class="summary-field">
+                <label class="summary-label">Writing Style</label>
+                <div class="summary-value">{{ job.get_writing_style_display|default:"Not specified" }}</div>
+            </div>
+            
+            <div class="summary-field">
+                <label class="summary-label">Job Summary</label>
+                <div class="summary-value" style="white-space: pre-wrap;">{{ job.job_summary|default:"Not generated" }}</div>
+            </div>
+            
+            <div class="summary-field">
+                <label class="summary-label">Instruction</label>
+                <div class="summary-value" style="white-space: pre-wrap;">{{ job.instruction }}</div>
+            </div>
+            
+            <div class="summary-field">
+                <label class="summary-label">Existing Attachments</label>
+                <div class="summary-value">
+                    {% if existing_attachments %}
+                        <ul style="margin: 0; padding-left: 1.5rem;">
+                            {% for attachment in existing_attachments %}
+                            <li>{{ attachment.original_filename }} ({{ attachment.file_size|filesizeformat }})</li>
+                            {% endfor %}
+                        </ul>
+                    {% else %}
+                        No attachments
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- RIGHT SIDE: Final Form -->
+    <div class="card">
+        <div class="card-header">
+            <h2 class="card-title" style="margin: 0;">Final Job Details</h2>
+        </div>
+        <div class="card-body">
+            <form method="POST" enctype="multipart/form-data" id="finalJobForm">
+                {% csrf_token %}
+                
+                <div class="form-group">
+                    <label>Topic</label>
+                    <input type="text" name="topic" id="topic" class="form-control" value="{{ job.topic|default:'' }}" placeholder="Optional - will use AI summary if not provided">
+                </div>
+                
+                <div class="form-group">
+                    <label>Category <span style="color: red;">*</span></label>
+                    <select name="category" id="category" class="form-control" required onchange="calculateSystemAmount()">
+                        <option value="">Select Category</option>
+                        {% for value, label in category_choices %}
+                        <option value="{{ value }}" {% if job.category == value %}selected{% endif %}>{{ label }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label>Word Count <span style="color: red;">*</span></label>
+                    <input type="number" name="word_count" id="word_count" class="form-control" value="{{ job.word_count|default:'' }}" required min="1" onchange="calculateSystemAmount()">
+                </div>
+                
+                <div class="form-group">
+                    <label>Referencing Style</label>
+                    <select name="referencing_style" id="referencing_style" class="form-control">
+                        <option value="">Select Referencing Style</option>
+                        {% for ref in referencing_styles %}
+                        <option value="{{ ref.referencing_style }}" {% if job.referencing_style == ref.referencing_style %}selected{% endif %}>
+                            {{ ref.referencing_style }} - {{ ref.used_in }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label>Writing Style</label>
+                    <select name="writing_style" id="writing_style" class="form-control">
+                        <option value="">Select Writing Style</option>
+                        {% for writing in writing_styles %}
+                        <option value="{{ writing.writing_style }}" {% if job.writing_style == writing.writing_style %}selected{% endif %}>
+                            {{ writing.writing_style }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label>Instruction <span style="color: red;">*</span></label>
+                    <textarea name="instruction" id="instruction" class="form-control" rows="4" required minlength="50">{{ job.instruction }}</textarea>
+                    <small style="color: rgba(255,255,255,0.6);">Minimum 50 characters</small>
+                </div>
+                
+                <div class="form-group">
+                    <label>Template <span style="color: red;">*</span></label>
+                    <select name="template" class="form-control" required>
+                        <option value="">Select Template</option>
+                        {% for template in templates %}
+                        <option value="{{ template.id }}">{{ template.template_name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label>Project Group <span style="color: red;">*</span></label>
+                    <select name="project_group" class="form-control" required>
+                        <option value="">Select Project Group</option>
+                        {% for group in project_groups %}
+                        <option value="{{ group.id }}">{{ group.project_group_name }} ({{ group.project_group_prefix }})</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label>Expected Deadline (IST) <span style="color: red;">*</span></label>
+                    <input type="datetime-local" name="expected_deadline" class="form-control" required>
+                </div>
+                
+                <div class="form-group">
+                    <label>Strict Deadline (IST) <span style="color: red;">*</span></label>
+                    <input type="datetime-local" name="strict_deadline" class="form-control" required>
+                    <small style="color: rgba(255,255,255,0.6);">Must be at least 24 hours from now</small>
+                </div>
+                
+                <div class="form-group">
+                    <label>Software (if applicable)</label>
+                    <textarea name="software" class="form-control" rows="2" placeholder="e.g., Python 3.9, MATLAB R2021b, etc."></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label>System Expected Amount (Auto-calculated)</label>
+                    <input type="text" id="system_expected_amount_display" class="form-control" readonly placeholder="Select category and word count" value="{% if job.system_expected_amount %}₹{{ job.system_expected_amount|floatformat:2 }}{% endif %}">
+                </div>
+                
+                <div class="form-group">
+                    <label>Amount <span style="color: red;">*</span></label>
+                    <input type="number" name="amount" class="form-control" required min="0" step="0.01" placeholder="Enter negotiated amount">
+                </div>
+                
+                <div class="form-group">
+                    <label>Other Attachments</label>
+                    <input type="file" name="other_attachments" class="form-control" multiple accept=".pdf,.docx,.jpg,.jpeg,.png">
+                    <small style="color: rgba(255,255,255,0.6);">Optional - Add additional files (Max 10MB each)</small>
+                </div>
+                
+                <div style="display: flex; gap: 1rem; margin-top: 2rem;">
+                    <button type="submit" class="btn btn-primary" style="flex: 1;">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <polyline points="9 11 12 14 22 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M21 12V19C21 19.5304 20.7893 20.0391 20.4142 20.4142C20.0391 20.7893 19.5304 21 19 21H5C4.46957 21 3.96086 20.7893 3.58579 20.4142C3.21071 20.0391 3 19.5304 3 19V5C3 4.46957 3.21071 3.96086 3.58579 3.58579C3.96086 3.21071 4.46957 3 5 3H16" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                        Submit Final Form
+                    </button>
+                    <a href="{% url 'marketing_dashboard' %}" class="btn btn-outline">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<style>
+    .summary-field {
+        margin-bottom: 1.5rem;
+        padding-bottom: 1rem;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    .summary-field:last-child {
+        border-bottom: none;
+        margin-bottom: 0;
+        padding-bottom: 0;
+    }
+    
+    .summary-label {
+        display: block;
+        font-size: 0.875rem;
+        color: rgba(255, 255, 255, 0.6);
+        margin-bottom: 0.5rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+    
+    .summary-value {
+        color: var(--text-color);
+        font-size: 1rem;
+        line-height: 1.5;
+    }
+    
+    @media (max-width: 1024px) {
+        div[style*="grid-template-columns: 1fr 1fr"] {
+            grid-template-columns: 1fr !important;
+        }
+    }
+</style>
+
+</style>
+
+<script>
+    const CSRF_TOKEN = '{{ csrf_token }}';
+    const PRICE_MAP = {{ price_map|safe }};
+    
+    function copySummaryToForm() {
+        // Copy values from summary to form
+        const systemId = '{{ job.system_id }}';
+        
+        fetch('{% url "copy_summary_to_final" %}', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': CSRF_TOKEN
+            },
+            body: JSON.stringify({ system_id: systemId })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                document.getElementById('topic').value = data.data.topic;
+                document.getElementById('word_count').value = data.data.word_count;
+                document.getElementById('referencing_style').value = data.data.referencing_style;
+                document.getElementById('writing_style').value = data.data.writing_style;
+                document.getElementById('instruction').value = data.data.instruction;
+                
+                // Trigger calculation
+                calculateSystemAmount();
+                
+                // Show success message
+                showNotification('Summary copied to form successfully!', 'success');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            showNotification('Failed to copy summary', 'error');
+        });
+    }
+    
+    function calculateSystemAmount() {
+        const category = document.getElementById('category').value;
+        const wordCount = document.getElementById('word_count').value;
+        const displayEl = document.getElementById('system_expected_amount_display');
+        
+        if (!category || !wordCount || parseInt(wordCount, 10) <= 0) {
+            displayEl.value = '';
+            return;
+        }
+        
+        const normalizedCategory = category.toUpperCase();
+        const pricePerWord = PRICE_MAP[normalizedCategory];
+        
+        if (!pricePerWord) {
+            displayEl.value = 'Unavailable';
+            return;
+        }
+        
+        const expectedAmount = pricePerWord * parseFloat(wordCount);
+        displayEl.value = formatCurrency(expectedAmount);
+    }
+    
+    function formatCurrency(amount) {
+        const numericAmount = Number(amount) || 0;
+        try {
+            return new Intl.NumberFormat('en-IN', {
+                style: 'currency',
+                currency: 'INR',
+                maximumFractionDigits: 2
+            }).format(numericAmount);
+        } catch (error) {
+            return `₹${numericAmount.toFixed(2)}`;
+        }
+    }
+    
+    function showNotification(message, type) {
+        // Simple notification
+        const notification = document.createElement('div');
+        notification.style.cssText = `
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 1rem 1.5rem;
+            background: ${type === 'success' ? '#4CAF50' : '#f44336'};
+            color: white;
+            border-radius: 4px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            z-index: 10000;
+            animation: slideIn 0.3s ease;
+        `;
+        notification.textContent = message;
+        document.body.appendChild(notification);
+        
+        setTimeout(() => {
+            notification.remove();
+        }, 3000);
+    }
+    
+    document.addEventListener('DOMContentLoaded', function() {
+        const initialCategory = document.getElementById('category').value;
+        const initialWordCount = document.getElementById('word_count').value;
+        if (initialCategory && initialWordCount) {
+            calculateSystemAmount();
+        }
+    });
+    
+    // Form validation
+    document.getElementById('finalJobForm').addEventListener('submit', function(e) {
+        const strictDeadline = new Date(document.querySelector('[name="strict_deadline"]').value);
+        const now = new Date();
+        const minDeadline = new Date(now.getTime() + (24 * 60 * 60 * 1000)); // 24 hours from now
+        
+        if (strictDeadline < minDeadline) {
+            e.preventDefault();
+            showNotification('Strict deadline must be at least 24 hours from now', 'error');
+            return false;
+        }
+    });
+</script>
+{% endblock %}

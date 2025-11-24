@@ -101,6 +101,41 @@
                 <span class="status-tag status-pending" style="font-size: 11px;">Coming Soon</span>
             </div>
         </div>
+        {% comment %} <!-- Project Group Master -->
+        <div class="card" style="opacity: 0.5; cursor: not-allowed;">
+            <div class="card-header">
+                <h3 class="card-title">Project Group Master</h3>
+            </div>
+            <div class="card-body">
+                <p style="opacity: 0.8;">Contains All Project Gropus</p>
+                <span class="status-tag status-pending" style="font-size: 11px;">Coming Soon</span>
+            </div>
+        </div> {% endcomment %}
+        <a href="{% url 'project_group_master' %}" class="card" style="text-decoration: none;">
+            <div class="card-header">
+                <h3 class="card-title">Project Group Master</h3>
+            </div>
+            <div class="card-body">
+                <p style="opacity: 0.8;">Contains All Project Gropus</p>
+            </div>
+        </a>
+        <div class="card" style="opacity: 0.5; cursor: not-allowed;">
+            <div class="card-header">
+                <h3 class="card-title">Software Master</h3>
+            </div>
+            <div class="card-body">
+                <p style="opacity: 0.8;">Contains All Software</p>
+                <span class="status-tag status-pending" style="font-size: 11px;">Coming Soon</span>
+            </div>
+        </div>
+        <a href="{% url 'template_master' %}" class="card" style="text-decoration: none;">
+            <div class="card-header">
+                <h3 class="card-title">Template Master</h3>
+            </div>
+            <div class="card-body">
+                <p style="opacity: 0.8;">Manage job templates and default task setups</p>
+            </div>
+        </a>
 
         <!-- All Letter Master -->
         <div class="card" style="opacity: 0.5; cursor: not-allowed;">

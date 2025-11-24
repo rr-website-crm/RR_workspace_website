@@ -1,0 +1,294 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Template Master - CRM Portal{% endblock %}
+
+{% block content %}
+<div class="dashboard-header">
+    <h1 class="dashboard-title">Template Master</h1>
+    <p class="dashboard-subtitle">Manage job templates and their configurations</p>
+</div>
+
+<!-- Stats Card -->
+<div class="stats-grid" style="margin-bottom: 2rem;">
+    <div class="stat-card">
+        <div class="stat-value">{{ total_templates }}</div>
+        <div class="stat-label">Total Templates</div>
+    </div>
+</div>
+
+<!-- Create Template Button -->
+<div class="card mb-4">
+    <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
+        <h2 class="card-title" style="margin: 0;">Templates</h2>
+        <button class="btn btn-primary" onclick="showCreateModal()">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <line x1="12" y1="5" x2="12" y2="19" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                <line x1="5" y1="12" x2="19" y2="12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+            Create Template
+        </button>
+    </div>
+    
+    <div class="card-body">
+        {% if templates %}
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>SL No</th>
+                        <th>Template Name</th>
+                        <th>Description</th>
+                        <th>Status</th>
+                        <th>Created By</th>
+                        <th>Created Date</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for template in templates %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td><strong>{{ template.template_name }}</strong></td>
+                        <td>{{ template.template_description|truncatewords:10|default:"—" }}</td>
+                        <td>
+                            {% if template.status == 'active' %}
+                                <span class="status-tag" style="background: rgba(76, 175, 80, 0.2); color: #4CAF50;">Active</span>
+                            {% else %}
+                                <span class="status-tag" style="background: rgba(158, 158, 158, 0.2); color: #9E9E9E;">Inactive</span>
+                            {% endif %}
+                        </td>
+                        <td>{{ template.created_by.get_full_name }}</td>
+                        <td>{{ template.created_at|date:"d/m/Y H:i" }}</td>
+                        <td>
+                            <div class="btn-group-sm">
+                                <button class="btn btn-sm btn-warning" onclick="showEditModal({{ template.id }}, '{{ template.template_name }}', '{{ template.template_description|escapejs }}', '{{ template.status }}')">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M17 3L21 7L8 20H4V16L17 3Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                    </svg>
+                                    Edit
+                                </button>
+                                <button class="btn btn-sm btn-danger" onclick="confirmDelete({{ template.id }}, '{{ template.template_name|escapejs }}')">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <polyline points="3 6 5 6 21 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                        <path d="M19 6V20C19 21 18 22 17 22H7C6 22 5 21 5 20V6M8 6V4C8 3 9 2 10 2H14C15 2 16 3 16 4V6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                    </svg>
+                                    Delete
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div style="text-align: center; padding: 3rem; color: var(--text-color); opacity: 0.6;">
+            <svg width="64" height="64" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="margin-bottom: 1rem; opacity: 0.5;">
+                <path d="M14 2H6C5.46957 2 4.96086 2.21071 4.58579 2.58579C4.21071 2.96086 4 3.46957 4 4V20C4 20.5304 4.21071 21.0391 4.58579 21.4142C4.96086 21.7893 5.46957 22 6 22H18C18.5304 22 19.0391 21.7893 19.4142 21.4142C19.7893 21.0391 20 20.5304 20 20V8L14 2Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <polyline points="14 2 14 8 20 8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <p style="font-size: 1.1rem; margin-bottom: 0.5rem;">No Templates Found</p>
+            <p style="font-size: 0.9rem; opacity: 0.7;">Create your first template to get started</p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Create Template Modal -->
+<div id="createModal" class="modal" style="display: none;">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3>Create Template</h3>
+            <span class="modal-close" onclick="closeCreateModal()">&times;</span>
+        </div>
+        <form method="POST" action="{% url 'create_template' %}">
+            {% csrf_token %}
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>Template Name <span style="color: red;">*</span></label>
+                    <input type="text" name="template_name" class="form-control" required>
+                </div>
+                
+                <div class="form-group">
+                    <label>Description</label>
+                    <textarea name="template_description" class="form-control" rows="3"></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label>Status <span style="color: red;">*</span></label>
+                    <select name="status" class="form-control" required>
+                        <option value="active">Active</option>
+                        <option value="inactive">Inactive</option>
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline" onclick="closeCreateModal()">Cancel</button>
+                <button type="submit" class="btn btn-primary">Create Template</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Edit Template Modal -->
+<div id="editModal" class="modal" style="display: none;">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3>Edit Template</h3>
+            <span class="modal-close" onclick="closeEditModal()">&times;</span>
+        </div>
+        <form method="POST" id="editForm">
+            {% csrf_token %}
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>Template Name <span style="color: red;">*</span></label>
+                    <input type="text" name="template_name" id="edit_template_name" class="form-control" required>
+                </div>
+                
+                <div class="form-group">
+                    <label>Description</label>
+                    <textarea name="template_description" id="edit_template_description" class="form-control" rows="3"></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label>Status <span style="color: red;">*</span></label>
+                    <select name="status" id="edit_status" class="form-control" required>
+                        <option value="active">Active</option>
+                        <option value="inactive">Inactive</option>
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline" onclick="closeEditModal()">Cancel</button>
+                <button type="submit" class="btn btn-warning">Update Template</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div id="deleteModal" class="modal" style="display: none;">
+    <div class="modal-content" style="max-width: 400px;">
+        <div class="modal-header">
+            <h3>Confirm Delete</h3>
+            <span class="modal-close" onclick="closeDeleteModal()">&times;</span>
+        </div>
+        <form method="POST" id="deleteForm">
+            {% csrf_token %}
+            <div class="modal-body">
+                <p>Are you sure you want to delete template "<strong id="delete_template_name"></strong>"?</p>
+                <p style="color: #f44336; font-size: 0.9rem;">This action cannot be undone.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline" onclick="closeDeleteModal()">Cancel</button>
+                <button type="submit" class="btn btn-danger">Delete</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<style>
+    .modal {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 1000;
+    }
+    
+    .modal-content {
+        background: var(--card-bg);
+        border-radius: 8px;
+        max-width: 600px;
+        width: 90%;
+        max-height: 90vh;
+        overflow-y: auto;
+    }
+    
+    .modal-header {
+        padding: 1.5rem;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    
+    .modal-header h3 {
+        margin: 0;
+        color: var(--text-color);
+    }
+    
+    .modal-close {
+        font-size: 2rem;
+        cursor: pointer;
+        color: var(--text-color);
+        opacity: 0.7;
+        transition: opacity 0.3s;
+    }
+    
+    .modal-close:hover {
+        opacity: 1;
+    }
+    
+    .modal-body {
+        padding: 1.5rem;
+    }
+    
+    .modal-footer {
+        padding: 1.5rem;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+        display: flex;
+        justify-content: flex-end;
+        gap: 1rem;
+    }
+</style>
+
+<script>
+    function showCreateModal() {
+        document.getElementById('createModal').style.display = 'flex';
+    }
+    
+    function closeCreateModal() {
+        document.getElementById('createModal').style.display = 'none';
+    }
+    
+    function showEditModal(id, name, description, status) {
+        document.getElementById('editForm').action = `/superadmin/template-master/${id}/edit/`;
+        document.getElementById('edit_template_name').value = name;
+        document.getElementById('edit_template_description').value = description;
+        document.getElementById('edit_status').value = status;
+        document.getElementById('editModal').style.display = 'flex';
+    }
+    
+    function closeEditModal() {
+        document.getElementById('editModal').style.display = 'none';
+    }
+    
+    function confirmDelete(id, name) {
+        document.getElementById('deleteForm').action = `/superadmin/template-master/delete/${id}/`;
+        document.getElementById('delete_template_name').textContent = name;
+        document.getElementById('deleteModal').style.display = 'flex';
+    }
+    
+    function closeDeleteModal() {
+        document.getElementById('deleteModal').style.display = 'none';
+    }
+    
+    // Close modals on outside click
+    window.onclick = function(event) {
+        const modals = ['createModal', 'editModal', 'deleteModal'];
+        modals.forEach(modalId => {
+            const modal = document.getElementById(modalId);
+            if (event.target === modal) {
+                modal.style.display = 'none';
+            }
+        });
+    }
+</script>
+{% endblock %}

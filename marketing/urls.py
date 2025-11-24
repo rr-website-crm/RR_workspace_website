@@ -12,6 +12,7 @@ urlpatterns = [
     path('jobs/generate-summary/', views.generate_ai_summary, name='generate_ai_summary'),
     path('jobs/accept-summary/', views.accept_summary, name='accept_summary'),
     path('jobs/summary-versions/<str:system_id>/', views.get_summary_versions, name='get_summary_versions'),
+    path('jobs/system-amount/', views.get_system_expected_amount, name='get_system_expected_amount'),
     
     # Job Management
     path('jobs/my-jobs/', views.my_jobs, name='my_jobs'),
@@ -20,4 +21,12 @@ urlpatterns = [
     path('jobs/unallocated/', views.unallocated_jobs, name='unallocated_jobs'),
     path('jobs/completed/', views.completed_jobs, name='completed_jobs'),
     path('jobs/allocated/', views.allocated_jobs, name='allocated_jobs'),
+
+
+    # Final Job Form
+    path('jobs/<str:system_id>/final-form/', views.final_job_form, name='final_job_form'),
+    path('jobs/copy-summary/', views.copy_summary_to_final, name='copy_summary_to_final'),
+    
+    # Job View
+    path('jobs/<str:system_id>/view/', views.view_job_details, name='view_job_details'),
 ]
