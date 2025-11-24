@@ -1,0 +1,183 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Master Input - CRM Portal{% endblock %}
+
+{% block content %}
+<div class="fade-in">
+    <!-- Page Header -->
+    <div class="dashboard-header">
+        <h1 class="dashboard-title">Master Input</h1>
+        <p class="dashboard-subtitle">Select a master category below to view and manage its data.</p>
+    </div>
+
+    <!-- Master Categories Grid -->
+    <div class="card-grid">
+        <!-- Holiday Master -->
+        <a href="{% url 'holiday_master' %}" class="card" style="text-decoration: none;">
+            <div class="card-header">
+                <h3 class="card-title">Holiday Master</h3>
+            </div>
+            <div class="card-body">
+                <p style="opacity: 0.8;">Manage company holidays and observances</p>
+            </div>
+        </a>
+
+        <!-- Leave Master -->
+        <div class="card" style="opacity: 0.5; cursor: not-allowed;">
+            <div class="card-header">
+                <h3 class="card-title">Leave Master</h3>
+            </div>
+            <div class="card-body">
+                <p style="opacity: 0.8;">Configure leave types and policies</p>
+                <span class="status-tag status-pending" style="font-size: 11px;">Coming Soon</span>
+            </div>
+        </div>
+
+        <!-- Price Master -->
+        {% comment %} <div class="card" style="opacity: 0.5; cursor: not-allowed;">
+            <div class="card-header">
+                <h3 class="card-title">Price Master</h3>
+            </div>
+            <div class="card-body">
+                <p style="opacity: 0.8;">Maintain pricing information</p>
+                <span class="status-tag status-pending" style="font-size: 11px;">Coming Soon</span>
+            </div>
+        </div> {% endcomment %}
+        <a href="{% url 'price_master' %}" class="card" style="text-decoration: none;">
+            <div class="card-header">
+                <h3 class="card-title">Price Master</h3>
+            </div>
+            <div class="card-body">
+                <p style="opacity: 0.8;">Maintain pricing information</p>
+            </div>
+        </a>
+
+        <!-- Academic Writing Style Master -->
+        {% comment %} <div class="card" style="opacity: 0.5; cursor: not-allowed;">
+            <div class="card-header">
+                <h3 class="card-title">Academic Writing Style Master</h3>
+            </div>
+            <div class="card-body">
+                <p style="opacity: 0.8;">Define academic writing standards</p>
+                <span class="status-tag status-pending" style="font-size: 11px;">Coming Soon</span>
+            </div>
+        </div> {% endcomment %}
+        <a href="{% url 'academic_writing_master' %}" class="card" style="text-decoration: none;">
+            <div class="card-header">
+                <h3 class="card-title">Academic Writing Style Master</h3>
+            </div>
+            <div class="card-body">
+                <p style="opacity: 0.8;">Define academic writing standards</p>
+            </div>
+        </a>
+
+        <!-- Referencing Master -->
+        {% comment %} <div class="card" style="opacity: 0.5; cursor: not-allowed;">
+            <div class="card-header">
+                <h3 class="card-title">Referencing Master</h3>
+            </div>
+            <div class="card-body">
+                <p style="opacity: 0.8;">Manage referencing formats and styles</p>
+                <span class="status-tag status-pending" style="font-size: 11px;">Coming Soon</span>
+            </div>
+        </div> {% endcomment %}
+        <a href="{% url 'referencing_master' %}" class="card" style="text-decoration: none;">
+            <div class="card-header">
+                <h3 class="card-title">Referencing Master</h3>
+            </div>
+            <div class="card-body">
+                <p style="opacity: 0.8;">Manage referencing formats and styles</p>
+            </div>
+        </a>
+
+        <!-- Employee Status Master -->
+        <div class="card" style="opacity: 0.5; cursor: not-allowed;">
+            <div class="card-header">
+                <h3 class="card-title">Employee Status Master</h3>
+            </div>
+            <div class="card-body">
+                <p style="opacity: 0.8;">Configure employee status categories</p>
+                <span class="status-tag status-pending" style="font-size: 11px;">Coming Soon</span>
+            </div>
+        </div>
+
+        <!-- All Letter Master -->
+        <div class="card" style="opacity: 0.5; cursor: not-allowed;">
+            <div class="card-header">
+                <h3 class="card-title">All Letter Master</h3>
+            </div>
+            <div class="card-body">
+                <p style="opacity: 0.8;">Manage letter templates and formats</p>
+                <span class="status-tag status-pending" style="font-size: 11px;">Coming Soon</span>
+            </div>
+        </div>
+
+        <!-- Increment Master -->
+        <div class="card" style="opacity: 0.5; cursor: not-allowed;">
+            <div class="card-header">
+                <h3 class="card-title">Increment Master</h3>
+            </div>
+            <div class="card-body">
+                <p style="opacity: 0.8;">Define salary increment rules</p>
+                <span class="status-tag status-pending" style="font-size: 11px;">Coming Soon</span>
+            </div>
+        </div>
+
+        <!-- Warning Master -->
+        <div class="card" style="opacity: 0.5; cursor: not-allowed;">
+            <div class="card-header">
+                <h3 class="card-title">Warning Master</h3>
+            </div>
+            <div class="card-body">
+                <p style="opacity: 0.8;">Configure warning types and levels</p>
+                <span class="status-tag status-pending" style="font-size: 11px;">Coming Soon</span>
+            </div>
+        </div>
+
+        <!-- Inbox Master -->
+        <div class="card" style="opacity: 0.5; cursor: not-allowed;">
+            <div class="card-header">
+                <h3 class="card-title">Inbox Master</h3>
+            </div>
+            <div class="card-body">
+                <p style="opacity: 0.8;">Manage inbox and communication</p>
+                <span class="status-tag status-pending" style="font-size: 11px;">Coming Soon</span>
+            </div>
+        </div>
+
+        <!-- Attendance Master -->
+        <div class="card" style="opacity: 0.5; cursor: not-allowed;">
+            <div class="card-header">
+                <h3 class="card-title">Attendance Master</h3>
+            </div>
+            <div class="card-body">
+                <p style="opacity: 0.8;">Configure attendance rules and policies</p>
+                <span class="status-tag status-pending" style="font-size: 11px;">Coming Soon</span>
+            </div>
+        </div>
+
+        <!-- Payslip Master -->
+        <div class="card" style="opacity: 0.5; cursor: not-allowed;">
+            <div class="card-header">
+                <h3 class="card-title">Payslip Master</h3>
+            </div>
+            <div class="card-body">
+                <p style="opacity: 0.8;">Manage payslip templates and data</p>
+                <span class="status-tag status-pending" style="font-size: 11px;">Coming Soon</span>
+            </div>
+        </div>
+
+        <!-- Project Job Status -->
+        <div class="card" style="opacity: 0.5; cursor: not-allowed;">
+            <div class="card-header">
+                <h3 class="card-title">Project Job Status</h3>
+            </div>
+            <div class="card-body">
+                <p style="opacity: 0.8;">Define project and job status categories</p>
+                <span class="status-tag status-pending" style="font-size: 11px;">Coming Soon</span>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,386 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Holiday Master - CRM Portal{% endblock %}
+
+{% block extra_css %}
+<style>
+    .modal-overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.7);
+        z-index: 2000;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .modal-overlay.active {
+        display: flex;
+    }
+    
+    .modal-content {
+        background: var(--card-bg);
+        border-radius: var(--radius-lg);
+        padding: var(--spacing-xl);
+        max-width: 600px;
+        width: 90%;
+        max-height: 90vh;
+        overflow-y: auto;
+    }
+    
+    .date-group {
+        display: none;
+    }
+    
+    .date-group.active {
+        display: block;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="fade-in">
+    <!-- Back Button -->
+    <div style="margin-bottom: var(--spacing-lg);">
+        <a href="{% url 'master_input' %}" class="btn btn-outline">
+            <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+            </svg>
+            Back to Master Input
+        </a>
+    </div>
+
+    <!-- Page Header -->
+    <div class="dashboard-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--spacing-xl);">
+        <div>
+            <h1 class="dashboard-title">Holiday Master</h1>
+            <p class="dashboard-subtitle">Manage company holidays and observances</p>
+        </div>
+        <button onclick="showCreateHolidayModal()" class="btn btn-primary">
+            <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+            </svg>
+            Create Holiday
+        </button>
+    </div>
+
+    <!-- Holiday History -->
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">Holiday History</h3>
+            <p style="font-size: 14px; opacity: 0.7; margin-top: 4px;">All created holidays ({{ total_holidays }})</p>
+        </div>
+        <div class="card-body" style="padding: 0;">
+            {% if holidays %}
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Holiday Name</th>
+                            <th>Type</th>
+                            <th>Date Type</th>
+                            <th>Date(s)</th>
+                            <th>Google Calendar</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for holiday in holidays %}
+                        <tr>
+                            <td style="font-weight: 500;">{{ holiday.holiday_name }}</td>
+                            <td>
+                                <span class="status-tag" style="background-color: rgba(var(--primary), 0.2); color: var(--primary);">
+                                    {{ holiday.get_holiday_type_display }}
+                                </span>
+                            </td>
+                            <td>{{ holiday.get_date_type_display }}</td>
+                            <td>
+                                {% if holiday.date_type == 'single' %}
+                                    {{ holiday.date|date:"F d, Y" }}
+                                {% else %}
+                                    {{ holiday.from_date|date:"M d" }} - {{ holiday.to_date|date:"M d, Y" }}
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if holiday.is_synced_to_calendar %}
+                                    <span class="status-tag status-completed">Synced</span>
+                                {% elif holiday.google_calendar_sync_failed_at %}
+                                    <span class="status-tag status-cancelled">Failed</span>
+                                {% else %}
+                                    <span class="status-tag status-pending">Not Synced</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                                    <button type="button"
+                                            class="btn btn-sm btn-outline"
+                                            data-id="{{ holiday.id }}"
+                                            data-action="{% url 'edit_holiday' holiday.id %}"
+                                            data-name="{{ holiday.holiday_name|escape }}"
+                                            data-type="{{ holiday.holiday_type }}"
+                                            data-date-type="{{ holiday.date_type }}"
+                                            data-date="{{ holiday.date|date:'Y-m-d' }}"
+                                            data-from-date="{{ holiday.from_date|date:'Y-m-d' }}"
+                                            data-to-date="{{ holiday.to_date|date:'Y-m-d' }}"
+                                            data-description="{{ holiday.description|default:''|escape }}"
+                                            onclick="showEditHolidayModal(this)">
+                                        Edit
+                                    </button>
+
+                                    <form method="POST"
+                                          action="{% url 'delete_holiday' holiday.id %}"
+                                          onsubmit="return confirm('Are you sure you want to delete this holiday?');">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn btn-sm btn-danger" title="Delete Holiday">
+                                            <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                                            </svg>
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <div style="text-align: center; padding: var(--spacing-xl);">
+                <svg width="64" height="64" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="opacity: 0.3; margin-bottom: var(--spacing-md);">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                </svg>
+                <p style="color: var(--text-color); opacity: 0.7; font-size: 16px;">No holidays created yet</p>
+                <p style="color: var(--text-color); opacity: 0.5; font-size: 14px; margin-top: 8px;">Click "Create Holiday" to add your first holiday</p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<!-- Create Holiday Modal -->
+<div class="modal-overlay" id="createHolidayModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2 class="modal-title" id="holidayModalTitle">Create Holiday</h2>
+            <button type="button" class="modal-close" onclick="closeModal('createHolidayModal')">&times;</button>
+        </div>
+        
+        <form method="POST" action="{% url 'create_holiday' %}" id="holidayForm">
+            {% csrf_token %}
+            
+            <!-- Holiday Name -->
+            <div class="form-group">
+                <label for="holiday_name" class="form-label required">Holiday Name</label>
+                <input type="text" 
+                       id="holiday_name" 
+                       name="holiday_name" 
+                       class="form-control" 
+                       placeholder="e.g., New Year's Day, Christmas"
+                       required>
+            </div>
+            
+            <!-- Holiday Type -->
+            <div class="form-group">
+                <label for="holiday_type" class="form-label required">Holiday Type</label>
+                <select id="holiday_type" name="holiday_type" class="form-control form-select" required>
+                    <option value="full_day">Full Day</option>
+                    <option value="half_day">Half Day</option>
+                </select>
+            </div>
+            
+            <!-- Date Selection Type -->
+            <div class="form-group">
+                <label for="date_selection" class="form-label required">Date Selection</label>
+                <div style="display: flex; gap: var(--spacing-md); margin-top: 8px;">
+                    <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                        <input type="radio" 
+                               id="dateTypeSingle"
+                               name="date_type" 
+                               value="single" 
+                               checked 
+                               onchange="toggleDateFields('single')"
+                               style="cursor: pointer;">
+                        <span>Single</span>
+                    </label>
+                    <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                        <input type="radio" 
+                               id="dateTypeConsecutive"
+                               name="date_type" 
+                               value="consecutive" 
+                               onchange="toggleDateFields('consecutive')"
+                               style="cursor: pointer;">
+                        <span>Consecutive Days</span>
+                    </label>
+                </div>
+            </div>
+            
+            <!-- Single Date -->
+            <div class="form-group date-group active" id="singleDateGroup">
+                <label for="date" class="form-label required">Choose Date</label>
+                <input type="date" 
+                       id="date" 
+                       name="date" 
+                       class="form-control">
+            </div>
+            
+            <!-- Consecutive Dates -->
+            <div class="date-group" id="consecutiveDateGroup">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="from_date" class="form-label required">From Date</label>
+                        <input type="date" 
+                               id="from_date" 
+                               name="from_date" 
+                               class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label for="to_date" class="form-label required">To Date</label>
+                        <input type="date" 
+                               id="to_date" 
+                               name="to_date" 
+                               class="form-control">
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Description -->
+            <div class="form-group">
+                <label for="description" class="form-label">Description (Optional)</label>
+                <textarea id="description" 
+                          name="description" 
+                          class="form-control" 
+                          rows="3"
+                          placeholder="Add any additional information about this holiday..."></textarea>
+            </div>
+            
+            <!-- Action Buttons -->
+            <div class="btn-group">
+                <button type="button" class="btn btn-outline" onclick="closeModal('createHolidayModal')">
+                    Cancel
+                </button>
+                <button type="submit" class="btn btn-primary" id="holidaySubmitBtn">
+                    Create Holiday
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    const holidayModalState = {
+        modalId: 'createHolidayModal',
+        createAction: '{% url "create_holiday" %}',
+        form: null,
+        title: null,
+        submitBtn: null,
+    };
+
+    function toggleDateFields(type) {
+        const singleGroup = document.getElementById('singleDateGroup');
+        const consecutiveGroup = document.getElementById('consecutiveDateGroup');
+        const singleDateInput = document.getElementById('date');
+        const fromDateInput = document.getElementById('from_date');
+        const toDateInput = document.getElementById('to_date');
+        
+        if (type === 'single') {
+            singleGroup.classList.add('active');
+            consecutiveGroup.classList.remove('active');
+            if (singleDateInput) singleDateInput.required = true;
+            if (fromDateInput) fromDateInput.required = false;
+            if (toDateInput) toDateInput.required = false;
+        } else {
+            singleGroup.classList.remove('active');
+            consecutiveGroup.classList.add('active');
+            if (singleDateInput) singleDateInput.required = false;
+            if (fromDateInput) fromDateInput.required = true;
+            if (toDateInput) toDateInput.required = true;
+        }
+    }
+
+    function setDateType(type) {
+        const radio = document.querySelector(`input[name="date_type"][value="${type}"]`);
+        if (radio) {
+            radio.checked = true;
+        }
+        toggleDateFields(type);
+    }
+
+    function resetHolidayForm() {
+        if (!holidayModalState.form) return;
+        holidayModalState.form.reset();
+        holidayModalState.form.action = holidayModalState.createAction;
+        setDateType('single');
+        const descriptionInput = document.getElementById('description');
+        if (descriptionInput) {
+            descriptionInput.value = '';
+        }
+    }
+
+    function showCreateHolidayModal() {
+        resetHolidayForm();
+        if (holidayModalState.title) {
+            holidayModalState.title.textContent = 'Create Holiday';
+        }
+        if (holidayModalState.submitBtn) {
+            holidayModalState.submitBtn.textContent = 'Create Holiday';
+        }
+        openModal(holidayModalState.modalId);
+    }
+
+    function showEditHolidayModal(button) {
+        if (!holidayModalState.form || !button) return;
+        resetHolidayForm();
+
+        if (holidayModalState.title) {
+            holidayModalState.title.textContent = 'Edit Holiday';
+        }
+        if (holidayModalState.submitBtn) {
+            holidayModalState.submitBtn.textContent = 'Update Holiday';
+        }
+
+        holidayModalState.form.action = button.dataset.action || holidayModalState.createAction;
+
+        document.getElementById('holiday_name').value = button.dataset.name || '';
+        document.getElementById('holiday_type').value = button.dataset.type || 'full_day';
+        document.getElementById('description').value = button.dataset.description || '';
+
+        const selectedDateType = button.dataset.dateType || 'single';
+        setDateType(selectedDateType);
+        if (selectedDateType === 'single') {
+            document.getElementById('date').value = button.dataset.date || '';
+        } else {
+            document.getElementById('from_date').value = button.dataset.fromDate || '';
+            document.getElementById('to_date').value = button.dataset.toDate || '';
+        }
+
+        openModal(holidayModalState.modalId);
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        holidayModalState.form = document.getElementById('holidayForm');
+        holidayModalState.title = document.getElementById('holidayModalTitle');
+        holidayModalState.submitBtn = document.getElementById('holidaySubmitBtn');
+
+        const today = new Date().toISOString().split('T')[0];
+        const singleDateInput = document.getElementById('date');
+        const fromDateInput = document.getElementById('from_date');
+        const toDateInput = document.getElementById('to_date');
+
+        if (singleDateInput) singleDateInput.min = today;
+        if (fromDateInput) fromDateInput.min = today;
+        if (toDateInput) toDateInput.min = today;
+        
+        if (fromDateInput && toDateInput) {
+            fromDateInput.addEventListener('change', function() {
+                toDateInput.min = this.value || today;
+            });
+        }
+    });
+</script>
+{% endblock %}

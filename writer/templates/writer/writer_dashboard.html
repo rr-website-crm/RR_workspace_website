@@ -1,0 +1,203 @@
+<!-- writer/templates/writer/writer_dashboard.html -->
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Writer Dashboard - CRM Portal{% endblock %}
+
+{% block body_class %}theme-writer-2{% endblock %}
+
+{% block content %}
+<div class="dashboard-header">
+    <h1 class="dashboard-title">Writer Dashboard</h1>
+    <p class="dashboard-subtitle">Manage your writing projects and tasks</p>
+</div>
+
+<!-- Stats Grid -->
+<div class="stats-grid">
+    <div class="stat-card" style="background: linear-gradient(135deg, #8B7DD8 0%, #7A6BC0 100%);">
+        <div class="stat-value">{{ total_projects }}</div>
+        <div class="stat-label">Total Projects</div>
+    </div>
+    
+    <div class="stat-card" style="background: linear-gradient(135deg, #FF99CC 0%, #C4A0E8 100%);">
+        <div class="stat-value">{{ pending_tasks }}</div>
+        <div class="stat-label">Pending Tasks</div>
+    </div>
+    
+    <div class="stat-card" style="background: linear-gradient(135deg, #9D90DC 0%, #8677C8 100%);">
+        <div class="stat-value">{{ in_progress }}</div>
+        <div class="stat-label">In Progress</div>
+    </div>
+    
+    <div class="stat-card" style="background: linear-gradient(135deg, #C4A0E8 0%, #A88FDB 100%);">
+        <div class="stat-value">{{ issues }}</div>
+        <div class="stat-label">Issues</div>
+    </div>
+</div>
+
+<!-- Card Grid -->
+<div class="card-grid">
+    <!-- My Tasks Card -->
+    <div class="card" style="grid-column: span 2;">
+        <div class="card-header">
+            <h2 class="card-title">My Tasks</h2>
+        </div>
+        <div class="card-body">
+            <div class="table-container">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Project ID</th>
+                            <th>Topic</th>
+                            <th>Due</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for project in recent_projects %}
+                        <tr>
+                            <td>
+                                <span style="font-weight: 600; color: var(--primary);">
+                                    {{ project.job_id|slice:":8" }}***
+                                </span>
+                            </td>
+                            <td>
+                                <span style="filter: blur(4px);">
+                                    {{ project.topic|slice:":30" }}...
+                                </span>
+                            </td>
+                            <td>
+                                <span style="filter: blur(3px);">
+                                    {{ project.deadline|date:"d M Y" }}
+                                </span>
+                            </td>
+                            <td>
+                                {% if project.status == 'pending' %}
+                                <span class="status-tag status-pending">Pending</span>
+                                {% elif project.status == 'in_progress' %}
+                                <span class="status-tag status-in-progress">In Progress</span>
+                                {% elif project.status == 'completed' %}
+                                <span class="status-tag status-completed">Completed</span>
+                                {% elif project.status == 'hold' %}
+                                <span class="status-tag status-hold">Hold</span>
+                                {% elif project.status == 'issues' %}
+                                <span class="status-tag status-cancelled">Issues</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <a href="{% url 'project_detail' project.id %}" class="btn btn-primary" style="padding: 6px 16px; font-size: 13px;">
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="margin-right: 4px;">
+                                        <path d="M1 12C1 12 5 4 12 4C19 4 23 12 23 12C23 12 19 20 12 20C5 20 1 12 1 12Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                        <circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                    </svg>
+                                    View
+                                </a>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="5" class="text-center" style="padding: 2rem; opacity: 0.6;">
+                                No active tasks at the moment
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            
+            <div style="margin-top: 1rem; text-align: center;">
+                <a href="{% url 'all_projects' %}" class="btn btn-outline">
+                    View All Projects
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Project Status Breakdown Card -->
+    <div class="card">
+        <div class="card-header">
+            <h2 class="card-title">Project Status Breakdown</h2>
+        </div>
+        <div class="card-body">
+            <div style="display: flex; flex-direction: column; gap: 1rem;">
+                <!-- Completed -->
+                <div>
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                        <span style="font-size: 14px; font-weight: 500;">Completed</span>
+                        <span style="font-size: 14px; font-weight: 600; color: #4CAF50;">{{ completed }}</span>
+                    </div>
+                    <div style="width: 100%; height: 8px; background-color: rgba(255,255,255,0.1); border-radius: 4px; overflow: hidden;">
+                        <div style="width: {{ progress_percent.completed }}%; height: 100%; background: linear-gradient(90deg, #4CAF50 0%, #8BC34A 100%); transition: width 0.3s ease;"></div>
+                    </div>
+                </div>
+                
+                <!-- In Progress -->
+                <div>
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                        <span style="font-size: 14px; font-weight: 500;">In Progress</span>
+                        <span style="font-size: 14px; font-weight: 600; color: #2196F3;">{{ in_progress }}</span>
+                    </div>
+                    <div style="width: 100%; height: 8px; background-color: rgba(255,255,255,0.1); border-radius: 4px; overflow: hidden;">
+                        <div style="width: {{ progress_percent.in_progress }}%; height: 100%; background: linear-gradient(90deg, #2196F3 0%, #64B5F6 100%); transition: width 0.3s ease;"></div>
+                    </div>
+                </div>
+                
+                <!-- Hold -->
+                <div>
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                        <span style="font-size: 14px; font-weight: 500;">Hold</span>
+                        <span style="font-size: 14px; font-weight: 600; color: #FF9800;">{{ hold }}</span>
+                    </div>
+                    <div style="width: 100%; height: 8px; background-color: rgba(255,255,255,0.1); border-radius: 4px; overflow: hidden;">
+                        <div style="width: {{ progress_percent.hold }}%; height: 100%; background: linear-gradient(90deg, #FF9800 0%, #FFB74D 100%); transition: width 0.3s ease;"></div>
+                    </div>
+                </div>
+                
+                <!-- Pending -->
+                <div>
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                        <span style="font-size: 14px; font-weight: 500;">Pending</span>
+                        <span style="font-size: 14px; font-weight: 600; color: #FFC107;">{{ pending_tasks }}</span>
+                    </div>
+                    <div style="width: 100%; height: 8px; background-color: rgba(255,255,255,0.1); border-radius: 4px; overflow: hidden;">
+                        <div style="width: {{ progress_percent.pending }}%; height: 100%; background: linear-gradient(90deg, #FFC107 0%, #FFD54F 100%); transition: width 0.3s ease;"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <div style="margin-top: 2rem; padding-top: 1rem; border-top: 1px solid rgba(255,255,255,0.1);">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <span style="font-size: 14px; font-weight: 500;">Total Projects</span>
+                    <span style="font-size: 20px; font-weight: 700; color: var(--primary);">{{ total_projects }}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    .stats-grid, .card-grid {
+        animation: fadeInUp 0.6s ease-out;
+    }
+    
+    .stat-card:hover {
+        transform: translateY(-4px) scale(1.02);
+    }
+    
+    .data-table tbody tr:hover {
+        background-color: rgba(183, 153, 255, 0.1);
+    }
+</style>
+{% endblock %}

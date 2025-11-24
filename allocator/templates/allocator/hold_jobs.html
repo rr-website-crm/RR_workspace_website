@@ -1,0 +1,236 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Hold Jobs - CRM Portal{% endblock %}
+
+{% block content %}
+<div class="dashboard-header">
+    <h1 class="dashboard-title">Hold Jobs</h1>
+    <p class="dashboard-subtitle">Jobs temporarily put on hold</p>
+</div>
+
+<!-- Statistics Cards -->
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 2rem;">
+    <div class="card" style="padding: 1.5rem; text-align: center; background: linear-gradient(135deg, #FF9800 0%, #F57C00 100%); color: white;">
+        <div style="font-size: 2.5rem; font-weight: 700;">{{ jobs.count }}</div>
+        <div style="opacity: 0.9; margin-top: 0.5rem;">Total On Hold</div>
+    </div>
+    
+    <div class="card" style="padding: 1.5rem; text-align: center;">
+        <div style="font-size: 2.5rem; font-weight: 700; color: #F44336;">
+            {% with urgent_count=0 %}
+                {% for job in jobs %}
+                    {% if job.priority == 'urgent' or job.priority == 'high' %}
+                        {% with urgent_count=urgent_count|add:1 %}{% endwith %}
+                    {% endif %}
+                {% endfor %}
+                {{ urgent_count }}
+            {% endwith %}
+        </div>
+        <div style="color: var(--text-color); opacity: 0.8; margin-top: 0.5rem;">High Priority</div>
+    </div>
+    
+    <div class="card" style="padding: 1.5rem; text-align: center;">
+        <div style="font-size: 2.5rem; font-weight: 700; color: #2196F3;">
+            {% with pending_query=0 %}
+                {% for job in jobs %}
+                    {% if job.has_query %}
+                        {% with pending_query=pending_query|add:1 %}{% endwith %}
+                    {% endif %}
+                {% endfor %}
+                {{ pending_query }}
+            {% endwith %}
+        </div>
+        <div style="color: var(--text-color); opacity: 0.8; margin-top: 0.5rem;">With Query</div>
+    </div>
+</div>
+
+<!-- Alert for Marketing Team -->
+{% if user.role == 'marketing' %}
+<div style="padding: 1rem 1.5rem; background-color: rgba(33, 150, 243, 0.1); border-left: 4px solid #2196F3; border-radius: 8px; margin-bottom: 2rem;">
+    <div style="display: flex; align-items: center; gap: 0.75rem;">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="12" cy="12" r="10" stroke="#2196F3" stroke-width="2"/>
+            <line x1="12" y1="8" x2="12" y2="12" stroke="#2196F3" stroke-width="2"/>
+            <line x1="12" y1="16" x2="12.01" y2="16" stroke="#2196F3" stroke-width="2"/>
+        </svg>
+        <div>
+            <strong style="color: #2196F3;">Marketing Team Access:</strong>
+            <span style="opacity: 0.9; margin-left: 0.5rem;">You can activate hold jobs to make them available for allocation again.</span>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<!-- Jobs Table -->
+<div class="card">
+    <div class="card-header">
+        <h2 class="card-title">Hold Jobs List</h2>
+    </div>
+    <div class="card-body">
+        {% if jobs %}
+        <div class="table-container">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>SL No</th>
+                        <th>Job ID</th>
+                        <th>Topic</th>
+                        <th>Word Count</th>
+                        <th>Category</th>
+                        <th>Priority</th>
+                        <th>Hold Comment</th>
+                        <th>Put On Hold</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for job in jobs %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td><strong style="color: #FF9800;">{{ job.masking_id }}</strong></td>
+                        <td>{{ job.topic|truncatewords:10 }}</td>
+                        <td><strong>{{ job.word_count }}</strong></td>
+                        <td>
+                            <span class="status-tag" style="background-color: {% if job.job_category == 'IT' %}rgba(33, 150, 243, 0.2); color: #2196F3{% elif job.job_category == 'Finance' %}rgba(76, 175, 80, 0.2); color: #4CAF50{% else %}rgba(156, 39, 176, 0.2); color: #9C27B0{% endif %};">
+                                {{ job.job_category }}
+                            </span>
+                        </td>
+                        <td>
+                            <span class="status-tag status-{{ job.priority }}">
+                                {{ job.get_priority_display }}
+                            </span>
+                        </td>
+                        <td>
+                            {% if job.allocator_comment %}
+                                <div style="max-width: 250px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="{{ job.allocator_comment }}">
+                                    {{ job.allocator_comment|truncatewords:12 }}
+                                </div>
+                            {% else %}
+                                <span style="opacity: 0.5;">No comment</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <div style="font-weight: 600;">{{ job.updated_at|date:"d/m/Y" }}</div>
+                            <div style="font-size: 0.875rem; opacity: 0.7;">{{ job.updated_at|timesince }} ago</div>
+                        </td>
+                        <td>
+                            <div style="display: flex; gap: 0.5rem;">
+                                <a href="{% url 'view_job_details' job.id %}" class="btn btn-outline" style="padding: 0.5rem 1rem; font-size: 0.875rem; text-decoration: none;">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M1 12C1 12 5 4 12 4C19 4 23 12 23 12C23 12 19 20 12 20C5 20 1 12 1 12Z" stroke="currentColor" stroke-width="2"/>
+                                        <circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="2"/>
+                                    </svg>
+                                    View
+                                </a>
+                                
+                                {% if user.role == 'marketing' %}
+                                <form method="POST" style="display: inline;">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="job_id" value="{{ job.id }}">
+                                    <input type="hidden" name="action" value="activate">
+                                    <button type="submit" class="btn btn-primary" style="padding: 0.5rem 1rem; font-size: 0.875rem; background-color: #4CAF50;" onclick="return confirm('Are you sure you want to activate this job?')">
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <polyline points="20 6 9 17 4 12" stroke="currentColor" stroke-width="2"/>
+                                        </svg>
+                                        Activate
+                                    </button>
+                                </form>
+                                {% endif %}
+                                
+                                {% if user.role == 'allocator' %}
+                                <button onclick="openHoldModal({{ job.id }})" class="btn btn-outline" style="padding: 0.5rem 1rem; font-size: 0.875rem; background-color: rgba(255, 152, 0, 0.1); color: #FF9800;">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M11 4H4C3.46957 4 2.96086 4.21071 2.58579 4.58579C2.21071 4.96086 2 5.46957 2 6V20C2 20.5304 2.21071 21.0391 2.58579 21.4142C2.96086 21.7893 3.46957 22 4 22H18C18.5304 22 19.0391 21.7893 19.4142 21.4142C19.7893 21.0391 20 20.5304 20 20V13" stroke="currentColor" stroke-width="2"/>
+                                        <path d="M18.5 2.50001C18.8978 2.10219 19.4374 1.87869 20 1.87869C20.5626 1.87869 21.1022 2.10219 21.5 2.50001C21.8978 2.89784 22.1213 3.43741 22.1213 4.00001C22.1213 4.56262 21.8978 5.10219 21.5 5.50001L12 15L8 16L9 12L18.5 2.50001Z" stroke="currentColor" stroke-width="2"/>
+                                    </svg>
+                                    Edit Comment
+                                </button>
+                                {% endif %}
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div style="text-align: center; padding: 3rem; color: var(--text-color); opacity: 0.6;">
+            <svg width="64" height="64" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="margin-bottom: 1rem; opacity: 0.5;">
+                <rect x="9" y="9" width="6" height="6" stroke="currentColor" stroke-width="2"/>
+            </svg>
+            <p style="font-size: 1.1rem; font-weight: 500;">No jobs on hold</p>
+            <p style="font-size: 0.9rem; margin-top: 0.5rem;">All jobs are currently active</p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Hold Job Modal -->
+<div class="modal-overlay" id="holdModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3 class="modal-title">Put Job On Hold</h3>
+            <button class="modal-close" onclick="closeModal('holdModal')">&times;</button>
+        </div>
+        <form method="POST">
+            {% csrf_token %}
+            <input type="hidden" name="job_id" id="holdJobId">
+            <input type="hidden" name="action" value="hold">
+            
+            <div class="form-group">
+                <label for="comment" class="form-label required">Hold Reason/Comment</label>
+                <textarea id="comment" name="comment" class="form-control" rows="4" required placeholder="Please provide a reason for putting this job on hold..."></textarea>
+            </div>
+            
+            <div class="btn-group" style="justify-content: flex-end; margin-top: 1.5rem;">
+                <button type="button" class="btn btn-outline" onclick="closeModal('holdModal')">Cancel</button>
+                <button type="submit" class="btn btn-primary" style="background-color: #FF9800;">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <rect x="9" y="9" width="6" height="6" stroke="currentColor" stroke-width="2"/>
+                    </svg>
+                    Put On Hold
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<style>
+    .card {
+        animation: fadeInUp 0.5s ease-out;
+    }
+    
+    .data-table tbody tr:hover {
+        background-color: var(--hover-bg);
+        transform: scale(1.01);
+    }
+    
+    .status-urgent {
+        background-color: rgba(244, 67, 54, 0.2);
+        color: #F44336;
+    }
+    
+    .status-high {
+        background-color: rgba(255, 152, 0, 0.2);
+        color: #FF9800;
+    }
+    
+    .status-medium {
+        background-color: rgba(33, 150, 243, 0.2);
+        color: #2196F3;
+    }
+    
+    .status-low {
+        background-color: rgba(158, 158, 158, 0.2);
+        color: #9E9E9E;
+    }
+</style>
+
+<script>
+function openHoldModal(jobId) {
+    document.getElementById('holdJobId').value = jobId;
+    openModal('holdModal');
+}
+</script>
+{% endblock %}
