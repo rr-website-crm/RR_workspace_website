@@ -1,0 +1,147 @@
+<!-- writer/templates/writer/writer_issues.html -->
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Issues - Writer{% endblock %}
+
+{% block content %}
+<div class="dashboard-header">
+    <h1 class="dashboard-title">Issues</h1>
+    <p class="dashboard-subtitle">Track and manage project issues</p>
+</div>
+
+<!-- Projects with Issues -->
+<div class="card" style="margin-bottom: var(--spacing-lg);">
+    <div class="card-header">
+        <h2 class="card-title">Projects with Issues ({{ projects_with_issues.count }})</h2>
+    </div>
+    <div class="card-body">
+        <div class="table-container">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Job ID</th>
+                        <th>Topic</th>
+                        <th>Deadline</th>
+                        <th>Status</th>
+                        <th>Last Updated</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for project in projects_with_issues %}
+                    <tr>
+                        <td>
+                            <span style="font-weight: 600; color: var(--primary);">
+                                {{ project.job_id|slice:":10" }}***
+                            </span>
+                        </td>
+                        <td>
+                            <span style="filter: blur(4px);">
+                                {{ project.topic|slice:":40" }}...
+                            </span>
+                        </td>
+                        <td>
+                            <span style="filter: blur(3px);">
+                                {{ project.deadline|date:"d M Y" }}
+                            </span>
+                        </td>
+                        <td>
+                            <span class="status-tag status-cancelled">Issues</span>
+                        </td>
+                        <td>{{ project.updated_at|date:"d M Y, h:i A" }}</td>
+                        <td>
+                            <a href="{% url 'project_detail' project.id %}" class="btn btn-primary" style="padding: 6px 16px; font-size: 13px;">
+                                View
+                            </a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="6" class="text-center" style="padding: 3rem;">
+                            <div style="opacity: 0.6;">
+                                <svg width="64" height="64" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="margin-bottom: 1rem; opacity: 0.3;">
+                                    <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/>
+                                    <line x1="12" y1="8" x2="12" y2="12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                                    <line x1="12" y1="16" x2="12.01" y2="16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                                </svg>
+                                <p style="font-size: 18px; font-weight: 600; margin-bottom: 0.5rem;">No Issues</p>
+                                <p style="font-size: 14px;">Great! You don't have any projects with issues.</p>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- All Reported Issues -->
+<div class="card">
+    <div class="card-header">
+        <h2 class="card-title">All Reported Issues ({{ all_issues.count }})</h2>
+    </div>
+    <div class="card-body">
+        <div style="display: flex; flex-direction: column; gap: var(--spacing-md);">
+            {% for issue in all_issues %}
+            <div style="padding: var(--spacing-lg); background-color: rgba(255,255,255,0.05); border-radius: var(--radius-md); border-left: 4px solid {% if issue.status == 'resolved' %}#4CAF50{% elif issue.status == 'in_progress' %}#2196F3{% else %}#F44336{% endif %};">
+                <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: var(--spacing-sm);">
+                    <div>
+                        <h3 style="font-size: 16px; font-weight: 600; margin-bottom: 0.5rem; color: var(--text-color);">
+                            {{ issue.title }}
+                        </h3>
+                        <div style="display: flex; gap: var(--spacing-sm); align-items: center; flex-wrap: wrap;">
+                            <span style="font-size: 13px; color: var(--secondary);">
+                                Project: <strong>{{ issue.project.job_id }}</strong>
+                            </span>
+                            <span style="font-size: 13px; opacity: 0.5;">•</span>
+                            <span style="font-size: 13px; color: var(--secondary);">
+                                Type: <strong>{{ issue.get_issue_type_display }}</strong>
+                            </span>
+                            <span style="font-size: 13px; opacity: 0.5;">•</span>
+                            <span style="font-size: 13px; opacity: 0.7;">
+                                {{ issue.created_at|date:"d M Y, h:i A" }}
+                            </span>
+                        </div>
+                    </div>
+                    {% if issue.status == 'resolved' %}
+                    <span class="status-tag status-completed">Resolved</span>
+                    {% elif issue.status == 'in_progress' %}
+                    <span class="status-tag status-in-progress">In Progress</span>
+                    {% else %}
+                    <span class="status-tag status-pending">{{ issue.get_status_display }}</span>
+                    {% endif %}
+                </div>
+                
+                <p style="margin: var(--spacing-md) 0; white-space: pre-wrap; opacity: 0.9;">
+                    {{ issue.description }}
+                </p>
+                
+                {% if issue.resolution_notes %}
+                <div style="margin-top: var(--spacing-md); padding: var(--spacing-md); background-color: rgba(76, 175, 80, 0.1); border-radius: var(--radius-md); border-left: 3px solid #4CAF50;">
+                    <div style="font-size: 13px; font-weight: 600; color: #4CAF50; margin-bottom: 0.5rem;">
+                        Resolution Notes
+                    </div>
+                    <p style="margin: 0; font-size: 14px;">{{ issue.resolution_notes }}</p>
+                    <div style="margin-top: 0.5rem; font-size: 12px; opacity: 0.7;">
+                        Resolved by {{ issue.resolved_by.get_full_name }} on {{ issue.resolved_at|date:"d M Y, h:i A" }}
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+            {% empty %}
+            <div class="text-center" style="padding: 3rem; opacity: 0.6;">
+                <p style="font-size: 16px;">No issues reported yet.</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<style>
+    .data-table tbody tr:hover {
+        background-color: rgba(183, 153, 255, 0.1);
+    }
+</style>
+{% endblock %}

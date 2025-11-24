@@ -1,0 +1,327 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Process Jobs - CRM Portal{% endblock %}
+
+{% block content %}
+<div class="dashboard-header">
+    <h1 class="dashboard-title">Process Jobs</h1>
+    <p class="dashboard-subtitle">AI & Plagiarism check tasks managed by process team</p>
+</div>
+
+<!-- Statistics Cards -->
+<div class="stats-grid" style="margin-bottom: 2rem;">
+    <div class="stat-card" style="background: linear-gradient(135deg, #9C27B0 0%, #7B1FA2 100%);">
+        <div class="stat-value">{{ tasks.count }}</div>
+        <div class="stat-label">Total Process Tasks</div>
+    </div>
+    
+    <div class="stat-card" style="background: linear-gradient(135deg, #FFC107 0%, #FF9800 100%);">
+        <div class="stat-value">
+            {% with pending_count=0 %}
+                {% for task in tasks %}
+                    {% if task.status == 'pending' %}
+                        {% with pending_count=pending_count|add:1 %}{% endwith %}
+                    {% endif %}
+                {% endfor %}
+                {{ pending_count }}
+            {% endwith %}
+        </div>
+        <div class="stat-label">Pending</div>
+    </div>
+    
+    <div class="stat-card" style="background: linear-gradient(135deg, #2196F3 0%, #1976D2 100%);">
+        <div class="stat-value">
+            {% with progress_count=0 %}
+                {% for task in tasks %}
+                    {% if task.status == 'in_progress' %}
+                        {% with progress_count=progress_count|add:1 %}{% endwith %}
+                    {% endif %}
+                {% endfor %}
+                {{ progress_count }}
+            {% endwith %}
+        </div>
+        <div class="stat-label">In Progress</div>
+    </div>
+</div>
+
+<!-- Tasks Table -->
+<div class="card">
+    <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
+        <h2 class="card-title" style="margin: 0;">Process Tasks List</h2>
+        <div style="display: flex; gap: 0.5rem;">
+            <button onclick="filterTaskStatus('all')" class="btn btn-outline" style="padding: 0.5rem 1rem; font-size: 0.875rem;">All</button>
+            <button onclick="filterTaskStatus('pending')" class="btn btn-outline" style="padding: 0.5rem 1rem; font-size: 0.875rem;">Pending</button>
+            <button onclick="filterTaskStatus('in_progress')" class="btn btn-outline" style="padding: 0.5rem 1rem; font-size: 0.875rem;">In Progress</button>
+        </div>
+    </div>
+    <div class="card-body">
+        {% if tasks %}
+        <div class="table-container">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>SL No</th>
+                        <th>Job ID</th>
+                        <th>Topic</th>
+                        <th>Word Count</th>
+                        <th>Category</th>
+                        <th>Assigned To</th>
+                        <th>Start Date</th>
+                        <th>End Date</th>
+                        <th>Status</th>
+                        <th>Temperature Check</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="tasksTableBody">
+                    {% for task in tasks %}
+                    <tr data-status="{{ task.status }}">
+                        <td>{{ forloop.counter }}</td>
+                        <td><strong style="color: var(--primary);">{{ task.job.masking_id }}</strong></td>
+                        <td>{{ task.job.topic|truncatewords:8 }}</td>
+                        <td><strong>{{ task.job.word_count }}</strong></td>
+                        <td>
+                            <span class="status-tag" style="background-color: {% if task.job.job_category == 'IT' %}rgba(33, 150, 243, 0.2); color: #2196F3{% elif task.job.job_category == 'Finance' %}rgba(76, 175, 80, 0.2); color: #4CAF50{% else %}rgba(156, 39, 176, 0.2); color: #9C27B0{% endif %};">
+                                {{ task.job.job_category }}
+                            </span>
+                        </td>
+                        <td>
+                            {% if task.allocated_to %}
+                                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                    <div style="width: 32px; height: 32px; border-radius: 50%; background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%); display: flex; align-items: center; justify-content: center; color: white; font-weight: 600; font-size: 0.875rem;">
+                                        {{ task.allocated_to.first_name|slice:":1" }}{{ task.allocated_to.last_name|slice:":1" }}
+                                    </div>
+                                    <div>
+                                        <div style="font-weight: 600;">{{ task.allocated_to.get_full_name }}</div>
+                                        <div style="font-size: 0.75rem; opacity: 0.7;">Process Team</div>
+                                    </div>
+                                </div>
+                            {% else %}
+                                <span style="opacity: 0.5;">Not Assigned</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <div style="font-weight: 600;">{{ task.start_date_time|date:"d/m/Y" }}</div>
+                            <div style="font-size: 0.875rem; opacity: 0.7;">{{ task.start_date_time|date:"H:i" }}</div>
+                        </td>
+                        <td>
+                            <div style="font-weight: 600; color: #FF9800;">{{ task.end_date_time|date:"d/m/Y" }}</div>
+                            <div style="font-size: 0.875rem; opacity: 0.7;">{{ task.end_date_time|date:"H:i" }}</div>
+                        </td>
+                        <td>
+                            <span class="status-tag status-{{ task.status }}">
+                                {{ task.get_status_display }}
+                            </span>
+                        </td>
+                        <td>
+                            {% if task.temperature_score %}
+                                <div style="font-weight: 600;">{{ task.temperature_score }}%</div>
+                                <div style="font-size: 0.75rem; opacity: 0.7;">
+                                    {% if task.temperature_matched %}
+                                        Meets threshold
+                                    {% else %}
+                                        Below threshold
+                                    {% endif %}
+                                </div>
+                            {% else %}
+                                <span style="color: #9E9E9E; opacity: 0.7;">Pending</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <div style="display: flex; gap: 0.5rem;">
+                                <a href="{% url 'view_job_details' task.job.id %}" class="btn btn-primary" style="padding: 0.5rem 1rem; font-size: 0.875rem; text-decoration: none;">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M1 12C1 12 5 4 12 4C19 4 23 12 23 12C23 12 19 20 12 20C5 20 1 12 1 12Z" stroke="currentColor" stroke-width="2"/>
+                                        <circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="2"/>
+                                    </svg>
+                                    View
+                                </a>
+                                <button type="button" class="btn btn-secondary" onclick="openUpdatePanel('{{ task.id }}')">
+                                    Update
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr id="updateRow-{{ task.id }}" class="update-row">
+                        <td colspan="11">
+                            <form method="POST" class="update-form">
+                                {% csrf_token %}
+                                <input type="hidden" name="task_id" value="{{ task.id }}">
+                                <div class="update-grid">
+                                    <div>
+                                        <label class="form-label required">Writer Final Link</label>
+                                        <input type="url" name="writer_final_link" class="form-control" placeholder="https://drive.google.com/..." value="{{ task.writer_final_link }}" required>
+                                    </div>
+                                    <div>
+                                        <label class="form-label">Marketing Summary Link</label>
+                                        <input type="url" name="summary_link" class="form-control" placeholder="https://..." value="{{ task.summary_link }}">
+                                    </div>
+                                    <div>
+                                        <label class="form-label required">Process Final Link</label>
+                                        <input type="url" name="process_final_link" class="form-control" placeholder="https://..." value="{{ task.process_final_link }}" required>
+                                    </div>
+                                    <div>
+                                        <label class="form-label required">Temperature Score (%)</label>
+                                        <input type="number" name="temperature_score" class="form-control" min="0" max="100" step="0.1" value="{{ task.temperature_score|default_if_none:'' }}" required>
+                                        <small style="opacity: 0.7;">Minimum 70% to pass</small>
+                                    </div>
+                                    <div class="update-actions">
+                                        <button type="submit" class="btn btn-outline">Save</button>
+                                        <button type="submit" name="mark_completed" value="true" class="btn btn-primary">Save &amp; Mark Complete</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div style="text-align: center; padding: 3rem; color: var(--text-color); opacity: 0.6;">
+            <svg width="64" height="64" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="margin-bottom: 1rem; opacity: 0.5;">
+                <path d="M14.7 6.3C15.3 5.7 15.3 4.7 14.7 4.1C14.1 3.5 13.1 3.5 12.5 4.1L4 12.6L4 17L8.4 17L16.9 8.5C17.5 7.9 17.5 6.9 16.9 6.3L14.7 6.3Z" stroke="currentColor" stroke-width="2"/>
+                <path d="M3 21L7 17" stroke="currentColor" stroke-width="2"/>
+            </svg>
+            <p style="font-size: 1.1rem; font-weight: 500;">No process tasks</p>
+            <p style="font-size: 0.9rem; margin-top: 0.5rem;">No jobs currently in the process queue</p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Temperature Check Info Card -->
+<div class="card" style="margin-top: 2rem; border-left: 4px solid var(--primary);">
+    <div class="card-header">
+        <h3 class="card-title">Temperature Check Information</h3>
+    </div>
+    <div class="card-body">
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem;">
+            <div style="padding: 1rem; background-color: rgba(255, 255, 255, 0.05); border-radius: 8px;">
+                <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.75rem;">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="12" cy="12" r="10" stroke="var(--primary)" stroke-width="2"/>
+                        <line x1="12" y1="8" x2="12" y2="12" stroke="var(--primary)" stroke-width="2"/>
+                        <line x1="12" y1="16" x2="12.01" y2="16" stroke="var(--primary)" stroke-width="2"/>
+                    </svg>
+                    <strong style="font-size: 1rem;">What is Temperature Check?</strong>
+                </div>
+                <p style="font-size: 0.875rem; opacity: 0.9; line-height: 1.6;">
+                    Temperature check matches the AI summary uploaded by marketing team with the final file provided by the writer to ensure content consistency and quality.
+                </p>
+            </div>
+            
+            <div style="padding: 1rem; background-color: rgba(255, 255, 255, 0.05); border-radius: 8px;">
+                <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.75rem;">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <polyline points="20 6 9 17 4 12" stroke="#4CAF50" stroke-width="2"/>
+                    </svg>
+                    <strong style="font-size: 1rem;">Passing Criteria</strong>
+                </div>
+                <p style="font-size: 0.875rem; opacity: 0.9; line-height: 1.6;">
+                    The temperature score must meet the minimum threshold (typically 70%) for the task to be approved and moved to the next stage.
+                </p>
+            </div>
+            
+            <div style="padding: 1rem; background-color: rgba(255, 255, 255, 0.05); border-radius: 8px;">
+                <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.75rem;">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12 2V6M12 18V22M4.93 4.93L7.76 7.76M16.24 16.24L19.07 19.07M2 12H6M18 12H22M4.93 19.07L7.76 16.24M16.24 7.76L19.07 4.93" stroke="var(--secondary)" stroke-width="2"/>
+                    </svg>
+                    <strong style="font-size: 1rem;">Process Team Role</strong>
+                </div>
+                <p style="font-size: 0.875rem; opacity: 0.9; line-height: 1.6;">
+                    Process team members upload the final file and verify that the temperature check passes before proceeding to the decoration phase.
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .card, .stat-card {
+        animation: fadeInUp 0.5s ease-out;
+    }
+    
+    .stat-card:hover {
+        transform: translateY(-8px) scale(1.02);
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+    }
+    
+    .data-table tbody tr {
+        transition: all 0.3s ease;
+    }
+    
+    .data-table tbody tr:hover {
+        background-color: var(--hover-bg);
+        transform: scale(1.01);
+    }
+
+    .update-row {
+        display: none;
+        background-color: rgba(255, 255, 255, 0.02);
+    }
+
+    .update-row.open {
+        display: table-row;
+    }
+
+    .update-form {
+        margin-top: 1rem;
+    }
+
+    .update-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 1rem;
+        align-items: end;
+    }
+
+    .update-actions {
+        display: flex;
+        gap: 0.75rem;
+        flex-wrap: wrap;
+    }
+
+    .alert {
+        padding: 0.8rem;
+        border-radius: 6px;
+        font-size: 0.9rem;
+        border: 1px solid rgba(255, 193, 7, 0.4);
+        background-color: rgba(255, 193, 7, 0.15);
+        color: #ffb300;
+    }
+</style>
+
+<script>
+function filterTaskStatus(status) {
+    const rows = document.querySelectorAll('#tasksTableBody tr');
+    
+    rows.forEach(row => {
+        if (status === 'all') {
+            row.style.display = '';
+        } else {
+            if (row.getAttribute('data-status') === status) {
+                row.style.display = '';
+            } else {
+                row.style.display = 'none';
+            }
+        }
+    });
+}
+
+function openUpdatePanel(taskId) {
+    const rows = document.querySelectorAll('.update-row');
+    rows.forEach(row => {
+        if (row.id !== `updateRow-${taskId}`) {
+            row.classList.remove('open');
+        }
+    });
+    const target = document.getElementById(`updateRow-${taskId}`);
+    if (target) {
+        target.classList.toggle('open');
+    }
+}
+</script>
+{% endblock %}

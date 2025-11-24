@@ -1,0 +1,591 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Profile - CRM Portal{% endblock %}
+
+{% block content %}
+<div class="dashboard-header fade-in">
+    <h1 class="dashboard-title">My Profile</h1>
+    <p class="dashboard-subtitle">Manage your account settings and preferences</p>
+</div>
+
+<div class="card-grid">
+    <div class="card" style="grid-column: span 2;">
+        <div class="card-header profile-card-header">
+            <div>
+                <h2 class="card-title">Personal Information</h2>
+                <p class="card-subtitle">Update your basics anytime. Email & phone details stay locked until approved.</p>
+            </div>
+            <div class="profile-action-bar">
+                {% if show_request_button %}
+                <button type="button"
+                        class="btn btn-outline"
+                        id="requestEditBtn"
+                        data-modal-target="requestEditModal"
+                        {% if request_button_disabled %}disabled title="You already have an active approval. Use it before requesting again."{% endif %}>
+                    {{ request_button_label }}
+                </button>
+                {% endif %}
+                <div style="display:flex;gap:0.5rem;">
+                    <button type="submit"
+                            class="btn btn-primary"
+                            id="saveProfileBtn"
+                            form="profileForm">
+                        Save
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="profile-edit-status status-{{ profile_edit_state }}">
+                {% if profile_edit_state == 'superadmin' %}
+                <strong>Super Admin Mode</strong>
+                <p>Email, phone, and WhatsApp are unlocked because you're a Super Admin.</p>
+                {% elif profile_edit_state == 'active' %}
+                <strong>Edit window active</strong>
+                <p>Approval granted on {{ profile_edit_granted_at|date:"M d, Y H:i"|default:"Recently" }}.</p>
+                {% elif profile_edit_state == 'pending' %}
+                <strong>Request pending review</strong>
+                <p>Submitted on {{ pending_identity_request.created_at|date:"M d, Y H:i" }}.</p>
+                {% else %}
+                <strong>Contact details locked</strong>
+                <p>Update name/bio anytime. Request access when you need to change contact information.</p>
+                {% endif %}
+            </div>
+            <form id="profileForm" method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                <input type="hidden" name="form_type" value="profile">
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label required">First Name</label>
+                        <input type="text"
+                               class="form-control"
+                               name="first_name"
+                               value="{{ user.first_name }}"
+                               required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label required">Last Name</label>
+                        <input type="text"
+                               class="form-control"
+                               name="last_name"
+                               value="{{ user.last_name }}"
+                               required>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label required">Email</label>
+                        <input type="email"
+                               class="form-control"
+                               name="email"
+                               value="{{ user.email }}"
+                               pattern="[^@\s]+@gmail\.com"
+                               title="Email must end with @gmail.com"
+                               readonly
+                               required>
+                        <small class="lock-hint">Locked. Contact Super Admin to update.</small>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Phone</label>
+                        <input type="tel"
+                               class="form-control"
+                               name="phone"
+                               value="{{ user.phone|default_if_none:'' }}"
+                               placeholder="10-digit phone number"
+                               pattern="\d{10}"
+                               maxlength="10"
+                               inputmode="numeric"
+                               title="Enter exactly 10 digits">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">WhatsApp Number</label>
+                        <input type="tel"
+                               class="form-control"
+                               name="whatsapp_number"
+                               value="{{ user.whatsapp_number|default_if_none:'' }}"
+                               placeholder="10-digit WhatsApp number"
+                               pattern="\d{10}"
+                               maxlength="10"
+                               inputmode="numeric"
+                               title="Enter exactly 10 digits"
+                               readonly>
+                        <small class="lock-hint">Locked. Contact Super Admin to update.</small>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Role</label>
+                        {% if is_superadmin %}
+                        <select class="form-control form-select lockable-input"
+                                name="role"
+                                data-lockable="select"
+                                disabled>
+                            {% for value, label in role_choices %}
+                                <option value="{{ value }}" {% if user.role == value %}selected{% endif %}>{{ label }}</option>
+                            {% endfor %}
+                        </select>
+                        {% else %}
+                        <div>
+                            <input type="text" class="form-control" value="{{ user.get_role_display }}" readonly>
+                            <small class="lock-hint">Managed by Super Admin</small>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Department</label>
+                        {% if is_superadmin %}
+                        <input type="text"
+                               class="form-control lockable-input"
+                               name="department"
+                               value="{{ user.department|default:user.role }}"
+                               data-lockable="text"
+                               readonly>
+                        {% else %}
+                        <div>
+                            <input type="text" class="form-control" value="{{ user.get_role_display }}" readonly>
+                            <small class="lock-hint">Managed by Super Admin</small>
+                        </div>
+                        {% endif %}
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Bio</label>
+                        <textarea class="form-control"
+                                  rows="4"
+                                  name="bio"
+                                  placeholder="Tell us about yourself...">{{ user.bio }}</textarea>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header">
+            <h2 class="card-title">Profile Picture</h2>
+        </div>
+        <div class="card-body" style="text-align: center;">
+            <img src="{% if user.profile_image %}{{ user.profile_image.url }}{% else %}https://ui-avatars.com/api/?name={{ user.get_full_name|urlencode }}&background=random&color=fff&size=200{% endif %}"
+                 alt="Profile"
+                 style="width: 150px; height: 150px; border-radius: 50%; object-fit: cover; margin-bottom: 20px; border: 4px solid var(--primary);">
+
+            <label for="profileImageInput"
+                   id="profileImageLabel"
+                   class="btn btn-primary profile-photo-btn">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M23 19C23 19.5304 22.7893 20.0391 22.4142 20.4142C22.0391 20.7893 21.5304 21 21 21H3C2.46957 21 1.96086 20.7893 1.58579 20.4142C1.21071 20.0391 1 19.5304 1 19V8C1 7.46957 1.21071 6.96086 1.58579 6.58579C1.96086 6.21071 2.46957 6 3 6H7L9 3H15L17 6H21C21.5304 6 22.0391 6.21071 22.4142 6.58579C22.7893 6.96086 23 7.46957 23 8V19Z" stroke="white" stroke-width="2"/>
+                    <circle cx="12" cy="13" r="4" stroke="white" stroke-width="2"/>
+                </svg>
+                <span id="profileImageLabelText">Upload New Photo</span>
+            </label>
+            <input type="file"
+                   id="profileImageInput"
+                   name="profile_image"
+                   accept="image/*"
+                   style="display: none;"
+                   form="profileForm">
+
+            <div class="form-group" style="margin-top: 1.5rem; text-align: left;">
+                <label class="form-label">Alternate Email</label>
+                <input type="email"
+                       class="form-control"
+                       name="alternate_email"
+                       value="{{ user.alternate_email|default_if_none:'' }}"
+                       placeholder="name@example.com"
+                       form="profileForm"
+                       {% if not can_self_edit_profile %}readonly{% endif %}>
+                {% if can_self_edit_profile %}
+                <small class="lock-hint">Used only for backup communication.</small>
+                {% else %}
+                <small class="lock-hint">Super Admin approval required.</small>
+                {% endif %}
+            </div>
+        </div>
+        
+    </div>
+
+    <!-- <div class="card">
+        <div class="card-header">
+            <h2 class="card-title">Change Password</h2>
+        </div>
+        <div class="card-body">
+            <form method="post">
+                {% csrf_token %}
+                <input type="hidden" name="form_type" value="change_password">
+                <div class="form-group">
+                    <label class="form-label required">Current Password</label>
+                    <input type="password" class="form-control" name="current_password" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label required">New Password</label>
+                    <input type="password" class="form-control" name="new_password1" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label required">Confirm New Password</label>
+                    <input type="password" class="form-control" name="new_password2" required>
+                </div>
+                <button type="submit" class="btn btn-secondary" style="width: 100%;">Update Password</button>
+            </form>
+        </div>
+    </div> -->
+
+    <div class="card">
+        <div class="card-header">
+            <h2 class="card-title">Account Statistics</h2>
+        </div>
+        <div class="card-body">
+            <div style="display: flex; flex-direction: column; gap: 16px;">
+                <div class="stat-row">
+                    <span>Member Since</span>
+                    <strong>{{ user.date_joined|date:"M d, Y" }} ({{ account_age_display }})</strong>
+                </div>
+                <div class="stat-row">
+                    <span>Last Login</span>
+                    <strong>{% if user.last_login %}{{ user.last_login|date:"M d, Y H:i" }}{% else %}N/A{% endif %}</strong>
+                </div>
+                <div class="stat-row">
+                    <span>Role Tenure</span>
+                    <strong>{{ role_tenure_display }}</strong>
+                </div>
+                <div class="stat-row">
+                    <span>Role</span>
+                    <strong style="text-transform: capitalize;">{{ user.role }}</strong>
+                </div>
+                <div class="stat-row">
+                    <span>Employee ID</span>
+                    <strong>{{ user.employee_id|default:"Not Assigned" }}</strong>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% if not is_superadmin %}
+    <div class="card" style="grid-column: span 2;">
+        <div class="card-header">
+            <h2 class="card-title">Profile Edit Requests</h2>
+        </div>
+        <div class="card-body profile-request-summary">
+            <div class="request-section">
+                <div class="section-heading">
+                    <strong>Pending Requests</strong>
+                    <span class="count-pill">{% if pending_identity_request %}1{% else %}0{% endif %}</span>
+                </div>
+                {% if pending_identity_request %}
+                <p class="request-meta">
+                    Submitted on {{ pending_identity_request.created_at|date:"M d, Y H:i" }}<br>
+                    Target email: {{ pending_identity_request.requested_email }}
+                </p>
+                {% if pending_identity_request.reason %}
+                <p class="request-reason">Reason: {{ pending_identity_request.reason }}</p>
+                {% endif %}
+                <p class="request-note">Need to tweak the details? Use the request button above to update the submission.</p>
+                {% else %}
+                <p class="request-empty">No pending profile edit requests right now.</p>
+                {% endif %}
+            </div>
+            <div class="request-section">
+                <div class="section-heading">
+                    <strong>Active Edit Approvals</strong>
+                    <span class="count-pill">{% if user.profile_edit_allowed %}1{% else %}0{% endif %}</span>
+                </div>
+                {% if active_identity_request %}
+                <p class="request-meta">
+                    Approved {{ active_identity_request.reviewed_at|timesince }} ago<br>
+                    Approved by: {{ active_identity_request.reviewed_by.get_full_name|default:active_identity_request.reviewed_by.email }}
+                </p>
+                <p class="request-note">Click <em>Edit</em> above to begin. Saving will close this approval.</p>
+                {% elif user.profile_edit_allowed %}
+                <p class="request-meta">Edit access is active. Remember to save to close the window.</p>
+                {% else %}
+                <p class="request-empty">No active approvals at this time.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+{% if not is_superadmin %}
+<div class="profile-request-modal" id="requestEditModal" aria-hidden="true">
+    <div class="modal-panel" role="dialog" aria-modal="true" aria-labelledby="requestModalTitle">
+        <div class="modal-header">
+            <div>
+                <h3 id="requestModalTitle">Request Profile Edit Access</h3>
+                {% if active_identity_request %}
+                <p class="modal-subtitle">Edit access already approved. Save your profile before requesting again.</p>
+                {% elif pending_identity_request %}
+                <p class="modal-subtitle">Update your pending request below and resubmit.</p>
+                {% else %}
+                <p class="modal-subtitle">Tell the Super Admin what needs to change so they can unlock editing.</p>
+                {% endif %}
+            </div>
+            <button type="button" class="modal-close" data-modal-close>&times;</button>
+        </div>
+        <form method="post" id="requestEditForm">
+            {% csrf_token %}
+            <input type="hidden" name="form_type" value="identity_request">
+            <div class="form-row">
+                <div class="form-group">
+                    <label class="form-label required">First Name</label>
+                    <input type="text"
+                           class="form-control"
+                           name="requested_first_name"
+                           value="{{ pending_identity_request.requested_first_name|default:user.first_name }}"
+                           required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label required">Last Name</label>
+                    <input type="text"
+                           class="form-control"
+                           name="requested_last_name"
+                           value="{{ pending_identity_request.requested_last_name|default:user.last_name }}"
+                           required>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="form-label required">Email</label>
+                <input type="email"
+                       class="form-control"
+                       name="requested_email"
+                       value="{{ pending_identity_request.requested_email|default:user.email }}"
+                       required>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Reason / Notes</label>
+                <textarea class="form-control"
+                          rows="3"
+                          name="change_reason"
+                          placeholder="Optional message for Super Admin">{% if pending_identity_request %}{{ pending_identity_request.reason }}{% endif %}</textarea>
+            </div>
+            <div class="modal-actions">
+                <button type="button" class="btn btn-outline" data-modal-close>Cancel</button>
+                <button type="submit" class="btn btn-primary">
+                    {% if pending_identity_request %}Update Request{% else %}Submit Request{% endif %}
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endif %}
+
+<style>
+.profile-card-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+.profile-action-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    justify-content: flex-end;
+}
+.profile-edit-status {
+    border-left: 4px solid rgba(255, 255, 255, 0.2);
+    background: rgba(255, 255, 255, 0.03);
+    padding: 1rem 1.25rem;
+    border-radius: 12px;
+    margin-bottom: 1.25rem;
+}
+.profile-edit-status strong {
+    display: block;
+    margin-bottom: 0.35rem;
+}
+.profile-edit-status.status-active {
+    border-color: var(--success, #4CAF50);
+    background: rgba(76, 175, 80, 0.12);
+}
+.profile-edit-status.status-pending {
+    border-color: #FFC107;
+    background: rgba(255, 193, 7, 0.12);
+}
+.profile-edit-status.status-locked {
+    border-color: #F44336;
+    background: rgba(244, 67, 54, 0.12);
+}
+.profile-edit-status.status-superadmin {
+    border-color: var(--primary, #7367F0);
+    background: rgba(115, 103, 240, 0.12);
+}
+.profile-edit-status p {
+    margin: 0;
+    color: rgba(255,255,255,0.8);
+}
+.lock-hint {
+    display: block;
+    font-size: 0.75rem;
+    color: rgba(255,255,255,0.65);
+    margin-top: 0.2rem;
+}
+.profile-photo-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: opacity 0.2s ease;
+}
+.profile-photo-btn.locked {
+    opacity: 0.5;
+    pointer-events: none;
+}
+.profile-request-summary {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 1.25rem;
+}
+.request-section {
+    border: 1px dashed rgba(255,255,255,0.15);
+    border-radius: 12px;
+    padding: 1rem;
+    background: rgba(255,255,255,0.02);
+}
+.section-heading {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.75rem;
+}
+.count-pill {
+    background: rgba(255,255,255,0.08);
+    border-radius: 999px;
+    padding: 0.15rem 0.65rem;
+    font-weight: 600;
+}
+.request-meta {
+    margin: 0;
+    color: rgba(255,255,255,0.85);
+    line-height: 1.4;
+}
+.request-reason,
+.request-note,
+.request-empty {
+    margin-top: 0.5rem;
+    font-size: 0.9rem;
+    color: rgba(255,255,255,0.7);
+}
+.profile-request-modal {
+    position: fixed;
+    inset: 0;
+    display: none;
+    z-index: 1200;
+    background: rgba(0,0,0,0.65);
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+}
+.profile-request-modal.is-visible {
+    display: flex;
+}
+.modal-panel {
+    position: relative;
+    width: 100%;
+    max-width: 560px;
+    background: var(--card-bg, #1f1b2e);
+    border-radius: 16px;
+    padding: 1.5rem;
+    box-shadow: 0 30px 80px rgba(10,5,25,0.45);
+}
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+.modal-subtitle {
+    margin: 0.35rem 0 0;
+    font-size: 0.9rem;
+    color: rgba(255,255,255,0.7);
+}
+.modal-close {
+    border: none;
+    background: transparent;
+    color: inherit;
+    font-size: 1.75rem;
+    line-height: 1;
+    cursor: pointer;
+}
+.modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.75rem;
+    margin-top: 1.25rem;
+}
+.stat-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 12px;
+    background: rgba(255,255,255,0.05);
+    border-radius: 8px;
+}
+</style>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    if (profileImageInput) {
+        profileImageInput.addEventListener('change', () => {
+            if (profileImageLabelText && profileImageInput.files.length) {
+                profileImageLabelText.textContent = profileImageInput.files[0].name;
+            }
+            document.getElementById('profileForm').submit();
+        });
+    }
+
+    function openModal(modal) {
+        if (!modal) {
+            return;
+        }
+        modal.classList.add('is-visible');
+        modal.setAttribute('aria-hidden', 'false');
+        const firstField = modal.querySelector('input:not([type=hidden]):not([readonly]):not([disabled])');
+        if (firstField) {
+            setTimeout(() => firstField.focus(), 80);
+        }
+    }
+
+    function closeModal(modal) {
+        if (!modal) {
+            return;
+        }
+        modal.classList.remove('is-visible');
+        modal.setAttribute('aria-hidden', 'true');
+    }
+
+    document.querySelectorAll('[data-modal-target]').forEach((trigger) => {
+        trigger.addEventListener('click', () => {
+            if (trigger.disabled) {
+                return;
+            }
+            const targetId = trigger.getAttribute('data-modal-target');
+            openModal(document.getElementById(targetId));
+        });
+    });
+
+    document.querySelectorAll('[data-modal-close]').forEach((closer) => {
+        closer.addEventListener('click', () => {
+            closeModal(closer.closest('.profile-request-modal'));
+        });
+    });
+
+    document.querySelectorAll('.profile-request-modal').forEach((modal) => {
+        modal.addEventListener('click', (event) => {
+            if (event.target === modal) {
+                closeModal(modal);
+            }
+        });
+    });
+
+    window.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape') {
+            document.querySelectorAll('.profile-request-modal.is-visible').forEach((modal) => closeModal(modal));
+        }
+    });
+});
+</script>
+{% endblock %}
