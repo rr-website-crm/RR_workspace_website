@@ -289,3 +289,7 @@ WARNING 2025-11-24 11:07:32,089 middleware Unauthorized access attempt to /favic
 WARNING 2025-11-24 12:47:35,559 middleware Unauthorized access attempt to /marketing/jobs/create/ from IP: 127.0.0.1
 WARNING 2025-11-24 12:47:35,774 middleware Unauthorized access attempt to /favicon.ico from IP: 127.0.0.1
 WARNING 2025-11-24 12:47:36,284 middleware Unauthorized access attempt to /favicon.ico from IP: 127.0.0.1
+WARNING 2025-11-24 14:17:36,124 middleware Unauthorized access attempt to /marketing/dashboard/ from IP: 127.0.0.1
+WARNING 2025-11-24 14:59:18,808 middleware Unauthorized access attempt to /favicon.ico from IP: 127.0.0.1
+WARNING 2025-11-24 14:59:35,002 views Failed login attempt for: srija@gmail.com from IP: 127.0.0.1
+WARNING 2025-11-24 14:59:35,039 middleware Unauthorized access attempt to /favicon.ico from IP: 127.0.0.1

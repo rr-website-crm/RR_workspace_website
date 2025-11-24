@@ -1,4 +1,5 @@
 from django.db import models
+from djongo import models as djongo_models
 from django.utils import timezone
 from django.core.validators import FileExtensionValidator
 from accounts.models import CustomUser
@@ -155,6 +156,8 @@ def job_attachment_path(instance, filename):
 class Job(models.Model):
     """Main Job model with comprehensive tracking"""
 
+    # Use Mongo ObjectId as primary key to match stored documents
+    id = djongo_models.ObjectIdField(primary_key=True, db_column='_id')
     CATEGORY_CHOICES = [
         ('IT', 'IT'),
         ('NON-IT', 'Non-IT'),

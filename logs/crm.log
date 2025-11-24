@@ -18725,3 +18725,97 @@ INFO 2025-11-24 12:51:19,354 basehttp "GET /marketing/jobs/CH-1763968704024/view
 INFO 2025-11-24 12:51:35,797 basehttp "GET /dashboard/ HTTP/1.1" 200 26297
 INFO 2025-11-24 12:51:37,556 basehttp "GET /marketing/dashboard/ HTTP/1.1" 200 43238
 INFO 2025-11-24 12:51:39,641 basehttp "GET /marketing/jobs/CH-1763968704024/final-form/ HTTP/1.1" 200 44710
+INFO 2025-11-24 14:17:34,691 autoreload Watching for file changes with StatReloader
+WARNING 2025-11-24 14:17:36,124 middleware Unauthorized access attempt to /marketing/dashboard/ from IP: 127.0.0.1
+INFO 2025-11-24 14:17:36,127 basehttp "GET /marketing/dashboard/ HTTP/1.1" 302 0
+INFO 2025-11-24 14:17:36,147 basehttp "GET /accounts/login/ HTTP/1.1" 200 7338
+INFO 2025-11-24 14:17:36,170 basehttp "GET /static/css/base.css HTTP/1.1" 304 0
+WARNING 2025-11-24 14:17:36,273 log Not Found: /favicon.ico
+WARNING 2025-11-24 14:17:36,273 basehttp "GET /favicon.ico HTTP/1.1" 404 3336
+INFO 2025-11-24 14:17:49,493 basehttp "POST /accounts/login/ HTTP/1.1" 302 0
+INFO 2025-11-24 14:17:50,100 basehttp "GET /dashboard/ HTTP/1.1" 200 26287
+WARNING 2025-11-24 14:17:50,140 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
+INFO 2025-11-24 14:17:50,632 basehttp "GET /media/logo.png HTTP/1.1" 200 1275213
+INFO 2025-11-24 14:17:51,724 basehttp "GET /marketing/dashboard/ HTTP/1.1" 200 31442
+WARNING 2025-11-24 14:17:51,753 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
+INFO 2025-11-24 14:17:54,735 basehttp "GET /marketing/jobs/create/?job_id=TEST-1 HTTP/1.1" 200 54741
+WARNING 2025-11-24 14:17:54,871 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
+ERROR 2025-11-24 14:18:14,365 log Internal Server Error: /marketing/jobs/save-initial/
+ERROR 2025-11-24 14:18:14,366 basehttp "POST /marketing/jobs/save-initial/ HTTP/1.1" 500 115
+INFO 2025-11-24 14:59:07,637 autoreload E:\NCRM\marketing\views.py changed, reloading.
+INFO 2025-11-24 14:59:08,759 autoreload Watching for file changes with StatReloader
+INFO 2025-11-24 14:59:18,393 middleware Session expired for user: srija@gmail.com
+INFO 2025-11-24 14:59:18,400 basehttp "GET /marketing/jobs/create/?job_id=TEST-1 HTTP/1.1" 302 0
+INFO 2025-11-24 14:59:18,417 basehttp "GET /accounts/login/ HTTP/1.1" 200 7999
+INFO 2025-11-24 14:59:18,667 basehttp "GET /static/css/style.css HTTP/1.1" 200 14133
+INFO 2025-11-24 14:59:18,668 basehttp "GET /static/css/base.css HTTP/1.1" 200 42424
+WARNING 2025-11-24 14:59:18,808 middleware Unauthorized access attempt to /favicon.ico from IP: 127.0.0.1
+INFO 2025-11-24 14:59:18,809 basehttp "GET /favicon.ico HTTP/1.1" 302 0
+INFO 2025-11-24 14:59:18,814 basehttp "GET /accounts/login/ HTTP/1.1" 200 7338
+WARNING 2025-11-24 14:59:35,002 views Failed login attempt for: srija@gmail.com from IP: 127.0.0.1
+INFO 2025-11-24 14:59:35,004 basehttp "POST /accounts/login/ HTTP/1.1" 200 7654
+WARNING 2025-11-24 14:59:35,039 middleware Unauthorized access attempt to /favicon.ico from IP: 127.0.0.1
+INFO 2025-11-24 14:59:35,039 basehttp "GET /favicon.ico HTTP/1.1" 302 0
+INFO 2025-11-24 14:59:35,044 basehttp "GET /accounts/login/ HTTP/1.1" 200 7338
+INFO 2025-11-24 14:59:44,417 views Successful login for user: srija@gmail.com from IP: 127.0.0.1
+INFO 2025-11-24 14:59:44,428 basehttp "POST /accounts/login/ HTTP/1.1" 302 0
+INFO 2025-11-24 14:59:46,593 basehttp "GET /dashboard/ HTTP/1.1" 200 26287
+WARNING 2025-11-24 14:59:46,753 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
+INFO 2025-11-24 14:59:46,838 basehttp "GET /media/logo.png HTTP/1.1" 200 1275213
+INFO 2025-11-24 14:59:48,315 basehttp "GET /marketing/dashboard/ HTTP/1.1" 200 31442
+WARNING 2025-11-24 14:59:48,349 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
+INFO 2025-11-24 14:59:51,778 basehttp "GET /marketing/jobs/create/?job_id=TEST-1 HTTP/1.1" 200 54741
+WARNING 2025-11-24 14:59:51,802 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
+ERROR 2025-11-24 15:00:03,448 log Internal Server Error: /marketing/jobs/save-initial/
+ERROR 2025-11-24 15:00:03,448 basehttp "POST /marketing/jobs/save-initial/ HTTP/1.1" 500 114
+INFO 2025-11-24 15:02:40,901 autoreload E:\NCRM\marketing\models.py changed, reloading.
+INFO 2025-11-24 15:02:41,941 autoreload Watching for file changes with StatReloader
+INFO 2025-11-24 15:03:18,784 autoreload Watching for file changes with StatReloader
+ERROR 2025-11-24 15:03:25,367 log Internal Server Error: /marketing/jobs/create/
+Traceback (most recent call last):
+  File "E:\NCRM\venv\lib\site-packages\django\core\handlers\exception.py", line 47, in inner
+    response = get_response(request)
+  File "E:\NCRM\venv\lib\site-packages\django\core\handlers\base.py", line 181, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "E:\NCRM\venv\lib\site-packages\django\contrib\auth\decorators.py", line 21, in _wrapped_view
+    return view_func(request, *args, **kwargs)
+  File "E:\NCRM\marketing\views.py", line 58, in wrapper
+    return view_func(request, *args, **kwargs)
+  File "E:\NCRM\marketing\views.py", line 191, in create_job
+    job = get_object_or_404(Job, system_id=job_id, created_by=request.user, status='draft')
+  File "E:\NCRM\venv\lib\site-packages\django\shortcuts.py", line 76, in get_object_or_404
+    return queryset.get(*args, **kwargs)
+  File "E:\NCRM\venv\lib\site-packages\django\db\models\query.py", line 433, in get
+    raise self.model.MultipleObjectsReturned(
+marketing.models.Job.MultipleObjectsReturned: get() returned more than one Job -- it returned 2!
+ERROR 2025-11-24 15:03:25,369 basehttp "GET /marketing/jobs/create/?job_id=TEST-1 HTTP/1.1" 500 92721
+WARNING 2025-11-24 15:03:25,503 log Not Found: /favicon.ico
+WARNING 2025-11-24 15:03:25,503 basehttp "GET /favicon.ico HTTP/1.1" 404 3336
+ERROR 2025-11-24 15:03:30,582 log Internal Server Error: /marketing/jobs/create/
+Traceback (most recent call last):
+  File "E:\NCRM\venv\lib\site-packages\django\core\handlers\exception.py", line 47, in inner
+    response = get_response(request)
+  File "E:\NCRM\venv\lib\site-packages\django\core\handlers\base.py", line 181, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "E:\NCRM\venv\lib\site-packages\django\contrib\auth\decorators.py", line 21, in _wrapped_view
+    return view_func(request, *args, **kwargs)
+  File "E:\NCRM\marketing\views.py", line 58, in wrapper
+    return view_func(request, *args, **kwargs)
+  File "E:\NCRM\marketing\views.py", line 191, in create_job
+    job = get_object_or_404(Job, system_id=job_id, created_by=request.user, status='draft')
+  File "E:\NCRM\venv\lib\site-packages\django\shortcuts.py", line 76, in get_object_or_404
+    return queryset.get(*args, **kwargs)
+  File "E:\NCRM\venv\lib\site-packages\django\db\models\query.py", line 433, in get
+    raise self.model.MultipleObjectsReturned(
+marketing.models.Job.MultipleObjectsReturned: get() returned more than one Job -- it returned 2!
+ERROR 2025-11-24 15:03:30,584 basehttp "GET /marketing/jobs/create/?job_id=TEST-1 HTTP/1.1" 500 92584
+INFO 2025-11-24 15:03:50,644 basehttp "GET /marketing/jobs/create/?job_id=TEST-1 HTTP/1.1" 200 55350
+WARNING 2025-11-24 15:03:50,681 basehttp "GET /static/img/default-avatar.png HTTP/1.1" 404 1793
+INFO 2025-11-24 15:03:50,726 basehttp "GET /static/css/base.css HTTP/1.1" 200 42424
+INFO 2025-11-24 15:03:51,175 basehttp "GET /media/logo.png HTTP/1.1" 200 1275213
+INFO 2025-11-24 15:03:56,973 basehttp "POST /marketing/jobs/save-initial/ HTTP/1.1" 200 102
+ERROR 2025-11-24 15:03:58,477 log Internal Server Error: /marketing/jobs/generate-summary/
+ERROR 2025-11-24 15:03:58,478 basehttp "POST /marketing/jobs/generate-summary/ HTTP/1.1" 500 287
+INFO 2025-11-24 15:04:40,132 basehttp "POST /marketing/jobs/save-initial/ HTTP/1.1" 200 102
+ERROR 2025-11-24 15:04:41,087 log Internal Server Error: /marketing/jobs/generate-summary/
+ERROR 2025-11-24 15:04:41,088 basehttp "POST /marketing/jobs/generate-summary/ HTTP/1.1" 500 287

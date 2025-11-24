@@ -264,7 +264,9 @@ def save_initial_form(request):
         with transaction.atomic():
             # Create or update job
             if system_id:
-                job = Job.objects.get(system_id=system_id, created_by=request.user)
+                job = Job.objects.filter(system_id=system_id, created_by=request.user).order_by('-created_at').first()
+                if not job:
+                    return JsonResponse({'success': False, 'message': 'Job not found'}, status=404)
                 job.job_id = job_id
                 job.instruction = instruction
                 job.initial_form_last_saved_at = timezone.now()
@@ -278,7 +280,7 @@ def save_initial_form(request):
             else:
                 # Create new job
                 system_id = Job.generate_system_id()
-                job = Job.objects.create(
+                job = Job(
                     system_id=system_id,
                     job_id=job_id,
                     instruction=instruction,
@@ -288,6 +290,10 @@ def save_initial_form(request):
                 )
                 log_action = 'created'
                 event_key = JOB_EVENTS['created']
+            
+            # Ensure the job is saved before related objects
+            job.save()
+            job.refresh_from_db()
             
             # Save attachments
             for file in files:
