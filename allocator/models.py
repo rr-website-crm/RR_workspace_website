@@ -167,7 +167,7 @@ class TaskAllocation(models.Model):
         on_delete=models.SET_NULL,
         null=True,
         blank=True,
-        related_name='assigned_tasks'
+        related_name='task_allocations_received'
     )
     allocated_by = models.ForeignKey(
         CustomUser,

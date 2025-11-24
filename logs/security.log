@@ -268,3 +268,21 @@ WARNING 2025-11-21 17:45:31,223 middleware Unauthorized access attempt to /favic
 ERROR 2025-11-21 17:46:04,813 views Error during logout for admin@gmail.com: 
 WARNING 2025-11-21 17:46:04,886 middleware Unauthorized access attempt to /favicon.ico from IP: 127.0.0.1
 WARNING 2025-11-21 17:48:53,871 middleware Unauthorized access attempt to / from IP: 127.0.0.1
+WARNING 2025-11-22 11:11:44,903 middleware Unauthorized access attempt to /marketing/dashboard/ from IP: 127.0.0.1
+WARNING 2025-11-22 11:11:48,040 middleware Unauthorized access attempt to /favicon.ico from IP: 127.0.0.1
+WARNING 2025-11-22 11:39:50,618 middleware Unauthorized access attempt to /favicon.ico from IP: 127.0.0.1
+WARNING 2025-11-22 11:41:34,121 middleware Unauthorized access attempt to /favicon.ico from IP: 127.0.0.1
+WARNING 2025-11-22 11:41:34,436 middleware Unauthorized access attempt to /favicon.ico from IP: 127.0.0.1
+WARNING 2025-11-22 11:42:57,614 middleware Unauthorized access attempt to /favicon.ico from IP: 127.0.0.1
+WARNING 2025-11-22 12:20:52,773 middleware Unauthorized access attempt to /favicon.ico from IP: 127.0.0.1
+WARNING 2025-11-22 12:39:54,970 middleware Unauthorized access attempt to / from IP: 127.0.0.1
+WARNING 2025-11-22 12:39:55,655 middleware Unauthorized access attempt to /favicon.ico from IP: 127.0.0.1
+WARNING 2025-11-22 13:57:22,157 middleware Unauthorized access attempt to /marketing/dashboard/ from IP: 127.0.0.1
+WARNING 2025-11-22 13:57:22,267 middleware Unauthorized access attempt to /marketing/jobs/create/ from IP: 127.0.0.1
+ERROR 2025-11-22 15:22:57,975 views Error during logout for admin@gmail.com: 
+ERROR 2025-11-22 16:03:31,591 exception Invalid HTTP_HOST header: 'testserver'. You may need to add 'testserver' to ALLOWED_HOSTS.
+ERROR 2025-11-22 18:02:44,134 views Error during logout for admin@gmail.com: 
+WARNING 2025-11-24 11:06:10,786 middleware Unauthorized access attempt to /marketing/jobs/CH-1763805413418/view/ from IP: 127.0.0.1
+WARNING 2025-11-24 11:06:14,118 middleware Unauthorized access attempt to /favicon.ico from IP: 127.0.0.1
+ERROR 2025-11-24 11:07:31,256 views Error during logout for admin@gmail.com: 
+WARNING 2025-11-24 11:07:32,089 middleware Unauthorized access attempt to /favicon.ico from IP: 127.0.0.1

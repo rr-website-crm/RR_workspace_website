@@ -12,7 +12,14 @@ import logging
 
 from accounts.models import CustomUser
 from accounts.services import log_activity_event
-from .models import Holiday, PriceMaster, ReferencingMaster, AcademicWritingMaster,ProjectGroupMaster
+from .models import (
+    Holiday,
+    PriceMaster,
+    ReferencingMaster,
+    AcademicWritingMaster,
+    ProjectGroupMaster,
+    TemplateMaster,
+)
 from . import user_services as portal_services
 
 logger = logging.getLogger('superadmin')
@@ -1402,3 +1409,215 @@ def delete_project_group(request, group_id):
         messages.error(request, 'An error occurred while deleting the project group.')
     
     return redirect('project_group_master')
+
+
+
+
+
+@login_required
+@superadmin_required
+def template_master(request):
+    """Template Master - List all templates"""
+    try:
+        raw_templates = list(TemplateMaster.objects.all().order_by('-created_at'))
+        templates = [
+            template for template in raw_templates
+            if not getattr(template, 'is_deleted', False)
+        ]
+        context = {
+            'templates': templates,
+            'total_templates': len(templates),
+        }
+        return render(request, 'template_master.html', context)
+        
+    except Exception as e:
+        logger.exception(f"Error loading template master: {str(e)}")
+        messages.error(request, 'Error loading templates.')
+        return render(request, 'template_master.html', {
+            'templates': [],
+            'total_templates': 0
+        })
+
+
+@login_required
+@superadmin_required
+def create_template(request):
+    """Create a new template"""
+    if request.method == 'POST':
+        try:
+            template_name = request.POST.get('template_name', '').strip()
+            template_description = request.POST.get('template_description', '').strip()
+            status = request.POST.get('status', 'active')
+            
+            if not template_name:
+                messages.error(request, 'Template name is required.')
+                return redirect('template_master')
+            
+            # Check for existing template without triggering Djongo NOT recursion
+            existing = next(
+                (
+                    item for item in TemplateMaster.objects.filter(template_name=template_name)
+                    if not getattr(item, 'is_deleted', False)
+                ),
+                None
+            )
+            
+            if existing:
+                messages.error(request, f'Template "{template_name}" already exists.')
+                return redirect('template_master')
+            
+            with transaction.atomic():
+                template = TemplateMaster()
+                template.template_name = template_name
+                template.template_description = template_description
+                template.status = status
+                template.created_by = request.user
+                template.created_at = timezone.now()
+                
+                # Set default tasks structure
+                template.default_tasks = template.get_default_tasks_structure()
+                
+                # Set default visibility config
+                template.visibility_config = {
+                    'marketing': ['all'],
+                    'allocator': ['all'],
+                    'writer': ['task_specific'],
+                    'process': ['task_specific'],
+                    'superadmin': ['all'],
+                    'admin': ['all']
+                }
+                
+                template.save()
+                
+                log_activity_event(
+                    'template.created_at',
+                    subject_user=None,
+                    performed_by=request.user,
+                    metadata={
+                        'template_id': str(template.id),
+                        'template_name': template_name,
+                    },
+                )
+                
+                logger.info(f"Template '{template_name}' created by {request.user.email}")
+                messages.success(request, f'Template "{template_name}" created successfully!')
+            
+            return redirect('template_master')
+            
+        except Exception as e:
+            logger.exception(f"Error creating template: {str(e)}")
+            messages.error(request, 'An error occurred while creating the template.')
+            return redirect('template_master')
+    
+    return redirect('template_master')
+
+
+@login_required
+@superadmin_required
+def edit_template(request, template_id):
+    """Update an existing template"""
+    if request.method != 'POST':
+        return redirect('template_master')
+    
+    template = TemplateMaster.objects.filter(
+        id=template_id,
+        is_deleted=False
+    ).first()
+    
+    if not template:
+        messages.error(request, 'Template not found.')
+        return redirect('template_master')
+    
+    try:
+        template_name = request.POST.get('template_name', '').strip()
+        template_description = request.POST.get('template_description', '').strip()
+        status = request.POST.get('status', 'active')
+        
+        if not template_name:
+            messages.error(request, 'Template name is required.')
+            return redirect('template_master')
+        
+        # Check for duplicate (excluding current)
+        existing = TemplateMaster.objects.filter(
+            template_name=template_name,
+            is_deleted=False
+        ).exclude(id=template_id).first()
+        
+        if existing:
+            messages.error(request, f'Template "{template_name}" already exists.')
+            return redirect('template_master')
+        
+        with transaction.atomic():
+            template.template_name = template_name
+            template.template_description = template_description
+            template.status = status
+            template.updated_by = request.user
+            template.updated_at = timezone.now()
+            template.save()
+            
+            log_activity_event(
+                'template.updated_at',
+                subject_user=None,
+                performed_by=request.user,
+                metadata={
+                    'template_id': str(template.id),
+                    'template_name': template_name,
+                },
+            )
+        
+        messages.success(request, f'Template "{template_name}" updated successfully.')
+    
+    except Exception as e:
+        logger.exception(f"Error updating template: {str(e)}")
+        messages.error(request, 'An error occurred while updating the template.')
+    
+    return redirect('template_master')
+
+
+@login_required
+@superadmin_required
+def delete_template(request, template_id):
+    """Delete a template"""
+    if request.method != 'POST':
+        return redirect('template_master')
+    
+    template = TemplateMaster.objects.filter(id=template_id).first()
+    
+    if not template:
+        messages.error(request, 'Template not found.')
+        return redirect('template_master')
+    
+    # Check if template is being used
+    from marketing.models import Job
+    jobs_using_template = Job.objects.filter(template=template).count()
+    
+    if jobs_using_template > 0:
+        messages.error(
+            request,
+            f'Cannot delete template. It is currently being used by {jobs_using_template} job(s).'
+        )
+        return redirect('template_master')
+    
+    template_name_ref = template.template_name
+    
+    try:
+        with transaction.atomic():
+            template.delete()
+            
+            log_activity_event(
+                'template.deleted',
+                subject_user=None,
+                performed_by=request.user,
+                metadata={
+                    'template_id': str(template_id),
+                    'template_name': template_name_ref,
+                },
+            )
+        
+        messages.success(request, f'Template "{template_name_ref}" deleted successfully.')
+    
+    except Exception as e:
+        logger.exception(f"Error deleting template: {str(e)}")
+        messages.error(request, 'An error occurred while deleting the template.')
+    
+    return redirect('template_master')
