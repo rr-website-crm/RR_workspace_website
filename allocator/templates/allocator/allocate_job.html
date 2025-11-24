@@ -1,0 +1,799 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Allocate Job - {{ job.masking_id }} - CRM Portal{% endblock %}
+
+{% block content %}
+<div class="dashboard-header">
+    <h1 class="dashboard-title">Allocate Job: {{ job.masking_id }}</h1>
+    <p class="dashboard-subtitle">Assign tasks to writers and process team</p>
+</div>
+
+<!-- Job Details Card -->
+<div class="card mb-4">
+    <div class="card-header">
+        <h2 class="card-title">Job Details</h2>
+    </div>
+    <div class="card-body">
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem;">
+            <div>
+                <div style="color: var(--text-color); opacity: 0.7; font-size: 0.875rem; margin-bottom: 0.25rem;">Job ID</div>
+                <div style="font-size: 1.1rem; font-weight: 600;">{{ job.masking_id }}</div>
+            </div>
+            
+            <div>
+                <div style="color: var(--text-color); opacity: 0.7; font-size: 0.875rem; margin-bottom: 0.25rem;">Topic</div>
+                <div style="font-size: 1.1rem;">{{ job.topic|truncatewords:15 }}</div>
+            </div>
+            
+            <div>
+                <div style="color: var(--text-color); opacity: 0.7; font-size: 0.875rem; margin-bottom: 0.25rem;">Word Count</div>
+                <div style="font-size: 1.1rem; font-weight: 600;">{{ job.word_count }} / {{ job.max_word_limit }}</div>
+            </div>
+            
+            <div>
+                <div style="color: var(--text-color); opacity: 0.7; font-size: 0.875rem; margin-bottom: 0.25rem;">Category</div>
+                <div>
+                    <span class="status-tag" style="background-color: {% if job.job_category == 'IT' %}rgba(33, 150, 243, 0.2); color: #2196F3{% elif job.job_category == 'Finance' %}rgba(76, 175, 80, 0.2); color: #4CAF50{% else %}rgba(156, 39, 176, 0.2); color: #9C27B0{% endif %};">
+                        {{ job.job_category }}
+                    </span>
+                </div>
+            </div>
+            
+            <div>
+                <div style="color: var(--text-color); opacity: 0.7; font-size: 0.875rem; margin-bottom: 0.25rem;">Deadline</div>
+                <div style="font-size: 1.1rem; font-weight: 600; color: #FF9800;">{{ job.deadline|date:"d/m/Y H:i" }}</div>
+            </div>
+            
+            <div>
+                <div style="color: var(--text-color); opacity: 0.7; font-size: 0.875rem; margin-bottom: 0.25rem;">Priority</div>
+                <div>
+                    <span class="status-tag status-{{ job.priority }}">{{ job.get_priority_display }}</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="comment-review">
+            <div>
+                <div style="font-weight: 600; margin-bottom: 0.5rem;">Marketing Comment:</div>
+                {% if job.marketing_comment %}
+                <div style="opacity: 0.9;">{{ job.marketing_comment }}</div>
+                {% else %}
+                <div style="opacity: 0.6;">No comment provided</div>
+                {% endif %}
+            </div>
+            <div class="status-pill status-{{ job.marketing_comment_status }}">
+                {{ job.get_marketing_comment_status_display }}
+            </div>
+        </div>
+        
+        <div style="margin-top: 1.5rem; padding: 1rem; background-color: rgba(255, 193, 7, 0.1); border-radius: 8px; border-left: 4px solid #FFC107;">
+            <div style="font-weight: 600; margin-bottom: 0.5rem;">Important:</div>
+            <div style="font-size: 0.9rem;">
+                {% if job.job_category == 'IT' %}
+                    This is an IT job. Only IT writers will be shown in the allocation list.
+                {% else %}
+                    This is a {{ job.job_category }} job. All writers can be allocated to this job.
+                {% endif %}
+                {% if can_have_query %}
+                    <br>Query button is available (Degree {{ job.degree }} with software).
+                {% else %}
+                    <br>Query button is NOT available (Degree {{ job.degree }}).
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Writer Capacity Overview -->
+{% if writer_capacity %}
+<div class="card mb-4">
+    <div class="card-header">
+        <h2 class="card-title">Writer Capacity Overview</h2>
+        <p style="margin: 0; opacity: 0.7; font-size: 0.9rem;">Snapshot of writer availability across IT, Non-IT, and Finance groups.</p>
+    </div>
+    <div class="card-body">
+        <div class="capacity-grid">
+            {% for cat in writer_capacity %}
+            <div class="capacity-card {% if job.job_category|lower == cat.label|lower %}capacity-card-active{% endif %}">
+                <div class="capacity-card-title" style="color: {{ cat.color }};">{{ cat.label }} Writers</div>
+                <div class="capacity-metrics">
+                    <div>
+                        <span>Total</span>
+                        <strong>{{ cat.total }}</strong>
+                    </div>
+                    <div>
+                        <span>Available</span>
+                        <strong>{{ cat.available }}</strong>
+                    </div>
+                    <div>
+                        <span>Engaged</span>
+                        <strong>{{ cat.engaged }}</strong>
+                    </div>
+                </div>
+                <div class="capacity-metrics secondary">
+                    <div>
+                        <span>Overloaded</span>
+                        <strong>{{ cat.overloaded }}</strong>
+                    </div>
+                    <div>
+                        <span>Sunday Off</span>
+                        <strong>{{ cat.sunday_off }}</strong>
+                    </div>
+                    <div>
+                        <span>On Holiday</span>
+                        <strong>{{ cat.holiday }}</strong>
+                    </div>
+                </div>
+                <div class="capacity-progress">
+                    <div class="capacity-progress-label">Jobs load: {{ cat.current_jobs }}/{{ cat.job_capacity }}</div>
+                    <div class="capacity-progress-bar">
+                        <span style="width: {{ cat.job_load_pct }}%; background: {{ cat.color }};"></span>
+                    </div>
+                </div>
+                <div class="capacity-progress">
+                    <div class="capacity-progress-label">Words load: {{ cat.current_words }}/{{ cat.word_capacity }}</div>
+                    <div class="capacity-progress-bar words">
+                        <span style="width: {{ cat.word_load_pct }}%; background: {{ cat.color }};"></span>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<!-- Allocation Form -->
+<form method="POST" id="allocationForm">
+    {% csrf_token %}
+    
+    <!-- Task 1: Content Creation -->
+    <div class="card mb-4">
+        <div class="card-header" style="background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);">
+            <h2 class="card-title" style="margin: 0; color: white;">Task 1: Content Creation</h2>
+        </div>
+        <div class="card-body">
+            {% if task_content %}
+            <div class="allocation-banner">
+                <div>
+                    <strong>Current Assignment:</strong> {{ task_content.assigned_name }} ({{ task_content.status|title }})
+                </div>
+                <div class="allocation-banner-dates">
+                    <span>Start: {{ task_content.start|date:"d/m/Y H:i" }}</span>
+                    <span>End: {{ task_content.end|date:"d/m/Y H:i" }}</span>
+                </div>
+            </div>
+            {% endif %}
+            {% if not has_available_content %}
+            <div class="alert alert-warning" style="margin-bottom: 0.75rem;">
+                No available writers meet the current capacity limits. You can view existing assignments, but you'll need to free capacity before assigning a new writer.
+            </div>
+            {% endif %}
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="content_writer" class="form-label required">Select Writer</label>
+                    <select id="content_writer" name="content_writer" class="form-control form-select" required>
+                        <option value="">Choose a writer...</option>
+                        {% for writer in writer_details %}
+                            <option value="{{ writer.user.id }}" 
+                                    {% if not writer.can_accept and not (task_content and task_content.assigned_id == writer.user.id) %}disabled{% endif %}
+                                    {% if task_content and task_content.assigned_id == writer.user.id %}selected{% endif %}
+                                    data-engaged="{{ writer.profile.current_jobs }}"
+                                    data-max="{{ writer.profile.max_jobs }}"
+                                    data-words="{{ writer.profile.current_words }}"
+                                    data-max-words="{{ writer.profile.max_words }}"
+                                    data-reason="{{ writer.reason }}">
+                                {{ writer.user.get_full_name }} 
+                                (Engaged: {{ writer.profile.current_jobs }}/{{ writer.profile.max_jobs }} | 
+                                Words: {{ writer.profile.current_words }}/{{ writer.profile.max_words }})
+                                {% if not writer.can_accept %} - {{ writer.reason }}{% endif %}
+                            </option>
+                        {% endfor %}
+                    </select>
+                    <div class="alert alert-danger" id="writerValidationAlert" style="display: none; margin-top: 0.75rem;"></div>
+                </div>
+            </div>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="content_start_datetime" class="form-label required">Start Date & Time</label>
+                    <input type="datetime-local" id="content_start_datetime" name="content_start_datetime" class="form-control" required value="{% if task_content and task_content.start %}{{ task_content.start|date:'Y-m-d\\TH:i' }}{% endif %}">
+                </div>
+                
+                <div class="form-group">
+                    <label for="content_end_datetime" class="form-label required">End Date & Time</label>
+                    <input type="datetime-local" id="content_end_datetime" name="content_end_datetime" class="form-control" required value="{% if task_content and task_content.end %}{{ task_content.end|date:'Y-m-d\\TH:i' }}{% endif %}">
+                </div>
+            </div>
+            
+            <!-- Writer Engagement Display -->
+            <div id="writerEngagement" style="display: none; margin-top: 1rem; padding: 1rem; background-color: rgba(255, 255, 255, 0.05); border-radius: 8px;">
+                <h4 style="font-size: 1rem; margin-bottom: 1rem;">Writer Engagement Status</h4>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem;">
+                    <div>
+                        <div style="font-size: 0.875rem; opacity: 0.7;">Current Jobs</div>
+                        <div style="font-size: 1.5rem; font-weight: 700; color: var(--primary);" id="writerCurrentJobs">0</div>
+                    </div>
+                    <div>
+                        <div style="font-size: 0.875rem; opacity: 0.7;">Available Slots</div>
+                        <div style="font-size: 1.5rem; font-weight: 700; color: var(--secondary);" id="writerAvailableSlots">0</div>
+                    </div>
+                    <div>
+                        <div style="font-size: 0.875rem; opacity: 0.7;">Current Words</div>
+                        <div style="font-size: 1.5rem; font-weight: 700; color: var(--accent);" id="writerCurrentWords">0</div>
+                    </div>
+                    <div>
+                        <div style="font-size: 0.875rem; opacity: 0.7;">Available Words</div>
+                        <div style="font-size: 1.5rem; font-weight: 700; color: #4CAF50;" id="writerAvailableWords">0</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Task 2: AI & Plagiarism Check -->
+    <div class="card mb-4">
+        <div class="card-header" style="background: linear-gradient(135deg, #2196F3 0%, #1976D2 100%);">
+            <h2 class="card-title" style="margin: 0; color: white;">Task 2: AI & Plagiarism Check</h2>
+        </div>
+        <div class="card-body">
+            {% if not has_available_process %}
+            <div class="alert alert-warning" style="margin-bottom: 0.75rem;">
+                No process team members are currently available. Allocations will reuse existing assignments.
+            </div>
+            {% endif %}
+            {% if task_ai %}
+            <div class="allocation-banner">
+                <div>
+                    <strong>Current Assignment:</strong> {{ task_ai.assigned_name }} ({{ task_ai.status|title }})
+                </div>
+                <div class="allocation-banner-dates">
+                    <span>Start: {{ task_ai.start|date:"d/m/Y H:i" }}</span>
+                    <span>End: {{ task_ai.end|date:"d/m/Y H:i" }}</span>
+                </div>
+            </div>
+            {% endif %}
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="ai_plag_member" class="form-label required">Select Process Team Member</label>
+                    <select id="ai_plag_member" name="ai_plag_member" class="form-control form-select" required>
+                        <option value="">Choose a process team member...</option>
+                        {% for member in available_process_team %}
+                            <option value="{{ member.user.id }}" 
+                                    {% if not member.profile.is_available %}disabled{% endif %}
+                                    {% if task_ai and task_ai.assigned_id == member.user.id %}selected{% endif %}>
+                                {{ member.user.get_full_name }} 
+                                (Load: {{ member.profile.current_jobs }}/{{ member.profile.max_jobs }})
+                                {% if not member.profile.is_available %} - Not Available{% endif %}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="ai_start_datetime" class="form-label required">Start Date & Time</label>
+                    <input type="datetime-local" id="ai_start_datetime" name="ai_start_datetime" class="form-control" required value="{% if task_ai and task_ai.start %}{{ task_ai.start|date:'Y-m-d\\TH:i' }}{% endif %}">
+                </div>
+                
+                <div class="form-group">
+                    <label for="ai_end_datetime" class="form-label required">End Date & Time</label>
+                    <input type="datetime-local" id="ai_end_datetime" name="ai_end_datetime" class="form-control" required value="{% if task_ai and task_ai.end %}{{ task_ai.end|date:'Y-m-d\\TH:i' }}{% endif %}">
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Task 3: Decoration -->
+    <div class="card mb-4">
+        <div class="card-header" style="background: linear-gradient(135deg, #9C27B0 0%, #7B1FA2 100%);">
+            <h2 class="card-title" style="margin: 0; color: white;">Task 3: Decoration</h2>
+        </div>
+        <div class="card-body">
+            {% if not has_available_decoration %}
+            <div class="alert alert-warning" style="margin-bottom: 0.75rem;">
+                No writers or process members are free for decoration right now. Consider reassigning once capacity opens.
+            </div>
+            {% endif %}
+            {% if task_decoration %}
+            <div class="allocation-banner">
+                <div>
+                    <strong>Current Assignment:</strong> {{ task_decoration.assigned_name }} ({{ task_decoration.status|title }})
+                </div>
+                <div class="allocation-banner-dates">
+                    <span>Start: {{ task_decoration.start|date:"d/m/Y H:i" }}</span>
+                    <span>End: {{ task_decoration.end|date:"d/m/Y H:i" }}</span>
+                </div>
+            </div>
+            {% endif %}
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="decoration_member" class="form-label required">Select Writer/Process Member</label>
+                    <select id="decoration_member" name="decoration_member" class="form-control form-select" required>
+                        <option value="">Choose a member...</option>
+                        <optgroup label="Writers">
+                            {% for writer in writer_details %}
+                                <option value="{{ writer.user.id }}"
+                                        {% if task_decoration and task_decoration.assigned_id == writer.user.id %}selected{% endif %}>
+                                    {{ writer.user.get_full_name }} (Writer)
+                                </option>
+                            {% endfor %}
+                        </optgroup>
+                        <optgroup label="Process Team">
+                            {% for member in available_process_team %}
+                                <option value="{{ member.user.id }}"
+                                        {% if task_decoration and task_decoration.assigned_id == member.user.id %}selected{% endif %}>
+                                    {{ member.user.get_full_name }} (Process)
+                                </option>
+                            {% endfor %}
+                        </optgroup>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="decoration_start_datetime" class="form-label required">Start Date & Time</label>
+                    <input type="datetime-local" id="decoration_start_datetime" name="decoration_start_datetime" class="form-control" required value="{% if task_decoration and task_decoration.start %}{{ task_decoration.start|date:'Y-m-d\\TH:i' }}{% endif %}">
+                </div>
+                
+                <div class="form-group">
+                    <label for="decoration_end_datetime" class="form-label required">End Date & Time</label>
+                    <input type="datetime-local" id="decoration_end_datetime" name="decoration_end_datetime" class="form-control" required value="{% if task_decoration and task_decoration.end %}{{ task_decoration.end|date:'Y-m-d\\TH:i' }}{% endif %}">
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Comment Approval -->
+    <div class="card mb-4">
+        <div class="card-header">
+            <h2 class="card-title" style="margin: 0;">Marketing Comment Review</h2>
+        </div>
+        <div class="card-body">
+            <div class="form-row">
+                <div class="form-group">
+                    <label class="form-label required">Approval Status</label>
+                    <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+                        <label class="chip">
+                            <input type="radio" name="marketing_comment_status" value="pending" {% if job.marketing_comment_status == 'pending' %}checked{% endif %}>
+                            Pending
+                        </label>
+                        <label class="chip chip-success">
+                            <input type="radio" name="marketing_comment_status" value="approved" {% if job.marketing_comment_status == 'approved' %}checked{% endif %}>
+                            Approve & Use
+                        </label>
+                        <label class="chip chip-warning">
+                            <input type="radio" name="marketing_comment_status" value="rejected" {% if job.marketing_comment_status == 'rejected' %}checked{% endif %}>
+                            Needs Update
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label class="form-label">Allocator Comment (optional)</label>
+                    <textarea name="allocator_comment" class="form-control" rows="3" placeholder="Leave guidance for the marketing team...">{{ job.allocator_comment }}</textarea>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Summary Preview -->
+    <div class="card mb-4" style="border: 2px solid var(--primary);">
+        <div class="card-header" style="background-color: rgba(var(--primary), 0.1);">
+            <h2 class="card-title" style="margin: 0;">Allocation Summary</h2>
+        </div>
+        <div class="card-body">
+            <div id="allocationSummary" style="display: none;">
+                <h4 style="font-size: 1rem; margin-bottom: 1rem;">Please review before submitting:</h4>
+                <div style="display: grid; gap: 1rem;">
+                    <div style="padding: 1rem; background-color: rgba(255, 255, 255, 0.05); border-radius: 8px;">
+                        <strong>Content Creation:</strong>
+                        <div style="margin-top: 0.5rem; opacity: 0.9;" id="summaryContent"></div>
+                    </div>
+                    <div style="padding: 1rem; background-color: rgba(255, 255, 255, 0.05); border-radius: 8px;">
+                        <strong>AI & Plagiarism Check:</strong>
+                        <div style="margin-top: 0.5rem; opacity: 0.9;" id="summaryAI"></div>
+                    </div>
+                    <div style="padding: 1rem; background-color: rgba(255, 255, 255, 0.05); border-radius: 8px;">
+                        <strong>Decoration:</strong>
+                        <div style="margin-top: 0.5rem; opacity: 0.9;" id="summaryDecoration"></div>
+                    </div>
+                </div>
+            </div>
+            <div id="summaryPlaceholder" style="text-align: center; padding: 2rem; opacity: 0.6;">
+                Fill in the allocation details above to see the summary
+            </div>
+        </div>
+    </div>
+    
+    <!-- Action Buttons -->
+    <div class="btn-group" style="justify-content: flex-end;">
+        <a href="{% url 'pending_allocation' %}" class="btn btn-outline">Cancel</a>
+        <button type="button" class="btn btn-secondary" id="previewBtn">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M1 12C1 12 5 4 12 4C19 4 23 12 23 12C23 12 19 20 12 20C5 20 1 12 1 12Z" stroke="currentColor" stroke-width="2"/>
+                <circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="2"/>
+            </svg>
+            Preview Summary
+        </button>
+        <button type="submit" class="btn btn-primary" id="submitBtn">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <polyline points="20 6 9 17 4 12" stroke="currentColor" stroke-width="2"/>
+            </svg>
+            Allocate Job
+        </button>
+    </div>
+</form>
+
+<!-- Summary Modal -->
+<div class="modal-overlay" id="summaryModal">
+    <div class="modal-content summary-modal">
+        <div class="modal-header">
+            <h3>Review Allocation Summary</h3>
+            <button type="button" class="modal-close" id="closeSummaryBtn">&times;</button>
+        </div>
+        <div class="modal-body">
+            <div class="summary-grid">
+                <div class="summary-block">
+                    <strong>Content Creation</strong>
+                    <div id="modalSummaryContent" class="summary-text"></div>
+                </div>
+                <div class="summary-block">
+                    <strong>AI &amp; Plagiarism</strong>
+                    <div id="modalSummaryAI" class="summary-text"></div>
+                </div>
+                <div class="summary-block">
+                    <strong>Decoration</strong>
+                    <div id="modalSummaryDecoration" class="summary-text"></div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-actions">
+            <button type="button" class="btn btn-outline" id="dismissSummaryBtn">Back</button>
+            <button type="button" class="btn btn-primary" id="confirmSummaryBtn">Looks Good</button>
+        </div>
+    </div>
+</div>
+
+<style>
+    .form-container, .card {
+        animation: fadeInUp 0.5s ease-out;
+    }
+    
+    select option:disabled {
+        background-color: #333;
+        color: #999;
+    }
+
+    .capacity-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 1rem;
+    }
+
+    .capacity-card {
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 12px;
+        padding: 1rem;
+        background: rgba(255, 255, 255, 0.02);
+        transition: border-color 0.2s ease, transform 0.2s ease;
+    }
+
+    .capacity-card-active {
+        border-color: var(--primary);
+        box-shadow: 0 0 12px rgba(10, 132, 255, 0.25);
+        transform: translateY(-2px);
+    }
+
+    .capacity-card-title {
+        font-weight: 700;
+        margin-bottom: 0.75rem;
+    }
+
+    .capacity-metrics {
+        display: flex;
+        justify-content: space-between;
+        gap: 0.75rem;
+        margin-bottom: 0.75rem;
+        text-align: center;
+    }
+
+    .capacity-metrics.secondary {
+        font-size: 0.85rem;
+        opacity: 0.85;
+    }
+
+    .capacity-metrics span {
+        display: block;
+        font-size: 0.8rem;
+        opacity: 0.7;
+    }
+
+    .capacity-progress {
+        margin-top: 0.5rem;
+    }
+
+    .capacity-progress-label {
+        font-size: 0.8rem;
+        opacity: 0.75;
+        margin-bottom: 0.25rem;
+    }
+
+    .capacity-progress-bar {
+        background-color: rgba(255, 255, 255, 0.08);
+        height: 8px;
+        border-radius: 4px;
+        overflow: hidden;
+    }
+
+    .capacity-progress-bar span {
+        display: block;
+        height: 100%;
+        border-radius: 4px;
+        transition: width 0.3s ease;
+    }
+
+    .allocation-banner {
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        border-radius: 8px;
+        padding: 0.75rem 1rem;
+        background: rgba(255, 255, 255, 0.03);
+        margin-bottom: 1rem;
+        display: flex;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+    }
+
+    .allocation-banner-dates {
+        font-size: 0.85rem;
+        opacity: 0.75;
+        display: flex;
+        gap: 1rem;
+        flex-wrap: wrap;
+    }
+
+    .comment-review {
+        margin-top: 1.5rem;
+        padding: 1rem;
+        border-radius: 8px;
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        display: flex;
+        justify-content: space-between;
+        gap: 1rem;
+        flex-wrap: wrap;
+        background: rgba(255, 255, 255, 0.03);
+    }
+
+    .status-pill {
+        padding: 0.35rem 0.9rem;
+        border-radius: 999px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        align-self: flex-start;
+    }
+
+    .status-pill.status-approved {
+        background: rgba(76, 175, 80, 0.2);
+        color: #4CAF50;
+    }
+
+    .status-pill.status-pending {
+        background: rgba(255, 193, 7, 0.2);
+        color: #FFC107;
+    }
+
+    .status-pill.status-rejected {
+        background: rgba(244, 67, 54, 0.2);
+        color: #F44336;
+    }
+
+    .chip {
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 999px;
+        padding: 0.3rem 0.9rem;
+        font-size: 0.85rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        cursor: pointer;
+    }
+
+    .chip input {
+        accent-color: var(--primary);
+    }
+
+    .chip-success {
+        border-color: rgba(76, 175, 80, 0.4);
+    }
+
+    .chip-warning {
+        border-color: rgba(255, 152, 0, 0.4);
+    }
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('allocationForm');
+    const contentWriter = document.getElementById('content_writer');
+    const writerEngagement = document.getElementById('writerEngagement');
+    const previewBtn = document.getElementById('previewBtn');
+    const submitBtn = document.getElementById('submitBtn');
+    const summaryDiv = document.getElementById('allocationSummary');
+    const summaryPlaceholder = document.getElementById('summaryPlaceholder');
+    const summaryContent = document.getElementById('summaryContent');
+    const summaryAI = document.getElementById('summaryAI');
+    const summaryDecoration = document.getElementById('summaryDecoration');
+    const modalSummaryContent = document.getElementById('modalSummaryContent');
+    const modalSummaryAI = document.getElementById('modalSummaryAI');
+    const modalSummaryDecoration = document.getElementById('modalSummaryDecoration');
+    const summaryModal = document.getElementById('summaryModal');
+    const closeSummaryBtn = document.getElementById('closeSummaryBtn');
+    const dismissSummaryBtn = document.getElementById('dismissSummaryBtn');
+    const confirmSummaryBtn = document.getElementById('confirmSummaryBtn');
+    const writerWarning = document.getElementById('writerValidationAlert');
+    const aiMember = document.getElementById('ai_plag_member');
+    const decorationMember = document.getElementById('decoration_member');
+    const contentStartInput = document.getElementById('content_start_datetime');
+    const contentEndInput = document.getElementById('content_end_datetime');
+    const aiStartInput = document.getElementById('ai_start_datetime');
+    const aiEndInput = document.getElementById('ai_end_datetime');
+    const decorationStartInput = document.getElementById('decoration_start_datetime');
+    const decorationEndInput = document.getElementById('decoration_end_datetime');
+    const jobWordCount = {{ job.word_count }};
+    let summaryConfirmed = false;
+
+    const fieldsToInvalidate = [
+        contentWriter, contentStartInput, contentEndInput,
+        aiMember, aiStartInput, aiEndInput,
+        decorationMember, decorationStartInput, decorationEndInput
+    ];
+    fieldsToInvalidate.forEach(field => {
+        field.addEventListener('change', () => { summaryConfirmed = false; });
+    });
+
+    function updateWriterEngagement(option) {
+        if (option) {
+            const engaged = parseInt(option.getAttribute('data-engaged')) || 0;
+            const max = parseInt(option.getAttribute('data-max')) || 0;
+            const words = parseInt(option.getAttribute('data-words')) || 0;
+            const maxWords = parseInt(option.getAttribute('data-max-words')) || 0;
+
+            document.getElementById('writerCurrentJobs').textContent = engaged;
+            document.getElementById('writerAvailableSlots').textContent = Math.max(0, max - engaged);
+            document.getElementById('writerCurrentWords').textContent = words;
+            document.getElementById('writerAvailableWords').textContent = Math.max(0, maxWords - words);
+            writerEngagement.style.display = 'block';
+        } else {
+            writerEngagement.style.display = 'none';
+        }
+    }
+
+    function updateWriterValidation() {
+        const option = contentWriter.options[contentWriter.selectedIndex];
+        if (!contentWriter.value || !option) {
+            writerWarning.style.display = 'none';
+            previewBtn.disabled = false;
+            submitBtn.disabled = false;
+            return;
+        }
+
+        const engaged = parseInt(option.getAttribute('data-engaged')) || 0;
+        const max = parseInt(option.getAttribute('data-max')) || 0;
+        const words = parseInt(option.getAttribute('data-words')) || 0;
+        const maxWords = parseInt(option.getAttribute('data-max-words')) || 0;
+        const availableSlots = max - engaged;
+        const availableWords = maxWords - words;
+        const issues = [];
+
+        if (availableSlots <= 0) {
+            issues.push('No job slots remaining for this writer');
+        }
+        if (availableWords < jobWordCount) {
+            issues.push(`Only ${Math.max(0, availableWords)} words available, but this job needs ${jobWordCount}`);
+        }
+
+        if (issues.length) {
+            writerWarning.textContent = issues.join('. ') + '. Please choose a different writer.';
+            writerWarning.style.display = 'block';
+            previewBtn.disabled = true;
+            submitBtn.disabled = true;
+        } else {
+            writerWarning.style.display = 'none';
+            previewBtn.disabled = false;
+            submitBtn.disabled = false;
+        }
+    }
+
+    contentWriter.addEventListener('change', function() {
+        summaryConfirmed = false;
+        updateWriterEngagement(this.options[this.selectedIndex]);
+        updateWriterValidation();
+    });
+    updateWriterEngagement(contentWriter.options[contentWriter.selectedIndex]);
+    updateWriterValidation();
+
+    function openSummaryModal() {
+        summaryModal.classList.add('open');
+    }
+    function closeSummaryModal() {
+        summaryModal.classList.remove('open');
+    }
+    closeSummaryBtn.addEventListener('click', () => {
+        closeSummaryModal();
+    });
+    dismissSummaryBtn.addEventListener('click', () => {
+        closeSummaryModal();
+    });
+    summaryModal.addEventListener('click', (event) => {
+        if (event.target === summaryModal) {
+            closeSummaryModal();
+        }
+    });
+    confirmSummaryBtn.addEventListener('click', () => {
+        summaryConfirmed = true;
+        closeSummaryModal();
+    });
+
+    previewBtn.addEventListener('click', function() {
+        if (previewBtn.disabled) {
+            alert('Please choose a writer who has enough capacity for this job.');
+            return;
+        }
+        const requiredFields = [
+            contentWriter.value,
+            contentStartInput.value,
+            contentEndInput.value,
+            aiMember.value,
+            aiStartInput.value,
+            aiEndInput.value,
+            decorationMember.value,
+            decorationStartInput.value,
+            decorationEndInput.value,
+        ];
+        if (requiredFields.some(field => !field)) {
+            alert('Please complete all task assignments before previewing the summary.');
+            return;
+        }
+
+        const contentWriterText = contentWriter.options[contentWriter.selectedIndex]?.text || 'Not selected';
+        const aiMemberText = aiMember.options[aiMember.selectedIndex]?.text || 'Not selected';
+        const decorationMemberText = decorationMember.options[decorationMember.selectedIndex]?.text || 'Not selected';
+
+        const summaryContentHtml = `Writer: <strong>${contentWriterText}</strong><br>Start: ${contentStartInput.value}<br>End: ${contentEndInput.value}`;
+        const summaryAIHtml = `Member: <strong>${aiMemberText}</strong><br>Start: ${aiStartInput.value}<br>End: ${aiEndInput.value}`;
+        const summaryDecorationHtml = `Member: <strong>${decorationMemberText}</strong><br>Start: ${decorationStartInput.value}<br>End: ${decorationEndInput.value}`;
+
+        summaryContent.innerHTML = summaryContentHtml;
+        summaryAI.innerHTML = summaryAIHtml;
+        summaryDecoration.innerHTML = summaryDecorationHtml;
+        modalSummaryContent.innerHTML = summaryContentHtml;
+        modalSummaryAI.innerHTML = summaryAIHtml;
+        modalSummaryDecoration.innerHTML = summaryDecorationHtml;
+
+        summaryDiv.style.display = 'block';
+        summaryPlaceholder.style.display = 'none';
+        summaryConfirmed = false;
+        openSummaryModal();
+    });
+
+    form.addEventListener('submit', function(e) {
+        if (!summaryConfirmed) {
+            e.preventDefault();
+            previewBtn.click();
+            alert('Please review and confirm the allocation summary before submitting.');
+            return;
+        }
+        if (!confirm('Are you sure you want to allocate this job with the selected team members?')) {
+            e.preventDefault();
+        }
+    });
+});
+</script>
+{% endblock %}

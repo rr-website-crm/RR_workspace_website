@@ -1,0 +1,187 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ page_title }} - CRM Portal{% endblock %}
+
+{% block content %}
+<div class="dashboard-header">
+    <div>
+        <h1 class="dashboard-title">{{ page_title }}</h1>
+        {% if filter_description %}
+            <p class="dashboard-subtitle">{{ filter_description }}</p>
+        {% endif %}
+    </div>
+    <div class="header-actions">
+        <a href="{% url 'create_job' %}" class="btn btn-primary">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <line x1="12" y1="5" x2="12" y2="19" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                <line x1="5" y1="12" x2="19" y2="12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+            Create Job
+        </a>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header job-list-header">
+        <div>
+            <h2 class="card-title">{{ page_title }}</h2>
+            <p class="card-subtitle">Showing {{ jobs|length }} of {{ total_jobs }} jobs</p>
+        </div>
+        <div class="total-chip">
+            <span>Total</span>
+            <strong>{{ total_jobs }}</strong>
+        </div>
+    </div>
+    <div class="card-body">
+        {% if jobs %}
+            <div class="table-container">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>System ID</th>
+                            <th>Job ID</th>
+                            <th>Topic</th>
+                            <th>Word Count</th>
+                            <th>Status</th>
+                            <th>Deadline</th>
+                            <th>Allocated To</th>
+                            <th>Last Updated</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for job in jobs %}
+                        <tr>
+                            <td>{{ job.system_id }}</td>
+                            <td>{{ job.job_id }}</td>
+                            <td>{{ job.topic|default:"Awaiting summary" }}</td>
+                            <td>
+                                {% if job.word_count %}
+                                    {{ job.word_count|floatformat:0 }}
+                                {% else %}
+                                    —
+                                {% endif %}
+                            </td>
+                            <td>
+                                <span class="status-tag status-{{ job.status|default:'unknown' }}">
+                                    {{ job.get_status_display|default:job.status|default:"Unknown" }}
+                                </span>
+                            </td>
+                            <td>
+                                {% if job.deadline %}
+                                    {{ job.deadline|date:"d M Y" }}
+                                {% else %}
+                                    —
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if job.allocated_to %}
+                                    {{ job.allocated_to.get_full_name|default:job.allocated_to.email }}
+                                {% else %}
+                                    <span class="text-muted">Not allocated</span>
+                                {% endif %}
+                            </td>
+                            <td>{{ job.updated_at|date:"d M Y, H:i" }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            
+            {% if jobs.has_other_pages %}
+            <div class="pagination">
+                {% if jobs.has_previous %}
+                    <a class="page-link" href="?page={{ jobs.previous_page_number }}">Previous</a>
+                {% else %}
+                    <span class="page-link disabled">Previous</span>
+                {% endif %}
+                
+                <span class="page-indicator">Page {{ jobs.number }} of {{ jobs.paginator.num_pages }}</span>
+                
+                {% if jobs.has_next %}
+                    <a class="page-link" href="?page={{ jobs.next_page_number }}">Next</a>
+                {% else %}
+                    <span class="page-link disabled">Next</span>
+                {% endif %}
+            </div>
+            {% endif %}
+        {% else %}
+            <div class="empty-state">
+                <svg width="80" height="80" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M20 7H4C2.895 7 2 7.895 2 9V19C2 20.105 2.895 21 4 21H20C21.105 21 22 20.105 22 19V9C22 7.895 21.105 7 20 7Z" stroke="currentColor" stroke-width="2"/>
+                    <path d="M16 21V5C16 4.47 15.789 3.961 15.414 3.586C15.039 3.211 14.53 3 14 3H10C9.47 3 8.961 3.211 8.586 3.586C8.211 3.961 8 4.47 8 5V21" stroke="currentColor" stroke-width="2"/>
+                </svg>
+                <h3>{{ empty_state.title }}</h3>
+                <p>{{ empty_state.description }}</p>
+                <a href="{{ empty_state.cta_url }}" class="btn btn-primary">{{ empty_state.cta_label }}</a>
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+<style>
+.job-list-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+}
+.card-subtitle {
+    margin: 0;
+    color: var(--text-color-muted, #6c757d);
+}
+.total-chip {
+    background: var(--surface-muted, #f4f6fb);
+    border-radius: 40px;
+    padding: 0.35rem 1rem;
+    font-size: 0.85rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+}
+.table-container {
+    overflow-x: auto;
+}
+.data-table th,
+.data-table td {
+    white-space: nowrap;
+}
+.status-tag {
+    text-transform: capitalize;
+}
+.empty-state {
+    text-align: center;
+    padding: 4rem 2rem;
+    color: var(--text-color, #2f3246);
+}
+.empty-state svg {
+    opacity: 0.4;
+    margin-bottom: 1rem;
+}
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+    margin-top: 1.5rem;
+}
+.page-link {
+    padding: 0.5rem 1.25rem;
+    border-radius: 999px;
+    border: 1px solid rgba(0,0,0,0.1);
+    text-decoration: none;
+    color: inherit;
+}
+.page-link.disabled {
+    opacity: 0.5;
+    pointer-events: none;
+}
+.page-indicator {
+    font-weight: 600;
+}
+.text-muted {
+    opacity: 0.7;
+}
+</style>
+{% endblock %}

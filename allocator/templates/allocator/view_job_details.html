@@ -1,0 +1,438 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Job Details - {{ job.masking_id }} - CRM Portal{% endblock %}
+
+{% block content %}
+<div class="dashboard-header">
+    <div style="display: flex; justify-content: space-between; align-items: center;">
+        <div>
+            <h1 class="dashboard-title">Job Details: {{ job.masking_id }}</h1>
+            <p class="dashboard-subtitle">Complete information and task allocations</p>
+        </div>
+        <a href="{% url 'allocator_dashboard' %}" class="btn btn-outline" style="text-decoration: none;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <polyline points="15 18 9 12 15 6" stroke="currentColor" stroke-width="2"/>
+            </svg>
+            Back to Dashboard
+        </a>
+    </div>
+</div>
+
+<!-- Status Banner -->
+<div style="padding: 1rem 1.5rem; background: linear-gradient(135deg, 
+    {% if job.status == 'completed' %}#4CAF50{% elif job.status == 'cancelled' %}#F44336{% elif job.status == 'hold' %}#FF9800{% elif job.status == 'in_progress' %}#2196F3{% else %}#9C27B0{% endif %} 0%, 
+    {% if job.status == 'completed' %}#388E3C{% elif job.status == 'cancelled' %}#D32F2F{% elif job.status == 'hold' %}#F57C00{% elif job.status == 'in_progress' %}#1976D2{% else %}#7B1FA2{% endif %} 100%); 
+    border-radius: 12px; margin-bottom: 2rem; color: white; display: flex; align-items: center; justify-content: space-between;">
+    <div>
+        <div style="font-size: 1.25rem; font-weight: 700; margin-bottom: 0.25rem;">Status: {{ job.get_status_display }}</div>
+        <div style="opacity: 0.9; font-size: 0.875rem;">
+            {% if job.status == 'completed' %}
+                ✓ This job has been completed successfully
+            {% elif job.status == 'cancelled' %}
+                ✗ This job has been cancelled
+            {% elif job.status == 'hold' %}
+                ⏸ This job is currently on hold
+            {% elif job.status == 'in_progress' %}
+                ⟳ This job is currently in progress
+            {% else %}
+                ⏳ This job is awaiting allocation
+            {% endif %}
+        </div>
+    </div>
+    {% if job.priority == 'urgent' or job.priority == 'high' %}
+    <div style="padding: 0.5rem 1rem; background-color: rgba(255, 255, 255, 0.2); border-radius: 8px; font-weight: 600;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="vertical-align: middle; margin-right: 0.5rem;">
+            <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/>
+            <line x1="12" y1="8" x2="12" y2="12" stroke="currentColor" stroke-width="2"/>
+            <line x1="12" y1="16" x2="12.01" y2="16" stroke="currentColor" stroke-width="2"/>
+        </svg>
+        {{ job.get_priority_display }} Priority
+    </div>
+    {% endif %}
+</div>
+
+<!-- Job Information Cards -->
+<div class="card-grid" style="margin-bottom: 2rem;">
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">Basic Information</h3>
+        </div>
+        <div class="card-body">
+            <div style="display: flex; flex-direction: column; gap: 1rem;">
+                <div>
+                    <div style="font-size: 0.875rem; opacity: 0.7; margin-bottom: 0.25rem;">Job ID</div>
+                    <div style="font-size: 1.25rem; font-weight: 700; color: var(--primary);">{{ job.masking_id }}</div>
+                </div>
+                <div>
+                    <div style="font-size: 0.875rem; opacity: 0.7; margin-bottom: 0.25rem;">Client Name</div>
+                    <div style="font-size: 1.1rem; font-weight: 600;">{{ job.client_name|default:"N/A" }}</div>
+                </div>
+                <div>
+                    <div style="font-size: 0.875rem; opacity: 0.7; margin-bottom: 0.25rem;">Category</div>
+                    <span class="status-tag" style="background-color: {% if job.job_category == 'IT' %}rgba(33, 150, 243, 0.2); color: #2196F3{% elif job.job_category == 'Finance' %}rgba(76, 175, 80, 0.2); color: #4CAF50{% else %}rgba(156, 39, 176, 0.2); color: #9C27B0{% endif %};">
+                        {{ job.job_category }}
+                    </span>
+                </div>
+                {% if job.software_type %}
+                <div>
+                    <div style="font-size: 0.875rem; opacity: 0.7; margin-bottom: 0.25rem;">Software Type</div>
+                    <div style="font-size: 1rem;">{{ job.get_software_type_display }}</div>
+                </div>
+                {% endif %}
+                <div>
+                    <div style="font-size: 0.875rem; opacity: 0.7; margin-bottom: 0.25rem;">Degree</div>
+                    <div style="font-size: 1rem; font-weight: 600;">{{ job.get_degree_display }}</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">Content Details</h3>
+        </div>
+        <div class="card-body">
+            <div style="display: flex; flex-direction: column; gap: 1rem;">
+                <div>
+                    <div style="font-size: 0.875rem; opacity: 0.7; margin-bottom: 0.25rem;">Word Count</div>
+                    <div style="font-size: 1.5rem; font-weight: 700; color: var(--accent);">{{ job.word_count }}</div>
+                    <div style="font-size: 0.75rem; opacity: 0.6;">Max: {{ job.max_word_limit }}</div>
+                </div>
+                <div>
+                    <div style="font-size: 0.875rem; opacity: 0.7; margin-bottom: 0.25rem;">Deadline</div>
+                    <div style="font-size: 1.1rem; font-weight: 700; color: #FF9800;">{{ job.deadline|date:"d/m/Y H:i" }}</div>
+                    <div style="font-size: 0.75rem; opacity: 0.6;">
+                        {% if job.deadline > today_date %}
+                            {{ job.deadline|timeuntil }} remaining
+                        {% else %}
+                            Overdue by {{ job.deadline|timesince }}
+                        {% endif %}
+                    </div>
+                </div>
+                <div>
+                    <div style="font-size: 0.875rem; opacity: 0.7; margin-bottom: 0.25rem;">Query Support</div>
+                    {% if can_have_query %}
+                        <span class="status-tag" style="background-color: rgba(76, 175, 80, 0.2); color: #4CAF50;">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <polyline points="20 6 9 17 4 12" stroke="currentColor" stroke-width="2"/>
+                            </svg>
+                            Available
+                        </span>
+                    {% else %}
+                        <span class="status-tag" style="background-color: rgba(244, 67, 54, 0.2); color: #F44336;">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <line x1="18" y1="6" x2="6" y2="18" stroke="currentColor" stroke-width="2"/>
+                                <line x1="6" y1="6" x2="18" y2="18" stroke="currentColor" stroke-width="2"/>
+                            </svg>
+                            Not Available
+                        </span>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">Team Information</h3>
+        </div>
+        <div class="card-body">
+            <div style="display: flex; flex-direction: column; gap: 1rem;">
+                <div>
+                    <div style="font-size: 0.875rem; opacity: 0.7; margin-bottom: 0.25rem;">Created By</div>
+                    <div style="font-size: 1rem; font-weight: 600;">{{ job.created_by.get_full_name }}</div>
+                    <div style="font-size: 0.75rem; opacity: 0.6;">{{ job.created_by.email }}</div>
+                </div>
+                {% if job.allocated_by %}
+                <div>
+                    <div style="font-size: 0.875rem; opacity: 0.7; margin-bottom: 0.25rem;">Allocated By</div>
+                    <div style="font-size: 1rem; font-weight: 600;">{{ job.allocated_by.get_full_name }}</div>
+                    <div style="font-size: 0.75rem; opacity: 0.6;">{{ job.allocated_at|date:"d/m/Y H:i" }}</div>
+                </div>
+                {% endif %}
+                <div>
+                    <div style="font-size: 0.875rem; opacity: 0.7; margin-bottom: 0.25rem;">Created On</div>
+                    <div style="font-size: 1rem;">{{ job.created_at|date:"d/m/Y H:i" }}</div>
+                    <div style="font-size: 0.75rem; opacity: 0.6;">{{ job.created_at|timesince }} ago</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Topic & Description -->
+<div class="card mb-4" style="margin-bottom: 2rem;">
+    <div class="card-header">
+        <h3 class="card-title">Topic & Description</h3>
+    </div>
+    <div class="card-body">
+        <div style="margin-bottom: 1.5rem;">
+            <div style="font-size: 0.875rem; opacity: 0.7; margin-bottom: 0.5rem; font-weight: 600;">Topic:</div>
+            <div style="font-size: 1.1rem; line-height: 1.6;">{{ job.topic }}</div>
+        </div>
+        <div>
+            <div style="font-size: 0.875rem; opacity: 0.7; margin-bottom: 0.5rem; font-weight: 600;">Description:</div>
+            <div style="font-size: 1rem; line-height: 1.6; white-space: pre-wrap;">{{ job.description }}</div>
+        </div>
+        {% if job.special_instructions %}
+        <div style="margin-top: 1.5rem; padding: 1rem; background-color: rgba(255, 193, 7, 0.1); border-left: 4px solid #FFC107; border-radius: 8px;">
+            <div style="font-weight: 600; margin-bottom: 0.5rem; color: #FFC107;">Special Instructions:</div>
+            <div style="opacity: 0.9; line-height: 1.6;">{{ job.special_instructions }}</div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Comments Section -->
+{% if job.marketing_comment or job.allocator_comment %}
+<div class="card mb-4" style="margin-bottom: 2rem;">
+    <div class="card-header">
+        <h3 class="card-title">Comments</h3>
+    </div>
+    <div class="card-body">
+        {% if job.marketing_comment %}
+        <div style="padding: 1rem; background-color: rgba(156, 39, 176, 0.1); border-left: 4px solid #9C27B0; border-radius: 8px; margin-bottom: 1rem;">
+            <div style="font-weight: 600; margin-bottom: 0.5rem; color: #9C27B0;">Marketing Comment:</div>
+            <div style="opacity: 0.9; line-height: 1.6;">{{ job.marketing_comment }}</div>
+        </div>
+        {% endif %}
+        {% if job.allocator_comment %}
+        <div style="padding: 1rem; background-color: rgba(33, 150, 243, 0.1); border-left: 4px solid #2196F3; border-radius: 8px;">
+            <div style="font-weight: 600; margin-bottom: 0.5rem; color: #2196F3;">Allocator Comment:</div>
+            <div style="opacity: 0.9; line-height: 1.6;">{{ job.allocator_comment }}</div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endif %}
+
+<!-- Task Allocations -->
+<div class="card mb-4" style="margin-bottom: 2rem;">
+    <div class="card-header">
+        <h3 class="card-title">Task Allocations</h3>
+    </div>
+    <div class="card-body">
+        {% if task_allocations %}
+        <div style="display: grid; gap: 1rem;">
+            {% for allocation in task_allocations %}
+            <div style="padding: 1.5rem; background-color: rgba(255, 255, 255, 0.05); border-radius: 12px; border-left: 4px solid 
+                {% if allocation.task_type == 'content_creation' %}var(--primary){% elif allocation.task_type == 'ai_plag' %}#2196F3{% else %}#9C27B0{% endif %};">
+                <div style="display: flex; justify-content: between; align-items: start; margin-bottom: 1rem;">
+                    <div style="flex: 1;">
+                        <div style="font-size: 1.25rem; font-weight: 700; margin-bottom: 0.5rem; color: 
+                            {% if allocation.task_type == 'content_creation' %}var(--primary){% elif allocation.task_type == 'ai_plag' %}#2196F3{% else %}#9C27B0{% endif %};">
+                            {{ allocation.get_task_type_display }}
+                        </div>
+                        <span class="status-tag status-{{ allocation.status }}">{{ allocation.get_status_display }}</span>
+                    </div>
+                </div>
+                
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+                    <div>
+                        <div style="font-size: 0.875rem; opacity: 0.7; margin-bottom: 0.25rem;">Assigned To</div>
+                        {% if allocation.allocated_to %}
+                            <div style="font-weight: 600;">{{ allocation.allocated_to.get_full_name }}</div>
+                            <div style="font-size: 0.75rem; opacity: 0.6;">{{ allocation.allocated_to.email }}</div>
+                        {% else %}
+                            <div style="opacity: 0.5;">Not assigned</div>
+                        {% endif %}
+                    </div>
+                    
+                    <div>
+                        <div style="font-size: 0.875rem; opacity: 0.7; margin-bottom: 0.25rem;">Start Date & Time</div>
+                        <div style="font-weight: 600;">{{ allocation.start_date_time|date:"d/m/Y" }}</div>
+                        <div style="font-size: 0.875rem; opacity: 0.7;">{{ allocation.start_date_time|date:"H:i" }}</div>
+                    </div>
+                    
+                    <div>
+                        <div style="font-size: 0.875rem; opacity: 0.7; margin-bottom: 0.25rem;">End Date & Time</div>
+                        <div style="font-weight: 600; color: #FF9800;">{{ allocation.end_date_time|date:"d/m/Y" }}</div>
+                        <div style="font-size: 0.875rem; opacity: 0.7;">{{ allocation.end_date_time|date:"H:i" }}</div>
+                    </div>
+                    
+                    {% if allocation.task_type == 'ai_plag' %}
+                    <div>
+                        <div style="font-size: 0.875rem; opacity: 0.7; margin-bottom: 0.25rem;">Temperature Check</div>
+                        {% if allocation.temperature_matched %}
+                            <div style="color: #4CAF50; font-weight: 600;">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="vertical-align: middle;">
+                                    <polyline points="20 6 9 17 4 12" stroke="currentColor" stroke-width="2"/>
+                                </svg>
+                                Passed ({{ allocation.temperature_score }}%)
+                            </div>
+                        {% else %}
+                            <div style="opacity: 0.6;">Pending</div>
+                        {% endif %}
+                    </div>
+                    {% endif %}
+                </div>
+                
+                {% if allocation.allocated_to and user.role == 'allocator' %}
+                <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid rgba(255, 255, 255, 0.1);">
+                    <a href="{% url 'switch_writer' allocation.id %}" class="btn btn-outline" style="padding: 0.5rem 1rem; font-size: 0.875rem; text-decoration: none;">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <polyline points="17 1 21 5 17 9" stroke="currentColor" stroke-width="2"/>
+                            <path d="M3 11V9C3 7.93913 3.42143 6.92172 4.17157 6.17157C4.92172 5.42143 5.93913 5 7 5H21" stroke="currentColor" stroke-width="2"/>
+                            <polyline points="7 23 3 19 7 15" stroke="currentColor" stroke-width="2"/>
+                            <path d="M21 13V15C21 16.0609 20.5786 17.0783 19.8284 17.8284C19.0783 18.5786 18.0609 19 17 19H3" stroke="currentColor" stroke-width="2"/>
+                        </svg>
+                        Switch Member
+                    </a>
+                </div>
+                {% endif %}
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div style="text-align: center; padding: 2rem; opacity: 0.6;">
+            <p>No task allocations yet</p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Queries Section -->
+<div class="card mb-4" id="queries" style="margin-bottom: 2rem;">
+    <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
+        <h3 class="card-title">Job Queries ({{ queries.count }})</h3>
+        {% if can_have_query %}
+            <span class="status-tag status-completed">Enabled</span>
+        {% else %}
+            <span class="status-tag status-hold">Disabled</span>
+        {% endif %}
+    </div>
+    <div class="card-body">
+        {% if can_have_query %}
+        <form method="POST" class="query-form">
+            {% csrf_token %}
+            <label class="form-label required">Raise a Query</label>
+            <textarea name="query_text" class="form-control" rows="3" placeholder="Describe the issue you are facing (minimum 10 characters)" required></textarea>
+            <div style="display: flex; justify-content: flex-end; gap: 0.5rem; margin-top: 0.75rem;">
+                <button type="submit" class="btn btn-secondary">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12 20V4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                        <path d="M5 11L12 4L19 11" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                    </svg>
+                    Submit Query
+                </button>
+            </div>
+            <p style="font-size: 0.85rem; opacity: 0.7; margin-top: 0.5rem;">
+                Queries are visible to the allocator and marketing team for follow-up.
+            </p>
+        </form>
+        {% else %}
+        <div class="alert alert-warning">
+            This job cannot accept queries because it is a Degree {{ job.degree }} task without software support. Queries are enabled only for degree 1-5 jobs with software instructions.
+        </div>
+        {% endif %}
+
+        <hr style="opacity: 0.08; margin: 1.5rem 0;">
+
+        {% if queries %}
+        <div style="display: flex; flex-direction: column; gap: 1rem;">
+            {% for query in queries %}
+            <div style="padding: 1rem; background-color: rgba(255, 255, 255, 0.05); border-radius: 8px; border-left: 4px solid 
+                {% if query.status == 'resolved' %}#4CAF50{% elif query.status == 'open' %}#FF9800{% else %}#2196F3{% endif %};">
+                <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 0.75rem;">
+                    <div>
+                        <div style="font-weight: 600; margin-bottom: 0.25rem;">Query #{{ query.id }}</div>
+                        <div style="font-size: 0.875rem; opacity: 0.7;">Raised by {{ query.raised_by.get_full_name }} - {{ query.created_at|timesince }} ago</div>
+                    </div>
+                    <span class="status-tag" style="background-color: 
+                        {% if query.status == 'resolved' %}rgba(76, 175, 80, 0.2); color: #4CAF50{% elif query.status == 'open' %}rgba(255, 152, 0, 0.2); color: #FF9800{% else %}rgba(33, 150, 243, 0.2); color: #2196F3{% endif %};">
+                        {{ query.get_status_display }}
+                    </span>
+                </div>
+                
+                <div style="margin-bottom: 0.75rem;">
+                    <div style="font-size: 0.875rem; opacity: 0.7; margin-bottom: 0.25rem;">Query:</div>
+                    <div style="line-height: 1.6;">{{ query.query_text }}</div>
+                </div>
+                
+                {% if query.response_text %}
+                <div style="padding: 0.75rem; background-color: rgba(76, 175, 80, 0.1); border-radius: 6px;">
+                    <div style="font-size: 0.875rem; opacity: 0.7; margin-bottom: 0.25rem;">Response:</div>
+                    <div style="line-height: 1.6;">{{ query.response_text }}</div>
+                    {% if query.resolved_by %}
+                    <div style="font-size: 0.75rem; opacity: 0.6; margin-top: 0.5rem;">
+                        Resolved by {{ query.resolved_by.get_full_name }} - {{ query.resolved_at|timesince }} ago
+                    </div>
+                    {% endif %}
+                </div>
+                {% endif %}
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div style="text-align: center; padding: 2rem; opacity: 0.6;">
+            <p>No queries have been raised for this job yet.</p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Action Buttons -->
+<div class="card">
+    <div class="card-body">
+        <div class="btn-group" style="justify-content: center;">
+            <a href="{% url 'allocator_dashboard' %}" class="btn btn-outline" style="text-decoration: none;">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <polyline points="15 18 9 12 15 6" stroke="currentColor" stroke-width="2"/>
+                </svg>
+                Back to Dashboard
+            </a>
+            
+            {% if job.status == 'pending' %}
+            <a href="{% url 'allocate_job' job.id %}" class="btn btn-primary" style="text-decoration: none;">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M16 21V5C16 4.46957 15.7893 3.96086 15.4142 3.58579C15.0391 3.21071 14.5304 3 14 3H10C9.46957 3 8.96086 3.21071 8.58579 3.58579C8.21071 3.96086 8 4.46957 8 5V21" stroke="currentColor" stroke-width="2"/>
+                </svg>
+                Allocate Now
+            </a>
+            {% elif job.status != 'completed' and job.status != 'cancelled' %}
+            <a href="{% url 'allocate_job' job.id %}" class="btn btn-secondary" style="text-decoration: none;">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M11 4H4C3.46957 4 2.96086 4.21071 2.58579 4.58579C2.21071 4.96086 2 5.46957 2 6V20C2 20.5304 2.21071 21.0391 2.58579 21.4142C2.96086 21.7893 3.46957 22 4 22H18C18.5304 22 19.0391 21.7893 19.4142 21.4142C19.7893 21.0391 20 20.5304 20 20V13" stroke="currentColor" stroke-width="2"/>
+                    <path d="M18.5 2.50001C18.8978 2.10219 19.4374 1.87869 20 1.87869C20.5626 1.87869 21.1022 2.10219 21.5 2.50001C21.8978 2.89784 22.1213 3.43741 22.1213 4.00001C22.1213 4.56262 21.8978 5.10219 21.5 5.50001L12 15L8 16L9 12L18.5 2.50001Z" stroke="currentColor" stroke-width="2"/>
+                </svg>
+                Edit Allocation
+            </a>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<style>
+    .card {
+        animation: fadeInUp 0.5s ease-out;
+    }
+    
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .query-form textarea {
+        resize: vertical;
+    }
+
+    .alert {
+        padding: 0.85rem 1rem;
+        border-radius: 6px;
+        font-size: 0.9rem;
+    }
+
+    .alert-warning {
+        background-color: rgba(255, 193, 7, 0.15);
+        border: 1px solid rgba(255, 193, 7, 0.4);
+        color: #ffb300;
+    }
+</style>
+{% endblock %}

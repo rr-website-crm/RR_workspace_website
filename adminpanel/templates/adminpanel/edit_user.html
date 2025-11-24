@@ -1,0 +1,210 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Edit User - {{ edit_user.get_full_name }}{% endblock %}
+
+{% block body_class %}theme-admin-3{% endblock %}
+
+{% block content %}
+<div class="dashboard-header">
+    <h1 class="dashboard-title">Edit User Profile</h1>
+    <p class="dashboard-subtitle">Update user information and settings.</p>
+</div>
+
+<div class="card" style="max-width: 800px; margin: 0 auto;">
+    <div class="card-header">
+        <h3 class="card-title">User Details</h3>
+    </div>
+    <div class="card-body">
+        <form method="POST" class="form-container" style="padding: 0;">
+            {% csrf_token %}
+            
+            <!-- Employee ID (Read-only) -->
+            <div class="form-group">
+                <label class="form-label">Employee ID</label>
+                <input type="text" class="form-control" value="{{ edit_user.employee_id|default:'Not Assigned' }}" readonly style="background-color: rgba(255,255,255,0.05); cursor: not-allowed;">
+                <small style="color: var(--secondary); opacity: 0.7; font-size: 12px; margin-top: 4px; display: block;">
+                    Employee ID is auto-generated and cannot be edited
+                </small>
+            </div>
+            
+            <!-- Name Fields -->
+            <div class="form-row">
+                <div class="form-group">
+                    <label class="form-label required">First Name</label>
+                    <input type="text" name="first_name" class="form-control" value="{{ edit_user.first_name }}" required>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label required">Last Name</label>
+                    <input type="text" name="last_name" class="form-control" value="{{ edit_user.last_name }}" required>
+                </div>
+            </div>
+            
+            <!-- Email and WhatsApp -->
+            <div class="form-row">
+                <div class="form-group">
+                    <label class="form-label required">Email ID</label>
+                    <input type="email" name="email" class="form-control" value="{{ edit_user.email }}" required>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label required">WhatsApp Number</label>
+                    <input type="text" name="whatsapp_number" class="form-control" value="{{ edit_user.whatsapp_number }}" pattern="[0-9]{10}" maxlength="10" required>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Alternate Email</label>
+                <input type="email"
+                       name="alternate_email"
+                       class="form-control"
+                       value="{{ edit_user.alternate_email|default_if_none:'' }}"
+                       placeholder="name@example.com">
+            </div>
+            
+            <!-- Role, Category & Level -->
+            <div class="form-row">
+                <div class="form-group">
+                    <label class="form-label required">Role</label>
+                    <select name="role" class="form-control form-select" required data-writer-role-select>
+                        <option value="">Select Role</option>
+                        <option value="superadmin" {% if edit_user.role == 'superadmin' %}selected{% endif %}>SuperAdmin</option>
+                        <option value="admin" {% if edit_user.role == 'admin' %}selected{% endif %}>Admin</option>
+                        <option value="marketing" {% if edit_user.role == 'marketing' %}selected{% endif %}>Marketing</option>
+                        <option value="allocator" {% if edit_user.role == 'allocator' %}selected{% endif %}>Allocator</option>
+                        <option value="writer" {% if edit_user.role == 'writer' %}selected{% endif %}>Writer</option>
+                        <option value="process" {% if edit_user.role == 'process' %}selected{% endif %}>Process</option>
+                    </select>
+                </div>
+
+                <div class="form-group writer-only-field" data-writer-field>
+                    <label class="form-label required">Category</label>
+                    <select name="category" class="form-control form-select">
+                        <option value="">Select</option>
+                        <option value="IT" {% if edit_user.department == 'IT' %}selected{% endif %}>IT</option>
+                        <option value="Non-IT" {% if edit_user.department == 'Non-IT' %}selected{% endif %}>Non-IT</option>
+                        <option value="Finance" {% if edit_user.department == 'Finance' %}selected{% endif %}>Finance</option>
+                    </select>
+                </div>
+
+                <div class="form-group writer-only-field" data-writer-field>
+                    <label class="form-label required">Level (0-5)</label>
+                    <input type="number" name="level" class="form-control" value="{{ edit_user.level|default:0 }}" min="0" max="5" required>
+                    <small style="color: var(--secondary); opacity: 0.7; font-size: 12px; margin-top: 4px; display: block;">
+                        Set user experience level from 0 (beginner) to 5 (expert)
+                    </small>
+                </div>
+            </div>
+            <p class="writer-only-placeholder" data-writer-placeholder>
+                Category and Level are only applicable when the user is assigned the Writer role.
+            </p>
+            
+            <!-- Date of Joining (Read-only) -->
+            <div class="form-group">
+                <label class="form-label">Date of Joining</label>
+                <input type="text" class="form-control" value="{% if edit_user.first_login_date %}{{ edit_user.first_login_date|date:'d/m/Y' }}{% else %}Not Available{% endif %}" readonly style="background-color: rgba(255,255,255,0.05); cursor: not-allowed;">
+                <small style="color: var(--secondary); opacity: 0.7; font-size: 12px; margin-top: 4px; display: block;">
+                    Date of first login (automatically recorded)
+                </small>
+            </div>
+            
+            <!-- Action Buttons -->
+            <div class="btn-group" style="margin-top: 2rem;">
+                <button type="submit" class="btn btn-primary">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M19 21H5C4.46957 21 3.96086 20.7893 3.58579 20.4142C3.21071 20.0391 3 19.5304 3 19V5C3 4.46957 3.21071 3.96086 3.58579 3.58579C3.96086 3.21071 4.46957 3 5 3H16L21 8V19C21 19.5304 20.7893 20.0391 20.4142 20.4142C20.0391 20.7893 19.5304 21 19 21Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <polyline points="17 21 17 13 7 13 7 21" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <polyline points="7 3 7 8 15 8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    Save Changes
+                </button>
+                <a href="{% url 'adminpanel:manage_users' %}" class="btn btn-outline">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <line x1="18" y1="6" x2="6" y2="18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <line x1="6" y1="6" x2="18" y2="18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    Cancel
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- User Statistics Card -->
+<div class="card" style="max-width: 800px; margin: 2rem auto 0;">
+    <div class="card-header">
+        <h3 class="card-title">User Statistics</h3>
+    </div>
+    <div class="card-body">
+        <div class="stats-grid" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));">
+            <div style="padding: 1rem; background-color: rgba(255,255,255,0.05); border-radius: 8px;">
+                <p style="color: var(--secondary); font-size: 14px; margin-bottom: 0.5rem;">Account Status</p>
+                <p style="font-size: 1.2rem; font-weight: 600; color: {% if edit_user.is_active %}var(--accent){% else %}#F44336{% endif %};">
+                    {% if edit_user.is_active %}Active{% else %}Inactive{% endif %}
+                </p>
+            </div>
+            
+            <div style="padding: 1rem; background-color: rgba(255,255,255,0.05); border-radius: 8px;">
+                <p style="color: var(--secondary); font-size: 14px; margin-bottom: 0.5rem;">Approval Status</p>
+                <p style="font-size: 1.2rem; font-weight: 600; color: var(--primary); text-transform: capitalize;">
+                    {{ edit_user.approval_status }}
+                </p>
+            </div>
+            
+            <div style="padding: 1rem; background-color: rgba(255,255,255,0.05); border-radius: 8px;">
+                <p style="color: var(--secondary); font-size: 14px; margin-bottom: 0.5rem;">Registration Date</p>
+                <p style="font-size: 1.2rem; font-weight: 600; color: var(--text-color);">
+                    {{ edit_user.date_joined|date:"d/m/Y" }}
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const roleSelect = document.querySelector('[data-writer-role-select]');
+        const writerFields = document.querySelectorAll('[data-writer-field]');
+        const placeholders = document.querySelectorAll('[data-writer-placeholder]');
+        const toggleWriterFields = () => {
+            const isWriter = (roleSelect?.value || '').toLowerCase() === 'writer';
+            writerFields.forEach((field) => {
+                field.classList.toggle('writer-field-hidden', !isWriter);
+                field.querySelectorAll('input, select').forEach((input) => {
+                    input.disabled = !isWriter;
+                });
+            });
+            placeholders.forEach((placeholder) => {
+                placeholder.classList.toggle('writer-field-hidden', isWriter);
+            });
+        };
+        toggleWriterFields();
+        roleSelect?.addEventListener('change', toggleWriterFields);
+    });
+</script>
+
+<style>
+    .form-row {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 1.5rem;
+    }
+    .writer-only-placeholder {
+        font-size: 12px;
+        color: var(--secondary);
+        opacity: 0.75;
+        margin-top: -0.5rem;
+        margin-bottom: 1.5rem;
+    }
+    .writer-field-hidden {
+        display: none !important;
+    }
+    
+    @media (max-width: 768px) {
+        .form-row {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+{% endblock %}

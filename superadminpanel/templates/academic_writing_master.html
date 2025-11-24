@@ -1,0 +1,224 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Academic Writing Style Master - CRM Portal{% endblock %}
+
+{% block extra_css %}
+<style>
+    .modal-overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.7);
+        z-index: 2000;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .modal-overlay.active {
+        display: flex;
+    }
+    
+    .modal-content {
+        background: var(--card-bg);
+        border-radius: var(--radius-lg);
+        padding: var(--spacing-xl);
+        max-width: 600px;
+        width: 90%;
+        max-height: 90vh;
+        overflow-y: auto;
+    }
+    
+    .writing-badge {
+        display: inline-block;
+        padding: 6px 12px;
+        border-radius: 20px;
+        font-size: 14px;
+        font-weight: 600;
+        background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+        color: white;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="fade-in">
+    <!-- Back Button -->
+    <div style="margin-bottom: var(--spacing-lg);">
+        <a href="{% url 'master_input' %}" class="btn btn-outline">
+            <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+            </svg>
+            Back to Master Input
+        </a>
+    </div>
+
+    <!-- Page Header -->
+    <div class="dashboard-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--spacing-xl);">
+        <div>
+            <h1 class="dashboard-title">Academic Writing Style Master</h1>
+            <p class="dashboard-subtitle">Define academic writing standards</p>
+        </div>
+        <button onclick="showCreateWritingModal()" class="btn btn-primary">
+            <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+            </svg>
+            Create Writing Style
+        </button>
+    </div>
+
+    <!-- Writing Style History -->
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">Writing Style History</h3>
+            <p style="font-size: 14px; opacity: 0.7; margin-top: 4px;">All created writing styles ({{ total_writings }})</p>
+        </div>
+        <div class="card-body" style="padding: 0;">
+            {% if writings %}
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Writing Style</th>
+                            <th>Created Date</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for writing in writings %}
+                        <tr>
+                            <td>
+                                <span class="writing-badge">{{ writing.writing_style }}</span>
+                            </td>
+                            <td>{{ writing.created_at|date:"M d, Y" }}</td>
+                            <td>
+                                <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                                    <button type="button"
+                                            class="btn btn-sm btn-outline"
+                                            data-id="{{ writing.id }}"
+                                            data-action="{% url 'edit_writing' writing.id %}"
+                                            data-style="{{ writing.writing_style }}"
+                                            onclick="showEditWritingModal(this)">
+                                        Edit
+                                    </button>
+                                    <form method="POST"
+                                          action="{% url 'delete_writing' writing.id %}"
+                                          onsubmit="return confirm('Are you sure you want to delete this writing style?');">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn btn-sm btn-danger" title="Delete Writing Style">
+                                            <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                                            </svg>
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <div style="text-align: center; padding: var(--spacing-xl);">
+                <svg width="64" height="64" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="opacity: 0.3; margin-bottom: var(--spacing-md);">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                </svg>
+                <p style="color: var(--text-color); opacity: 0.7; font-size: 16px;">No writing styles created yet</p>
+                <p style="color: var(--text-color); opacity: 0.5; font-size: 14px; margin-top: 8px;">Click "Create Writing Style" to add your first writing style</p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<!-- Create/Edit Writing Style Modal -->
+<div class="modal-overlay" id="createWritingModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2 class="modal-title" id="writingModalTitle">Create Writing Style</h2>
+            <button type="button" class="modal-close" onclick="closeModal('createWritingModal')">&times;</button>
+        </div>
+        
+        <form method="POST" action="{% url 'create_writing' %}" id="writingForm">
+            {% csrf_token %}
+            
+            <!-- Writing Style -->
+            <div class="form-group">
+                <label for="writing_style" class="form-label required">Writing Style</label>
+                <input type="text" 
+                       id="writing_style" 
+                       name="writing_style" 
+                       class="form-control" 
+                       placeholder="e.g., Formal, Informal, Technical, Descriptive"
+                       required>
+            </div>
+            
+            <!-- Action Buttons -->
+            <div class="btn-group">
+                <button type="button" class="btn btn-outline" onclick="closeModal('createWritingModal')">
+                    Cancel
+                </button>
+                <button type="submit" class="btn btn-primary" id="writingSubmitBtn">
+                    Create Writing Style
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    const writingModalState = {
+        modalId: 'createWritingModal',
+        createAction: '{% url "create_writing" %}',
+        form: null,
+        title: null,
+        submitBtn: null,
+    };
+
+    function resetWritingForm() {
+        if (!writingModalState.form) return;
+        writingModalState.form.reset();
+        writingModalState.form.action = writingModalState.createAction;
+    }
+
+    function showCreateWritingModal() {
+        resetWritingForm();
+        if (writingModalState.title) {
+            writingModalState.title.textContent = 'Create Writing Style';
+        }
+        if (writingModalState.submitBtn) {
+            writingModalState.submitBtn.textContent = 'Create Writing Style';
+        }
+        openModal(writingModalState.modalId);
+    }
+
+    function showEditWritingModal(button) {
+        if (!writingModalState.form || !button) return;
+        
+        resetWritingForm();
+        
+        if (writingModalState.title) {
+            writingModalState.title.textContent = 'Edit Writing Style';
+        }
+        if (writingModalState.submitBtn) {
+            writingModalState.submitBtn.textContent = 'Update Writing Style';
+        }
+        
+        writingModalState.form.action = button.dataset.action || writingModalState.createAction;
+        
+        document.getElementById('writing_style').value = button.dataset.style || '';
+        
+        openModal(writingModalState.modalId);
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        writingModalState.form = document.getElementById('writingForm');
+        writingModalState.title = document.getElementById('writingModalTitle');
+        writingModalState.submitBtn = document.getElementById('writingSubmitBtn');
+    });
+</script>
+{% endblock %}
