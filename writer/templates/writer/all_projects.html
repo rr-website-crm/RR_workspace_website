@@ -1,0 +1,162 @@
+<!-- writer/templates/writer/all_projects.html -->
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}All Projects - Writer{% endblock %}
+
+{% block content %}
+<div class="dashboard-header">
+    <h1 class="dashboard-title">All Projects</h1>
+    <p class="dashboard-subtitle">View and manage all your assigned projects</p>
+</div>
+
+<!-- Filters -->
+<div class="card" style="margin-bottom: var(--spacing-lg);">
+    <div class="card-body">
+        <form method="GET" class="form-row" style="align-items: flex-end;">
+            <!-- Search -->
+            <div class="form-group" style="margin-bottom: 0;">
+                <label class="form-label">Search</label>
+                <input type="text" 
+                       name="search" 
+                       value="{{ search_query }}" 
+                       class="form-control" 
+                       placeholder="Search by Job ID or Topic...">
+            </div>
+            
+            <!-- Status Filter -->
+            <div class="form-group" style="margin-bottom: 0;">
+                <label class="form-label">Status</label>
+                <select name="status" class="form-control form-select">
+                    <option value="">All Status</option>
+                    {% for value, label in STATUS_CHOICES %}
+                    <option value="{{ value }}" {% if status_filter == value %}selected{% endif %}>
+                        {{ label }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+            
+            <!-- Buttons -->
+            <div class="btn-group" style="margin-bottom: 0;">
+                <button type="submit" class="btn btn-primary">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="11" cy="11" r="8" stroke="currentColor" stroke-width="2"/>
+                        <path d="M21 21L16.65 16.65" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                    </svg>
+                    Filter
+                </button>
+                <a href="{% url 'all_projects' %}" class="btn btn-outline">
+                    Clear
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Projects Table -->
+<div class="card">
+    <div class="card-header">
+        <h2 class="card-title">Projects List ({{ projects.count }})</h2>
+    </div>
+    <div class="card-body">
+        <div class="table-container">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>JOB ID</th>
+                        <th>Topic</th>
+                        <th>Word Count</th>
+                        <th>Deadline</th>
+                        <th>Referencing</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for project in projects %}
+                    <tr>
+                        <td>
+                            <span style="font-weight: 600; color: var(--primary); filter: blur(2px);">
+                                {{ project.job_id|slice:":10" }}***
+                            </span>
+                        </td>
+                        <td>
+                            <span style="filter: blur(4px); max-width: 200px; display: inline-block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+                                {{ project.topic|slice:":40" }}...
+                            </span>
+                        </td>
+                        <td>
+                            <span style="filter: blur(3px); font-weight: 600;">
+                                {{ project.word_count }}
+                            </span>
+                        </td>
+                        <td>
+                            <span style="filter: blur(3px);">
+                                {{ project.deadline|date:"d M Y, h:i A" }}
+                            </span>
+                        </td>
+                        <td>
+                            <span style="filter: blur(3px); text-transform: uppercase; font-weight: 600; color: var(--secondary);">
+                                {{ project.get_referencing_display }}
+                            </span>
+                        </td>
+                        <td>
+                            {% if project.status == 'pending' %}
+                            <span class="status-tag status-pending">Pending</span>
+                            {% elif project.status == 'in_progress' %}
+                            <span class="status-tag status-in-progress">In Progress</span>
+                            {% elif project.status == 'completed' %}
+                            <span class="status-tag status-completed">Completed</span>
+                            {% elif project.status == 'hold' %}
+                            <span class="status-tag status-hold">Hold</span>
+                            {% elif project.status == 'issues' %}
+                            <span class="status-tag status-cancelled">Issues</span>
+                            {% elif project.status == 'closed' %}
+                            <span class="status-tag status-allocated">Closed</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <a href="{% url 'project_detail' project.id %}" class="btn btn-primary" style="padding: 6px 16px; font-size: 13px;">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M1 12C1 12 5 4 12 4C19 4 23 12 23 12C23 12 19 20 12 20C5 20 1 12 1 12Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                    <circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                                View
+                            </a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="7" class="text-center" style="padding: 3rem;">
+                            <div style="opacity: 0.6;">
+                                <svg width="64" height="64" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="margin-bottom: 1rem; opacity: 0.3;">
+                                    <path d="M22 19C22 19.5304 21.7893 20.0391 21.4142 20.4142C21.0391 20.7893 20.5304 21 20 21H4C3.46957 21 2.96086 20.7893 2.58579 20.4142C2.21071 20.0391 2 19.5304 2 19V5C2 4.46957 2.21071 3.96086 2.58579 3.58579C2.96086 3.21071 3.46957 3 4 3H9L11 6H20C20.5304 6 21.0391 6.21071 21.4142 6.58579C21.7893 6.96086 22 7.46957 22 8V19Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                                <p style="font-size: 18px; font-weight: 600; margin-bottom: 0.5rem;">No Projects Found</p>
+                                <p style="font-size: 14px;">You don't have any projects {% if status_filter %}with this status{% endif %} yet.</p>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<style>
+    .data-table tbody tr {
+        transition: all 0.3s ease;
+    }
+    
+    .data-table tbody tr:hover {
+        background-color: rgba(183, 153, 255, 0.15);
+        transform: scale(1.01);
+    }
+    
+    .btn:hover {
+        transform: translateY(-2px);
+    }
+</style>
+{% endblock %}

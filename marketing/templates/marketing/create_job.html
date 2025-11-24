@@ -1,0 +1,959 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Create Job - CRM Portal{% endblock %}
+
+{% block extra_css %}
+<style>
+    .two-form-container {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 2rem;
+        max-width: 1400px;
+        margin: 0 auto;
+    }
+    
+    .form-section {
+        background-color: var(--card-bg);
+        border-radius: var(--radius-lg);
+        padding: var(--spacing-xl);
+        box-shadow: var(--shadow-md);
+        height: fit-content;
+    }
+    
+    .form-section.locked {
+        opacity: 0.6;
+        pointer-events: none;
+        position: relative;
+    }
+    
+    .form-section.locked::before {
+        content: '🔒 Complete Initial Form First';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: var(--primary);
+        color: white;
+        padding: 1rem 2rem;
+        border-radius: var(--radius-md);
+        font-weight: 600;
+        z-index: 10;
+        box-shadow: var(--shadow-lg);
+    }
+    
+    .section-title {
+        font-size: 1.5rem;
+        font-weight: 700;
+        margin-bottom: 1.5rem;
+        color: var(--text-color);
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    
+    .section-badge {
+        background: var(--primary);
+        color: white;
+        padding: 0.25rem 0.75rem;
+        border-radius: 20px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        text-transform: uppercase;
+    }
+    
+    .file-upload-area {
+        border: 2px dashed rgba(255, 255, 255, 0.3);
+        border-radius: var(--radius-md);
+        padding: 2rem;
+        text-align: center;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        background: rgba(0, 0, 0, 0.2);
+    }
+    
+    .file-upload-area:hover {
+        border-color: var(--primary);
+        background: rgba(var(--primary), 0.1);
+    }
+    
+    .file-upload-area.dragover {
+        border-color: var(--primary);
+        background: var(--hover-bg);
+        transform: scale(1.02);
+    }
+    
+    .file-list {
+        margin-top: 1rem;
+        max-height: 200px;
+        overflow-y: auto;
+    }
+    
+    .file-item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0.75rem;
+        background: rgba(0, 0, 0, 0.3);
+        border-radius: var(--radius-md);
+        margin-bottom: 0.5rem;
+    }
+    
+    .file-item-info {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        flex: 1;
+    }
+    
+    .file-remove-btn {
+        background: #F44336;
+        color: white;
+        border: none;
+        padding: 0.25rem 0.75rem;
+        border-radius: var(--radius-md);
+        cursor: pointer;
+        font-size: 0.85rem;
+    }
+    
+    .char-counter {
+        text-align: right;
+        font-size: 0.85rem;
+        margin-top: 0.25rem;
+        color: var(--text-color);
+        opacity: 0.7;
+    }
+    
+    .char-counter.error {
+        color: #F44336;
+    }
+    
+    .char-counter.success {
+        color: #4CAF50;
+    }
+    
+    .summary-field {
+        background: rgba(0, 0, 0, 0.3);
+        padding: 1rem;
+        border-radius: var(--radius-md);
+        margin-bottom: 1rem;
+        border: 2px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    .summary-field-label {
+        font-size: 0.85rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        color: var(--secondary);
+        margin-bottom: 0.5rem;
+    }
+    
+    .summary-field-value {
+        color: var(--text-color);
+        font-size: 1rem;
+    }
+    
+    .degree-indicator {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        font-weight: 600;
+        margin-top: 1rem;
+    }
+    
+    .degree-0 {
+        background: rgba(76, 175, 80, 0.2);
+        color: #4CAF50;
+    }
+    
+    .degree-1, .degree-2 {
+        background: rgba(255, 193, 7, 0.2);
+        color: #FFC107;
+    }
+    
+    .degree-3, .degree-4, .degree-5 {
+        background: rgba(244, 67, 54, 0.2);
+        color: #F44336;
+    }
+    
+    .version-cards {
+        display: flex;
+        gap: 0.5rem;
+        margin: 1rem 0;
+        flex-wrap: wrap;
+    }
+    
+    .version-card {
+        padding: 0.5rem 1rem;
+        background: rgba(0, 0, 0, 0.3);
+        border: 2px solid transparent;
+        border-radius: var(--radius-md);
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+    
+    .version-card.active {
+        border-color: var(--primary);
+        background: var(--hover-bg);
+    }
+    
+    .version-card:hover {
+        background: var(--hover-bg);
+    }
+    
+    .loading-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.8);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 9999;
+        display: none;
+    }
+    
+    .loading-overlay.active {
+        display: flex;
+    }
+    
+    .loading-content {
+        text-align: center;
+        color: white;
+    }
+    
+    .spinner {
+        border: 4px solid rgba(255, 255, 255, 0.1);
+        border-radius: 50%;
+        border-top: 4px solid var(--primary);
+        width: 60px;
+        height: 60px;
+        animation: spin 1s linear infinite;
+        margin: 0 auto 1rem;
+    }
+    
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+    
+    .alert-box {
+        padding: 1rem;
+        border-radius: var(--radius-md);
+        margin-bottom: 1rem;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+    
+    .alert-warning {
+        background: rgba(255, 193, 7, 0.2);
+        border: 2px solid #FFC107;
+        color: #FFC107;
+    }
+    
+    .alert-success {
+        background: rgba(76, 175, 80, 0.2);
+        border: 2px solid #4CAF50;
+        color: #4CAF50;
+    }
+    
+    .alert-error {
+        background: rgba(244, 67, 54, 0.2);
+        border: 2px solid #F44336;
+        color: #F44336;
+    }
+    
+    @media (max-width: 1200px) {
+        .two-form-container {
+            grid-template-columns: 1fr;
+        }
+        
+        .form-section.locked::before {
+            content: '🔒 Complete Initial Form Above';
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="dashboard-header">
+    <h1 class="dashboard-title">Create New Job</h1>
+    <p class="dashboard-subtitle">Fill in the details to create a new job with AI-powered summary</p>
+</div>
+
+<div class="two-form-container">
+    <!-- INITIAL FORM (LEFT) -->
+    <div class="form-section" id="initialFormSection">
+        <h2 class="section-title">
+            <span class="section-badge">Step 1</span>
+            Initial Form
+        </h2>
+        
+        <form id="initialForm">
+            {% csrf_token %}
+            <input type="hidden" id="systemId" name="system_id" value="{{ job.system_id|default:'' }}">
+            
+            <!-- Job ID -->
+            <div class="form-group">
+                <label for="jobId" class="form-label required">Job ID</label>
+                <input 
+                    type="text" 
+                    id="jobId" 
+                    name="job_id" 
+                    class="form-control" 
+                    required 
+                    placeholder="Enter unique job ID (special characters allowed)"
+                    value="{{ job.job_id|default:'' }}"
+                >
+                <small id="jobIdFeedback" style="display: block; margin-top: 0.5rem;"></small>
+            </div>
+            
+            <!-- Instruction -->
+            <div class="form-group">
+                <label for="instruction" class="form-label required">Instruction</label>
+                <textarea 
+                    id="instruction" 
+                    name="instruction" 
+                    class="form-control" 
+                    rows="8" 
+                    required 
+                    placeholder="Enter detailed instructions (minimum 50 characters, special characters allowed)"
+                >{{ job.instruction|default:'' }}</textarea>
+                <div class="char-counter" id="charCounter">0 / 50 characters</div>
+            </div>
+            
+            <!-- File Upload -->
+            <div class="form-group">
+                <label class="form-label required">Attachments</label>
+                <div class="file-upload-area" id="fileUploadArea">
+                    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="margin: 0 auto 1rem; opacity: 0.5;">
+                        <path d="M21 15V19C21 19.5304 20.7893 20.0391 20.4142 20.4142C20.0391 20.7893 19.5304 21 19 21H5C4.46957 21 3.96086 20.7893 3.58579 20.4142C3.21071 20.0391 3 19.5304 3 19V15" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <polyline points="17 8 12 3 7 8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <line x1="12" y1="3" x2="12" y2="15" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    <p style="margin: 0; color: var(--text-color); opacity: 0.7;">
+                        Click to upload or drag and drop<br>
+                        <small>PDF, DOCX, JPG, JPEG, PNG (Max 10 files, 10MB each)</small>
+                    </p>
+                    <input 
+                        type="file" 
+                        id="fileInput" 
+                        name="attachments" 
+                        multiple 
+                        accept=".pdf,.docx,.jpg,.jpeg,.png" 
+                        style="display: none;"
+                    >
+                </div>
+                <div class="file-list" id="fileList"></div>
+            </div>
+            
+            <div class="btn-group">
+                <a href="{% url 'marketing_dashboard' %}" class="btn btn-outline">Cancel</a>
+                <button type="button" id="saveInitialBtn" class="btn btn-secondary">
+                    Save Draft
+                </button>
+                <button type="submit" class="btn btn-primary">
+                    Continue to Summary
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <polyline points="9 18 15 12 9 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </button>
+            </div>
+        </form>
+    </div>
+    
+    <!-- SUMMARY FORM (RIGHT) -->
+    <div class="form-section locked" id="summaryFormSection">
+        <h2 class="section-title">
+            <span class="section-badge">Step 2</span>
+            AI Generated Summary
+        </h2>
+        
+        <div id="summaryContent">
+            <div id="noSummaryMessage" style="text-align: center; padding: 3rem; opacity: 0.6;">
+                <svg width="64" height="64" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="margin: 0 auto 1rem; opacity: 0.5;">
+                    <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/>
+                    <path d="M12 6V12L16 14" stroke="currentColor" stroke-width="2"/>
+                </svg>
+                <p>Complete the initial form and click "Generate Summary" to continue</p>
+            </div>
+            
+            <div id="summaryData" style="display: none;">
+                <!-- Version Cards -->
+                <div class="version-cards" id="versionCards"></div>
+                
+                <!-- Alert Box -->
+                <div id="alertBox"></div>
+                
+                <!-- Summary Fields -->
+                <div class="summary-field">
+                    <div class="summary-field-label">Topic</div>
+                    <div class="summary-field-value" id="summaryTopic">-</div>
+                </div>
+                
+                <div class="summary-field">
+                    <div class="summary-field-label">Word Count</div>
+                    <div class="summary-field-value" id="summaryWordCount">-</div>
+                </div>
+                
+                <div class="summary-field">
+                    <div class="summary-field-label">Referencing Style</div>
+                    <div class="summary-field-value" id="summaryReferencingStyle">-</div>
+                </div>
+                
+                <div class="summary-field">
+                    <div class="summary-field-label">Writing Style</div>
+                    <div class="summary-field-value" id="summaryWritingStyle">-</div>
+                </div>
+                
+                <div class="summary-field">
+                    <div class="summary-field-label">Job Summary</div>
+                    <div class="summary-field-value" id="summaryJobSummary" style="white-space: pre-wrap;">-</div>
+                </div>
+                
+                <!-- Degree Indicator -->
+                <div id="degreeIndicator"></div>
+                
+                <!-- Action Buttons -->
+                <div class="btn-group" style="margin-top: 2rem;">
+                    <button type="button" id="regenerateBtn" class="btn btn-secondary">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <polyline points="23 4 23 10 17 10" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M20.49 15C19.84 16.84 18.54 18.38 16.84 19.36C15.14 20.34 13.14 20.7 11.19 20.38C9.24 20.06 7.46 19.08 6.19 17.62C4.92 16.16 4.24 14.32 4.26 12.42C4.28 10.52 5 8.7 6.3 7.26C7.6 5.82 9.4 4.88 11.35 4.6C13.3 4.32 15.29 4.72 16.97 5.74C18.65 6.76 19.91 8.34 20.53 10.18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                        Generate Again
+                    </button>
+                    <button type="button" id="acceptBtn" class="btn btn-primary" style="display: none;">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <polyline points="20 6 9 17 4 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                        Accept & Continue
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Loading Overlay -->
+<div class="loading-overlay" id="loadingOverlay">
+    <div class="loading-content">
+        <div class="spinner"></div>
+        <h3 id="loadingText">Processing...</h3>
+        <p id="loadingSubtext">Please wait</p>
+    </div>
+</div>
+
+<script>
+// Global state
+let uploadedFiles = [];
+let currentSystemId = '{{ job.system_id|default:"" }}';
+let currentVersion = 0;
+let allVersions = [];
+
+// Initialize
+document.addEventListener('DOMContentLoaded', function() {
+    initializeFileUpload();
+    initializeCharCounter();
+    initializeJobIdValidation();
+    initializeFormHandlers();
+    
+    {% if job %}
+    // Load existing job data if editing
+    unlockSummaryForm();
+    {% endif %}
+});
+
+// File Upload Handling
+function initializeFileUpload() {
+    const fileUploadArea = document.getElementById('fileUploadArea');
+    const fileInput = document.getElementById('fileInput');
+    
+    fileUploadArea.addEventListener('click', () => fileInput.click());
+    
+    fileInput.addEventListener('change', handleFileSelect);
+    
+    // Drag and drop
+    fileUploadArea.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        fileUploadArea.classList.add('dragover');
+    });
+    
+    fileUploadArea.addEventListener('dragleave', () => {
+        fileUploadArea.classList.remove('dragover');
+    });
+    
+    fileUploadArea.addEventListener('drop', (e) => {
+        e.preventDefault();
+        fileUploadArea.classList.remove('dragover');
+        handleFileSelect({ target: { files: e.dataTransfer.files } });
+    });
+}
+
+function handleFileSelect(e) {
+    const files = Array.from(e.target.files);
+    const allowedTypes = ['pdf', 'docx', 'jpg', 'jpeg', 'png'];
+    const maxSize = 10 * 1024 * 1024; // 10MB
+    
+    if (uploadedFiles.length + files.length > 10) {
+        showNotification('Maximum 10 files allowed', 'error');
+        return;
+    }
+    
+    files.forEach(file => {
+        const ext = file.name.split('.').pop().toLowerCase();
+        
+        if (!allowedTypes.includes(ext)) {
+            showNotification(`File type .${ext} not allowed`, 'error');
+            return;
+        }
+        
+        if (file.size > maxSize) {
+            showNotification(`${file.name} exceeds 10MB`, 'error');
+            return;
+        }
+        
+        uploadedFiles.push(file);
+    });
+    
+    renderFileList();
+}
+
+function renderFileList() {
+    const fileList = document.getElementById('fileList');
+    
+    if (uploadedFiles.length === 0) {
+        fileList.innerHTML = '';
+        return;
+    }
+    
+    fileList.innerHTML = uploadedFiles.map((file, index) => `
+        <div class="file-item">
+            <div class="file-item-info">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M13 2H6C5.46957 2 4.96086 2.21071 4.58579 2.58579C4.21071 2.96086 4 3.46957 4 4V20C4 20.5304 4.21071 21.0391 4.58579 21.4142C4.96086 21.7893 5.46957 22 6 22H18C18.5304 22 19.0391 21.7893 19.4142 21.4142C19.7893 21.0391 20 20.5304 20 20V9L13 2Z" stroke="currentColor" stroke-width="2"/>
+                    <polyline points="13 2 13 9 20 9" stroke="currentColor" stroke-width="2"/>
+                </svg>
+                <span>${file.name} (${(file.size / 1024).toFixed(1)} KB)</span>
+            </div>
+            <button type="button" class="file-remove-btn" onclick="removeFile(${index})">Remove</button>
+        </div>
+    `).join('');
+}
+
+function removeFile(index) {
+    uploadedFiles.splice(index, 1);
+    renderFileList();
+}
+
+// Character Counter
+function initializeCharCounter() {
+    const instruction = document.getElementById('instruction');
+    const counter = document.getElementById('charCounter');
+    
+    instruction.addEventListener('input', () => {
+        const length = instruction.value.length;
+        counter.textContent = `${length} / 50 characters`;
+        
+        if (length < 50) {
+            counter.classList.add('error');
+            counter.classList.remove('success');
+        } else {
+            counter.classList.add('success');
+            counter.classList.remove('error');
+        }
+    });
+    
+    // Trigger on load
+    instruction.dispatchEvent(new Event('input'));
+}
+
+// Job ID Validation
+function initializeJobIdValidation() {
+    const jobId = document.getElementById('jobId');
+    const feedback = document.getElementById('jobIdFeedback');
+    let timeout;
+    
+    jobId.addEventListener('input', () => {
+        clearTimeout(timeout);
+        timeout = setTimeout(async () => {
+            const value = jobId.value.trim();
+            
+            if (!value) {
+                feedback.textContent = '';
+                return;
+            }
+            
+            try {
+                const response = await fetch('{% url "check_job_id_unique" %}', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': '{{ csrf_token }}'
+                    },
+                    body: JSON.stringify({
+                        job_id: value,
+                        system_id: currentSystemId
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (data.unique) {
+                    feedback.textContent = '✓ Job ID is available';
+                    feedback.style.color = '#4CAF50';
+                    jobId.style.borderColor = '#4CAF50';
+                } else {
+                    feedback.textContent = '✗ ' + data.message;
+                    feedback.style.color = '#F44336';
+                    jobId.style.borderColor = '#F44336';
+                }
+            } catch (error) {
+                console.error('Error checking job ID:', error);
+            }
+        }, 500);
+    });
+}
+
+// Form Handlers
+function initializeFormHandlers() {
+    const initialForm = document.getElementById('initialForm');
+    const saveInitialBtn = document.getElementById('saveInitialBtn');
+    const regenerateBtn = document.getElementById('regenerateBtn');
+    const acceptBtn = document.getElementById('acceptBtn');
+    
+    initialForm.addEventListener('submit', handleInitialFormSubmit);
+    saveInitialBtn.addEventListener('click', () => saveInitialForm(false));
+    regenerateBtn.addEventListener('click', generateAISummary);
+    acceptBtn.addEventListener('click', acceptSummary);
+}
+
+async function handleInitialFormSubmit(e) {
+    e.preventDefault();
+    await saveInitialForm(true);
+}
+
+async function saveInitialForm(continueToSummary) {
+    const jobId = document.getElementById('jobId').value.trim();
+    const instruction = document.getElementById('instruction').value.trim();
+    
+    // Validation
+    if (!jobId) {
+        showNotification('Job ID is required', 'error');
+        return;
+    }
+    
+    if (instruction.length < 50) {
+        showNotification('Instruction must be at least 50 characters', 'error');
+        return;
+    }
+    
+    if (uploadedFiles.length === 0) {
+        showNotification('At least one attachment is required', 'error');
+        return;
+    }
+    
+    showLoading('Saving initial form...', 'Please wait');
+    
+    try {
+        const formData = new FormData();
+        formData.append('job_id', jobId);
+        formData.append('instruction', instruction);
+        formData.append('system_id', currentSystemId);
+        
+        uploadedFiles.forEach(file => {
+            formData.append('attachments', file);
+        });
+        
+        const response = await fetch('{% url "save_initial_form" %}', {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': '{{ csrf_token }}'
+            },
+            body: formData
+        });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+            currentSystemId = data.system_id;
+            document.getElementById('systemId').value = currentSystemId;
+            
+            showNotification('Initial form saved successfully', 'success');
+            
+            if (continueToSummary) {
+                unlockSummaryForm();
+                await generateAISummary();
+            }
+        } else {
+            showNotification(data.message, 'error');
+        }
+    } catch (error) {
+        console.error('Error saving initial form:', error);
+        showNotification('Error saving form: ' + error.message, 'error');
+    } finally {
+        hideLoading();
+    }
+}
+
+function unlockSummaryForm() {
+    document.getElementById('summaryFormSection').classList.remove('locked');
+}
+
+async function generateAISummary() {
+    if (!currentSystemId) {
+        showNotification('Please save the initial form first', 'error');
+        return;
+    }
+    
+    showLoading('Generating AI Summary...', 'This may take 30-60 seconds');
+    
+    try {
+        const response = await fetch('{% url "generate_ai_summary" %}', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': '{{ csrf_token }}'
+            },
+            body: JSON.stringify({
+                system_id: currentSystemId
+            })
+        });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+            displaySummary(data.data);
+            showNotification('AI summary generated successfully', 'success');
+            
+            // Load all versions
+            await loadSummaryVersions();
+        } else {
+            showNotification(data.message, 'error');
+        }
+    } catch (error) {
+        console.error('Error generating AI summary:', error);
+        showNotification('Error generating summary: ' + error.message, 'error');
+    } finally {
+        hideLoading();
+    }
+}
+
+function displaySummary(data) {
+    document.getElementById('noSummaryMessage').style.display = 'none';
+    document.getElementById('summaryData').style.display = 'block';
+    
+    // Update fields
+    document.getElementById('summaryTopic').textContent = data.topic || '-';
+    document.getElementById('summaryWordCount').textContent = data.word_count || '-';
+    document.getElementById('summaryReferencingStyle').textContent = data.referencing_style?.toUpperCase() || '-';
+    document.getElementById('summaryWritingStyle').textContent = formatWritingStyle(data.writing_style) || '-';
+    document.getElementById('summaryJobSummary').textContent = data.job_summary || '-';
+    
+    // Update version
+    currentVersion = data.version;
+    
+    // Display degree
+    displayDegree(data.degree);
+    
+    // Display alert based on degree and version
+    displayAlert(data.degree, data.version, data.can_regenerate);
+    
+    // Show/hide buttons
+    document.getElementById('regenerateBtn').style.display = data.can_regenerate ? 'block' : 'none';
+    document.getElementById('acceptBtn').style.display = data.auto_accepted ? 'none' : 'block';
+    
+    // If auto-accepted, redirect after 2 seconds
+    if (data.auto_accepted) {
+        setTimeout(() => {
+            window.location.href = '{% url "marketing_dashboard" %}';
+        }, 2000);
+    }
+}
+
+function formatWritingStyle(style) {
+    if (!style) return '-';
+    return style.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+}
+
+function displayDegree(degree) {
+    const indicator = document.getElementById('degreeIndicator');
+    const degreeClass = `degree-${degree}`;
+    
+    let message = '';
+    if (degree === 0) {
+        message = '✓ Perfect! All fields generated';
+    } else {
+        message = `⚠ ${degree} field(s) missing`;
+    }
+    
+    indicator.innerHTML = `<div class="degree-indicator ${degreeClass}">${degree} Degree - ${message}</div>`;
+}
+
+function displayAlert(degree, version, canRegenerate) {
+    const alertBox = document.getElementById('alertBox');
+    
+    if (degree === 0) {
+        alertBox.innerHTML = `
+            <div class="alert-box alert-success">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <polyline points="20 6 9 17 4 12" stroke="currentColor" stroke-width="2"/>
+                </svg>
+                <div>
+                    <strong>Success!</strong> All fields generated successfully. Auto-accepting...
+                </div>
+            </div>
+        `;
+    } else if (version >= 3) {
+        alertBox.innerHTML = `
+            <div class="alert-box alert-warning">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/>
+                    <line x1="12" y1="8" x2="12" y2="12" stroke="currentColor" stroke-width="2"/>
+                    <line x1="12" y1="16" x2="12.01" y2="16" stroke="currentColor" stroke-width="2"/>
+                </svg>
+                <div>
+                    <strong>Version 3 Reached</strong> Maximum regeneration attempts reached. Accepting current version...
+                </div>
+            </div>
+        `;
+    } else if (canRegenerate) {
+        alertBox.innerHTML = `
+            <div class="alert-box alert-warning">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M10.29 3.86L1.82 18C1.64537 18.3024 1.55296 18.6453 1.55199 18.9945C1.55101 19.3437 1.64151 19.6871 1.81445 19.9905C1.98738 20.2939 2.23675 20.5467 2.53773 20.7239C2.83871 20.9011 3.18082 20.9962 3.53 21H20.47C20.8192 20.9962 21.1613 20.9011 21.4623 20.7239C21.7633 20.5467 22.0126 20.2939 22.1856 19.9905C22.3585 19.6871 22.449 19.3437 22.448 18.9945C22.447 18.6453 22.3546 18.3024 22.18 18L13.71 3.86C13.5317 3.56611 13.2807 3.32312 12.9812 3.15448C12.6817 2.98585 12.3437 2.89725 12 2.89725C11.6563 2.89725 11.3183 2.98585 11.0188 3.15448C10.7193 3.32312 10.4683 3.56611 10.29 3.86Z" stroke="currentColor" stroke-width="2"/>
+                    <line x1="12" y1="9" x2="12" y2="13" stroke="currentColor" stroke-width="2"/>
+                    <line x1="12" y1="17" x2="12.01" y2="17" stroke="currentColor" stroke-width="2"/>
+                </svg>
+                <div>
+                    <strong>Try Again!</strong> Some fields are missing. Click "Generate Again" to improve (Version ${version}/3)
+                </div>
+            </div>
+        `;
+    }
+}
+
+async function loadSummaryVersions() {
+    try {
+        const response = await fetch(`/marketing/jobs/summary-versions/${currentSystemId}/`);
+        const data = await response.json();
+        
+        if (data.success) {
+            allVersions = data.versions;
+            renderVersionCards();
+        }
+    } catch (error) {
+        console.error('Error loading versions:', error);
+    }
+}
+
+function renderVersionCards() {
+    const versionCards = document.getElementById('versionCards');
+    
+    if (allVersions.length === 0) {
+        versionCards.innerHTML = '';
+        return;
+    }
+    
+    versionCards.innerHTML = allVersions.map(v => `
+        <div class="version-card ${v.version === currentVersion ? 'active' : ''}" onclick="loadVersion(${v.version})">
+            <div style="font-weight: 600;">Version ${v.version}</div>
+            <div style="font-size: 0.85rem; opacity: 0.7;">${v.degree} Degree</div>
+        </div>
+    `).join('');
+}
+
+function loadVersion(version) {
+    const versionData = allVersions.find(v => v.version === version);
+    if (!versionData) return;
+    
+    displaySummary({
+        topic: versionData.topic,
+        word_count: versionData.word_count,
+        referencing_style: versionData.referencing_style,
+        writing_style: versionData.writing_style,
+        job_summary: versionData.job_summary,
+        version: versionData.version,
+        degree: versionData.degree,
+        can_regenerate: currentVersion < 3,
+        auto_accepted: false
+    });
+    
+    currentVersion = version;
+    renderVersionCards();
+}
+
+async function acceptSummary() {
+    if (!currentSystemId) {
+        showNotification('No summary to accept', 'error');
+        return;
+    }
+    
+    showLoading('Accepting summary...', 'Creating job');
+    
+    try {
+        const response = await fetch('{% url "accept_summary" %}', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': '{{ csrf_token }}'
+            },
+            body: JSON.stringify({
+                system_id: currentSystemId
+            })
+        });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+            showNotification('Job created successfully!', 'success');
+            setTimeout(() => {
+                window.location.href = data.redirect;
+            }, 1500);
+        } else {
+            showNotification(data.message, 'error');
+        }
+    } catch (error) {
+        console.error('Error accepting summary:', error);
+        showNotification('Error accepting summary: ' + error.message, 'error');
+    } finally {
+        hideLoading();
+    }
+}
+
+// Utility Functions
+function showLoading(title, subtitle) {
+    const overlay = document.getElementById('loadingOverlay');
+    document.getElementById('loadingText').textContent = title;
+    document.getElementById('loadingSubtext').textContent = subtitle;
+    overlay.classList.add('active');
+}
+
+function hideLoading() {
+    document.getElementById('loadingOverlay').classList.remove('active');
+}
+
+function showNotification(message, type = 'info') {
+    const notification = document.createElement('div');
+    notification.className = `notification notification-${type}`;
+    notification.innerHTML = `
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+            <span>${message}</span>
+            <button onclick="this.parentElement.parentElement.remove()" style="background: none; border: none; color: var(--text-color); cursor: pointer; font-size: 20px; padding: 0; margin-left: 12px;">&times;</button>
+        </div>
+    `;
+    document.body.appendChild(notification);
+
+    setTimeout(() => {
+        notification.style.animation = 'slideInRight 0.3s reverse';
+        setTimeout(() => notification.remove(), 300);
+    }, 5000);
+}
+</script>
+{% endblock %}

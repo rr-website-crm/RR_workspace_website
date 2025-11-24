@@ -1,0 +1,168 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}In Progress Jobs - CRM Portal{% endblock %}
+
+{% block content %}
+<div class="dashboard-header">
+    <h1 class="dashboard-title">In Progress Jobs</h1>
+    <p class="dashboard-subtitle">Jobs currently being worked on by the team</p>
+</div>
+
+<!-- Statistics Cards -->
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 2rem;">
+    <div class="card" style="padding: 1.5rem; text-align: center; background: linear-gradient(135deg, #00BCD4 0%, #0097A7 100%);">
+        <div style="font-size: 2.5rem; font-weight: 700; color: white;">{{ total_jobs }}</div>
+        <div style="color: white; opacity: 0.9; margin-top: 0.5rem;">Total In Progress</div>
+    </div>
+    
+    <div class="card" style="padding: 1.5rem; text-align: center;">
+        <div style="font-size: 2.5rem; font-weight: 700; color: #2196F3;">
+            {{ due_today_count }}
+        </div>
+        <div style="color: var(--text-color); opacity: 0.8; margin-top: 0.5rem;">Due Today</div>
+    </div>
+    
+    <div class="card" style="padding: 1.5rem; text-align: center;">
+        <div style="font-size: 2.5rem; font-weight: 700; color: #FF9800;">
+            {{ overdue_count }}
+        </div>
+        <div style="color: var(--text-color); opacity: 0.8; margin-top: 0.5rem;">Overdue</div>
+    </div>
+</div>
+
+<!-- Jobs Table -->
+<div class="card">
+    <div class="card-header">
+        <h2 class="card-title">In Progress Jobs List</h2>
+    </div>
+    <div class="card-body">
+        {% if jobs %}
+        <div class="table-container">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>SL No</th>
+                        <th>Job ID</th>
+                        <th>Topic</th>
+                        <th>Word Count</th>
+                        <th>Category</th>
+                        <th>Deadline</th>
+                        <th>Progress</th>
+                        <th>Allocated To</th>
+                        <th>Time Left</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for job in jobs %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td><strong style="color: var(--primary);">{{ job.masking_id }}</strong></td>
+                        <td>{{ job.topic|truncatewords:8 }}</td>
+                        <td><strong>{{ job.word_count }}</strong></td>
+                        <td>
+                            <span class="status-tag" style="background-color: {% if job.job_category == 'IT' %}rgba(33, 150, 243, 0.2); color: #2196F3{% elif job.job_category == 'Finance' %}rgba(76, 175, 80, 0.2); color: #4CAF50{% else %}rgba(156, 39, 176, 0.2); color: #9C27B0{% endif %};">
+                                {{ job.job_category }}
+                            </span>
+                        </td>
+                        <td>
+                            <div style="font-weight: 600; {% if job.deadline < today_date %}color: #F44336{% else %}color: #FF9800{% endif %};">
+                                {{ job.deadline|date:"d/m/Y" }}
+                            </div>
+                            <div style="font-size: 0.875rem; opacity: 0.7;">{{ job.deadline|date:"H:i" }}</div>
+                        </td>
+                        <td>
+                            <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                <div style="flex: 1; height: 8px; background-color: rgba(255, 255, 255, 0.1); border-radius: 4px; overflow: hidden;">
+                                    <div style="height: 100%; background: linear-gradient(90deg, var(--primary) 0%, var(--secondary) 100%); width: {{ job.task_progress_percent }}%; transition: width 0.3s ease;"></div>
+                                </div>
+                                <span style="font-size: 0.875rem; font-weight: 600;">
+                                    {{ job.completed_task_allocations }}/{{ job.total_task_allocations }}
+                                </span>
+                            </div>
+                        </td>
+                        <td>
+                            <div style="font-size: 0.875rem;">
+                                {% for allocation in job.task_allocations.all %}
+                                    {% if allocation.allocated_to %}
+                                        <div style="margin-bottom: 0.25rem;">
+                                            <span style="opacity: 0.7;">{{ allocation.get_task_type_display }}:</span>
+                                            <strong>{{ allocation.allocated_to.get_full_name|truncatewords:2 }}</strong>
+                                        </div>
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
+                        </td>
+                        <td>
+                            {% if job.deadline < today_date %}
+                                <span style="color: #F44336; font-weight: 600;">Overdue</span>
+                            {% else %}
+                                <span style="color: #4CAF50; font-weight: 600;">
+                                    {{ job.deadline|timeuntil }}
+                                </span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                                <a href="{% url 'view_job_details' job.id %}" class="btn btn-primary" style="padding: 0.5rem 1rem; font-size: 0.875rem; text-decoration: none;">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M1 12C1 12 5 4 12 4C19 4 23 12 23 12C23 12 19 20 12 20C5 20 1 12 1 12Z" stroke="currentColor" stroke-width="2"/>
+                                        <circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="2"/>
+                                    </svg>
+                                    View
+                                </a>
+                                {% if job.can_have_query %}
+                                <a href="{% url 'view_job_details' job.id %}#queries" class="btn btn-secondary" style="padding: 0.5rem 1rem; font-size: 0.875rem; text-decoration: none;">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M12 20L12 12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                                        <path d="M12 8V4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                                        <path d="M9 8H15" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                                    </svg>
+                                    Raise Query
+                                </a>
+                                {% else %}
+                                <button class="btn btn-outline" style="padding: 0.5rem 1rem; font-size: 0.875rem;" title="Queries are available only for degree 1-5 jobs with software support" disabled>
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M4.5 4.5L19.5 19.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                                        <path d="M19.5 4.5L4.5 19.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                                    </svg>
+                                    Query Unavailable
+                                </button>
+                                {% endif %}
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div style="text-align: center; padding: 3rem; color: var(--text-color); opacity: 0.6;">
+            <svg width="64" height="64" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="margin-bottom: 1rem; opacity: 0.5;">
+                <path d="M12 2V6M12 18V22M4.93 4.93L7.76 7.76M16.24 16.24L19.07 19.07M2 12H6M18 12H22M4.93 19.07L7.76 16.24M16.24 7.76L19.07 4.93" stroke="currentColor" stroke-width="2"/>
+            </svg>
+            <p style="font-size: 1.1rem; font-weight: 500;">No jobs in progress</p>
+            <p style="font-size: 0.9rem; margin-top: 0.5rem;">All jobs are either pending or completed</p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<style>
+    .card {
+        animation: fadeInUp 0.5s ease-out;
+    }
+    
+    .data-table tbody tr:hover {
+        background-color: var(--hover-bg);
+        transform: scale(1.01);
+    }
+    
+    @keyframes progress-animate {
+        0% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+        100% { background-position: 0% 50%; }
+    }
+</style>
+{% endblock %}

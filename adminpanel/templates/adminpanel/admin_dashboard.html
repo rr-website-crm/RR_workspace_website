@@ -1,0 +1,301 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Admin Dashboard - CRM Portal{% endblock %}
+
+{% block body_class %}theme-admin-3{% endblock %}
+
+{% block content %}
+{% now "l, F d, Y" as admin_today %}
+<div class="dashboard-header">
+    <div>
+        <h1 class="dashboard-title">Admin Dashboard</h1>
+        <p class="dashboard-subtitle">
+            Welcome back, {{ request.user.get_full_name|default:request.user.email }} | {{ admin_today }}
+        </p>
+    </div>
+</div>
+
+<!-- KPI Cards -->
+<div class="stats-grid">
+    <div class="stat-card gradient-primary">
+        <div class="stat-value">{{ total_users }}</div>
+        <div class="stat-label">Total Users</div>
+    </div>
+    
+    <div class="stat-card gradient-secondary">
+        <div class="stat-value">{{ total_active }}</div>
+        <div class="stat-label">Active Users Today</div>
+    </div>
+    
+    <div class="stat-card gradient-warning">
+        <div class="stat-value">{{ pending_approvals }}</div>
+        <div class="stat-label">Pending Approvals</div>
+    </div>
+    
+    <div class="stat-card gradient-success">
+        <div class="stat-value">{{ total_approved }}</div>
+        <div class="stat-label">Approved Users</div>
+    </div>
+</div>
+
+<!-- Role-based Active Users Table -->
+<div class="card mt-4">
+    <div class="card-header">
+        <h3 class="card-title">Today's Active Users by Role</h3>
+    </div>
+    <div class="card-body">
+        <div class="table-container">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Role</th>
+                        <th>Total Active Employee</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for role_data in role_active_counts %}
+                    <tr>
+                        <td style="text-transform: capitalize; font-weight: 600;">{{ role_data.role }}</td>
+                        <td>{{ role_data.count }}</td>
+                        <td>
+                            <button class="btn btn-primary btn-sm" onclick="viewAdminRoleDetails(this, '{{ role_data.role }}')">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M1 12S5 4 12 4s11 8 11 8-4 8-11 8S1 12 1 12z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                    <circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                                View
+                            </button>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="3" style="text-align: center; padding: 2rem; opacity: 0.6;">
+                            No active users today
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Role Details Section -->
+<div class="card mt-4">
+    <div class="card-header">
+        <h3 class="card-title">Role-wise Login Details (Today)</h3>
+        <p class="card-description">
+            Click "View" for any role above to load its active employees for today. Each table renders separately and is ordered by login time (earliest first).
+        </p>
+    </div>
+    <div class="card-body">
+        <div id="roleDetailsEmpty" class="empty-state">Select a role to display today's login details.</div>
+        <div id="roleDetailsContainer" class="role-details-grid" aria-live="polite"></div>
+    </div>
+</div>
+
+<script>
+    function formatRoleLabel(role) {
+        if (!role) {
+            return '';
+        }
+        return role
+            .split(/[_\s]+/)
+            .filter(Boolean)
+            .map(part => part.charAt(0).toUpperCase() + part.slice(1))
+            .join(' ');
+    }
+
+    function roleSectionId(role) {
+        return `role-details-${role.replace(/[^a-z0-9]+/gi, '-').toLowerCase()}`;
+    }
+
+    function ensureRoleCard(role) {
+        const container = document.getElementById('roleDetailsContainer');
+        const sectionId = roleSectionId(role);
+        let card = document.getElementById(sectionId);
+
+        if (!card) {
+            card = document.createElement('div');
+            card.className = 'card role-details-card';
+            card.id = sectionId;
+
+            card.innerHTML = `
+                <div class="card-header">
+                    <h4 class="card-title">${formatRoleLabel(role)} &ndash; Active Logins Today</h4>
+                    <button class="btn btn-light btn-sm" type="button" onclick="removeRoleDetails('${sectionId}')">Hide</button>
+                </div>
+                <div class="card-body">
+                    <div class="loading-state">Loading details&hellip;</div>
+                </div>
+            `;
+
+            container.appendChild(card);
+            updateRoleDetailsEmptyState();
+        }
+
+        return card;
+    }
+
+    function updateRoleDetailsEmptyState() {
+        const container = document.getElementById('roleDetailsContainer');
+        const emptyState = document.getElementById('roleDetailsEmpty');
+        if (!emptyState) return;
+
+        if (container && container.childElementCount) {
+            emptyState.style.display = 'none';
+        } else {
+            emptyState.style.display = 'block';
+        }
+    }
+
+    function renderRoleDetailsTable(card, users, role) {
+        const body = card.querySelector('.card-body');
+        const readableRole = formatRoleLabel(role || '');
+
+        if (!users.length) {
+            body.innerHTML = `<div class="empty-state compact">No active logins recorded for ${readableRole || 'this role'} today.</div>`;
+            return;
+        }
+
+        const rows = users.map((user, index) => `
+            <tr>
+                <td>${index + 1}</td>
+                <td>${user.employee_id || 'N/A'}</td>
+                <td>${user.name}</td>
+                <td>${user.email}</td>
+                <td>${user.login_time}</td>
+            </tr>
+        `).join('');
+
+        body.innerHTML = `
+            <div class="table-container table-scroll-lock role-table-container">
+                <div class="table-scroll-body">
+                    <table class="data-table data-table--compact">
+                        <thead>
+                            <tr>
+                                <th>SL. No</th>
+                                <th>Employee ID</th>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Login Time</th>
+                            </tr>
+                        </thead>
+                        <tbody>${rows}</tbody>
+                    </table>
+                </div>
+            </div>
+        `;
+    }
+
+    function removeRoleDetails(sectionId) {
+        const card = document.getElementById(sectionId);
+        if (card) {
+            card.remove();
+            updateRoleDetailsEmptyState();
+        }
+    }
+
+    function viewAdminRoleDetails(buttonEl, role) {
+        if (typeof buttonEl === 'string' && !role) {
+            role = buttonEl;
+            buttonEl = null;
+        }
+
+        const card = ensureRoleCard(role);
+        const body = card.querySelector('.card-body');
+        body.innerHTML = '<div class="loading-state">Loading details&hellip;</div>';
+
+        if (buttonEl) {
+            buttonEl.disabled = true;
+        }
+
+        fetch(`/adminpanel/role-details/${encodeURIComponent(role)}/`)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Failed to fetch role details');
+                }
+                return response.json();
+            })
+            .then(data => {
+                renderRoleDetailsTable(card, data.users || [], role);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                body.innerHTML = '<div class="empty-state compact">Could not load data. Please try again.</div>';
+                showNotification('Failed to load role details', 'error');
+            })
+            .finally(() => {
+                if (buttonEl) {
+                    buttonEl.disabled = false;
+                }
+            });
+    }
+</script>
+
+<style>
+    .table-subtext {
+        font-size: 0.8rem;
+        color: var(--secondary);
+        opacity: 0.8;
+        margin-top: 0.2rem;
+    }
+
+    .btn-sm {
+        padding: 6px 12px;
+        font-size: 13px;
+    }
+
+    .card-description {
+        margin: 0.4rem 0 0;
+        font-size: 0.9rem;
+        color: var(--text-color);
+        opacity: 0.8;
+    }
+
+    .role-details-grid {
+        display: grid;
+        gap: 1.5rem;
+        margin-top: 1rem;
+        grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    }
+
+    .role-details-card .card-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .loading-state {
+        padding: 1.5rem;
+        text-align: center;
+        opacity: 0.7;
+        font-size: 0.95rem;
+    }
+
+    .empty-state {
+        padding: 2rem 1rem;
+        text-align: center;
+        border: 1px dashed rgba(255, 255, 255, 0.2);
+        border-radius: 8px;
+        opacity: 0.8;
+    }
+
+    .empty-state.compact {
+        padding: 1rem;
+    }
+    
+    @media (max-width: 768px) {
+        .card-grid {
+            grid-template-columns: 1fr;
+        }
+        
+        .card[style*="grid-column"] {
+            grid-column: span 1 !important;
+        }
+    }
+</style>
+{% endblock %}
