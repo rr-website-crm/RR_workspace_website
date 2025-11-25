@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Project Details - {{ job.job_id }}{% endblock %}
+
+{% block content %}
+<div class="dashboard-header">
+    <div>
+        <h1 class="dashboard-title">Project Details</h1>
+        <p class="dashboard-subtitle">System ID: {{ job.system_id }} | Job ID: {{ job.job_id }}</p>
+    </div>
+    <a href="{% url 'allocator_all_projects' %}" class="btn btn-outline">Back to All Projects</a>
+</div>
+
+<div class="card">
+    <div class="card-header">
+        <h2 class="card-title" style="margin: 0;">Overview</h2>
+    </div>
+    <div class="card-body">
+        <div class="detail-grid">
+            <div class="detail-item">
+                <label class="detail-label">Topic</label>
+                <div class="detail-value">{{ job.topic|default:"-" }}</div>
+            </div>
+            <div class="detail-item">
+                <label class="detail-label">Word Count</label>
+                <div class="detail-value">{{ job.word_count|default:"-" }}</div>
+            </div>
+            <div class="detail-item">
+                <label class="detail-label">Category</label>
+                <div class="detail-value">{{ job.category|default:"-" }}</div>
+            </div>
+            <div class="detail-item">
+                <label class="detail-label">Status</label>
+                <div class="detail-value">{{ status_display }}</div>
+            </div>
+            <div class="detail-item">
+                <label class="detail-label">Marketing Member</label>
+                <div class="detail-value">
+                    {% if job.created_by %}
+                        {{ job.created_by.get_full_name|default:job.created_by.email }}
+                    {% else %}
+                        —
+                    {% endif %}
+                </div>
+            </div>
+            <div class="detail-item">
+                <label class="detail-label">Created At</label>
+                <div class="detail-value">{{ job.created_at|date:"d M Y, H:i" }}</div>
+            </div>
+            <div class="detail-item">
+                <label class="detail-label">Deadline</label>
+                <div class="detail-value">
+                    {% if job.strict_deadline %}
+                        {{ job.strict_deadline|date:"d M Y, H:i" }}
+                    {% elif job.expected_deadline %}
+                        {{ job.expected_deadline|date:"d M Y, H:i" }}
+                    {% elif job.deadline %}
+                        {{ job.deadline|date:"d M Y" }}
+                    {% else %}
+                        —
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

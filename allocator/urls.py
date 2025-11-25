@@ -14,6 +14,8 @@ urlpatterns = [
     path('hold/', views.hold_jobs_allocator, name='hold_jobs_allocator'),
     path('process/', views.process_jobs, name='process_jobs'),
     path('completed/', views.completed_jobs_allocator, name='completed_jobs_allocator'),
+    path('all-projects/', views.all_projects, name='allocator_all_projects'),
+    path('all-projects/<str:system_id>/', views.all_project_detail, name='allocator_all_project_detail'),
     
     # Team Management
     path('writers/', views.all_writers, name='all_writers'),

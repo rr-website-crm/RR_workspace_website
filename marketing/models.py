@@ -4,6 +4,8 @@ from django.utils import timezone
 from django.core.validators import FileExtensionValidator
 from accounts.models import CustomUser
 import os
+import random
+import string
 import time
 
 def job_attachment_path(instance, filename):
@@ -183,6 +185,11 @@ class Job(models.Model):
         ('reflection_writing', 'Reflection Writing'),
         ('case_study', 'Case Study'),
     ]
+    LEVEL_CHOICES = [
+        ('basic', 'Basic'),
+        ('intermediate', 'Intermediate'),
+        ('advanced', 'Advanced'),
+    ]
     
     STATUS_CHOICES = [
         ('draft', 'Draft'),
@@ -238,6 +245,14 @@ class Job(models.Model):
     software = models.TextField(blank=True, null=True)
     amount = models.DecimalField(max_digits=12, decimal_places=2, null=True, blank=True)
     system_expected_amount = models.DecimalField(max_digits=12, decimal_places=2, null=True, blank=True)
+
+    level = models.CharField(
+        max_length=20,
+        choices=LEVEL_CHOICES,
+        blank=True,
+        null=True
+    )
+
 
     # User Relations (using string reference for MongoDB compatibility)
     created_by = models.ForeignKey(
@@ -305,9 +320,22 @@ class Job(models.Model):
     
     @staticmethod
     def generate_system_id():
-        """Generate unique system ID: CH-timestamp_ms"""
-        timestamp_ms = int(time.time() * 1000)
-        return f"CH-{timestamp_ms}"
+        """
+        Generate unique system ID: CH-XXXXXX
+        Where XXXXXX is 6 random alphanumeric characters (A-Z, 0-9)
+        Example: CH-A3K9M2, CH-7B4XP1
+        """
+        while True:
+            # Generate 6 random alphanumeric characters
+            random_part = ''.join(random.choices(
+                string.ascii_uppercase + string.digits, 
+                k=6
+            ))
+            system_id = f"CH-{random_part}"
+            
+            # Check if it already exists
+            if not Job.objects.filter(system_id=system_id).exists():
+                return system_id
     
     def calculate_degree(self):
         """Calculate job card degree based on missing fields"""

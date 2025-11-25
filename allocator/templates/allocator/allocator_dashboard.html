@@ -108,59 +108,49 @@
     </div>
 </div>
 
-<!-- Jobs Table -->
+<!-- Recent Jobs (24h from Marketing) -->
 <div class="card">
     <div class="card-header">
-        <h2 class="card-title">Recent Jobs</h2>
+        <h2 class="card-title">Recent Jobs (Last 24h)</h2>
     </div>
     <div class="card-body">
-        {% if jobs %}
-        <div class="table-container">
+        {% if recent_jobs %}
+        <div class="table-container table-scroll-lock">
             <table class="data-table">
                 <thead>
                     <tr>
                         <th>SL No</th>
+                        <th>System ID</th>
                         <th>Job ID</th>
                         <th>Topic</th>
                         <th>Word Count</th>
                         <th>Deadline</th>
+                        <th>Marketing Team</th>
                         <th>Status</th>
-                        <th>Job Category</th>
+                        <th>Category</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody>
-                    {% for job in jobs %}
+                    {% for job in recent_jobs %}
                     <tr>
                         <td>{{ forloop.counter }}</td>
-                        <td><strong>{{ job.masking_id }}</strong></td>
-                        <td>{{ job.topic|truncatewords:10 }}</td>
-                        <td>{{ job.word_count }}</td>
-                        <td>{{ job.deadline|date:"d/m/Y H:i" }}</td>
+                        <td>{{ job.system_id }}</td>
+                        <td>{{ job.job_id }}</td>
+                        <td style="max-width: 240px; white-space: normal;">{{ job.topic|default:"-" }}</td>
+                        <td>{{ job.word_count|default:"-" }}</td>
                         <td>
-                            <span class="status-tag status-{{ job.status }}">
-                                {{ job.get_status_display }}
-                            </span>
-                        </td>
-                        <td>
-                            {% if job.job_category == 'IT' %}
-                                <span class="status-tag job-cat-it">{{ job.job_category }}</span>
-                            {% elif job.job_category == 'Finance' %}
-                                <span class="status-tag job-cat-finance">{{ job.job_category }}</span>
+                            {% if job.deadline %}
+                                {{ job.deadline|date:"d M Y, H:i" }}
                             {% else %}
-                                <span class="status-tag job-cat-nonit">{{ job.job_category }}</span>
+                                —
                             {% endif %}
                         </td>
+                        <td>{{ job.created_by|default:"Marketing" }}</td>
+                        <td><span class="status-tag status-{{ job.status_display|lower }}">{{ job.status_display }}</span></td>
+                        <td>{{ job.category|default:"-" }}</td>
                         <td>
-                            {% if job.status == 'pending' %}
-                                <a href="{% url 'allocate_job' job.id %}" class="btn btn-primary" style="padding: 0.5rem 1rem; font-size: 0.875rem; text-decoration: none;">
-                                    Allocate
-                                </a>
-                            {% else %}
-                                <a href="{% url 'view_job_details' job.id %}" class="btn btn-outline" style="padding: 0.5rem 1rem; font-size: 0.875rem; text-decoration: none;">
-                                    View
-                                </a>
-                            {% endif %}
+                            <a href="{% url 'allocator_all_project_detail' job.system_id %}" class="btn btn-sm btn-primary">View</a>
                         </td>
                     </tr>
                     {% endfor %}
@@ -169,13 +159,7 @@
         </div>
         {% else %}
         <div style="text-align: center; padding: 3rem; color: var(--text-color); opacity: 0.6;">
-            <svg width="64" height="64" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="margin-bottom: 1rem; opacity: 0.5;">
-                <rect x="3" y="3" width="7" height="7" stroke="currentColor" stroke-width="2"/>
-                <rect x="14" y="3" width="7" height="7" stroke="currentColor" stroke-width="2"/>
-                <rect x="14" y="14" width="7" height="7" stroke="currentColor" stroke-width="2"/>
-                <rect x="3" y="14" width="7" height="7" stroke="currentColor" stroke-width="2"/>
-            </svg>
-            <p style="font-size: 1.1rem;">No jobs available</p>
+            <p style="font-size: 1.1rem;">No recent jobs from Marketing in the last 24 hours.</p>
         </div>
         {% endif %}
     </div>

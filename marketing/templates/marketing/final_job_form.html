@@ -55,6 +55,21 @@
             </div>
             
             <div class="summary-field">
+				<label class="summary-label">Category</label>
+                <div class="summary-value">{{ job.category|default:"Not specified" }}</div>
+            </div>
+
+            <div class="summary-field">
+                <label class="summary-label">Level</label>
+                <div class="summary-value">{{ job.get_level_display|default:"Not specified" }}</div>
+            </div>
+
+            <div class="summary-field">
+                <label class="summary-label">Software</label>
+                <div class="summary-value" style="white-space: pre-wrap;">{{ job.software|default:"Not specified" }}</div>
+            </div>
+            
+            <div class="summary-field">
                 <label class="summary-label">Job Summary</label>
                 <div class="summary-value" style="white-space: pre-wrap;">{{ job.job_summary|default:"Not generated" }}</div>
             </div>
@@ -70,7 +85,13 @@
                     {% if existing_attachments %}
                         <ul style="margin: 0; padding-left: 1.5rem;">
                             {% for attachment in existing_attachments %}
-                            <li>{{ attachment.original_filename }} ({{ attachment.file_size|filesizeformat }})</li>
+							<li>
+                                <a href="{{ attachment.file.url }}" target="_blank" rel="noopener" style="color: inherit; text-decoration: underline;">
+                                    {{ attachment.original_filename }}
+                                </a>
+                                ({{ attachment.file_size|filesizeformat }})
+                            </li>
+
                             {% endfor %}
                         </ul>
                     {% else %}

@@ -1,0 +1,189 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}All Projects - Allocator{% endblock %}
+
+{% block content %}
+<div class="dashboard-header">
+    <div>
+        <h1 class="dashboard-title">All Projects</h1>
+        <p class="dashboard-subtitle">All marketing jobs with quick search and filters.</p>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
+        <div>
+            <h3 class="card-title" style="margin: 0;">Projects</h3>
+            <p class="dashboard-subtitle" style="margin: 0;">Showing {{ jobs|length }} of {{ total_jobs }} jobs</p>
+        </div>
+        <div class="total-chip">
+            <span>Total</span>
+            <strong>{{ total_jobs }}</strong>
+        </div>
+    </div>
+
+    <div class="card-body">
+        <form method="get" class="filter-bar" style="margin-bottom: 1rem;">
+            <div class="filter-row">
+                <div class="filter-item wide">
+                    <label class="filter-label" for="search">Search</label>
+                    <input type="text" id="search" name="search" class="form-control" placeholder="Search by System ID, Job ID, or Topic" value="{{ search|default:'' }}">
+                </div>
+                <div class="filter-item">
+                    <label class="filter-label" for="status">Status</label>
+                    <select id="status" name="status" class="form-control">
+                        {% for value,label in status_options %}
+                        <option value="{{ value }}" {% if status_filter == value %}selected{% endif %}>{{ label }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="filter-item">
+                    <label class="filter-label" for="start_date">Start Date (IST)</label>
+                    <input type="date" id="start_date" name="start_date" class="form-control" value="{{ start_date|default:'' }}">
+                </div>
+                <div class="filter-item">
+                    <label class="filter-label" for="end_date">End Date (IST)</label>
+                    <input type="date" id="end_date" name="end_date" class="form-control" value="{{ end_date|default:'' }}">
+                </div>
+                <div class="filter-actions">
+                    <button type="submit" class="btn btn-primary">Search</button>
+                    <a href="{% url 'allocator_all_projects' %}" class="btn btn-outline">Reset</a>
+                </div>
+            </div>
+        </form>
+
+        {% if jobs %}
+        <div class="table-container table-scroll-lock">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>SL No</th>
+                        <th>System ID</th>
+                        <th>Job ID</th>
+                        <th>Topic</th>
+                        <th>Word Count</th>
+                        <th>Deadline</th>
+                        <th>Marketing Member</th>
+                        <th>Status</th>
+                        <th>Category</th>
+                        <th>View</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for job in jobs %}
+                    <tr>
+                        <td>{{ jobs.start_index|add:forloop.counter0 }}</td>
+                        <td>{{ job.system_id }}</td>
+                        <td>{{ job.job_id }}</td>
+                        <td style="max-width: 260px; white-space: normal;">{{ job.topic|default:"-" }}</td>
+                        <td>{{ job.word_count|default:"-" }}</td>
+                        <td>
+                            {% if job.strict_deadline %}
+                                {{ job.strict_deadline|date:"d M Y, H:i" }}
+                            {% elif job.expected_deadline %}
+                                {{ job.expected_deadline|date:"d M Y, H:i" }}
+                            {% elif job.deadline %}
+                                {{ job.deadline|date:"d M Y" }}
+                            {% else %}
+                                —
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if job.created_by %}
+                                {{ job.created_by.get_full_name|default:job.created_by.email }}
+                            {% else %}
+                                —
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% with lower=job.status|default:""|lower %}
+                                {% if lower == 'completed' or lower == 'cancelled' %}
+                                    <span class="status-tag status-completed">Closed</span>
+                                {% elif lower == 'allocated' or lower == 'in_progress' %}
+                                    <span class="status-tag status-allocated">Allocated</span>
+                                {% elif lower == 'unallocated' or lower == 'pending' %}
+                                    <span class="status-tag status-pending">Unallocated</span>
+                                {% elif lower == 'hold' %}
+                                    <span class="status-tag status-hold">Hold</span>
+                                {% else %}
+                                    <span class="status-tag status-{{ lower|default:'pending' }}">{{ job.get_status_display|default:job.status }}</span>
+                                {% endif %}
+                            {% endwith %}
+                        </td>
+                        <td>{{ job.category|default:"-" }}</td>
+                        <td>
+                            <a class="btn btn-sm btn-primary" href="{% url 'allocator_all_project_detail' job.system_id %}">View</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        {% if jobs.has_other_pages %}
+        <div class="table-pagination">
+            <div class="table-pagination__controls">
+                {% if jobs.has_previous %}
+                <a href="?page={{ jobs.previous_page_number }}{% if search %}&search={{ search }}{% endif %}{% if status_filter %}&status={{ status_filter }}{% endif %}{% if start_date %}&start_date={{ start_date }}{% endif %}{% if end_date %}&end_date={{ end_date }}{% endif %}" class="table-pagination__btn">‹</a>
+                {% else %}
+                <button class="table-pagination__btn" disabled>‹</button>
+                {% endif %}
+            </div>
+            <span>Page {{ jobs.number }} of {{ jobs.paginator.num_pages }}</span>
+            <div class="table-pagination__controls">
+                {% if jobs.has_next %}
+                <a href="?page={{ jobs.next_page_number }}{% if search %}&search={{ search }}{% endif %}{% if status_filter %}&status={{ status_filter }}{% endif %}{% if start_date %}&start_date={{ start_date }}{% endif %}{% if end_date %}&end_date={{ end_date }}{% endif %}" class="table-pagination__btn">›</a>
+                {% else %}
+                <button class="table-pagination__btn" disabled>›</button>
+                {% endif %}
+            </div>
+        </div>
+        {% endif %}
+        {% else %}
+        <div class="empty-state" style="text-align: center; padding: 3rem 1rem;">
+            <h3 style="margin-bottom: 0.5rem;">No jobs found</h3>
+            <p style="margin: 0;">Try adjusting your search or filters.</p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<style>
+    .filter-bar {
+        margin-bottom: 1rem;
+        padding: 1rem;
+        background: rgba(255,255,255,0.03);
+        border-radius: 12px;
+    }
+
+    .filter-row {
+        display: grid;
+        grid-template-columns: 2fr 1fr 1fr 1fr auto;
+        gap: 0.75rem;
+        align-items: end;
+    }
+
+    .filter-item .filter-label {
+        display: block;
+        margin-bottom: 0.35rem;
+        font-size: 0.9rem;
+        color: rgba(255,255,255,0.7);
+    }
+
+    .filter-actions {
+        display: flex;
+        gap: 0.5rem;
+        align-items: end;
+    }
+
+    @media (max-width: 1024px) {
+        .filter-row {
+            grid-template-columns: 1fr;
+        }
+        .filter-actions {
+            justify-content: flex-start;
+        }
+    }
+</style>
+{% endblock %}
