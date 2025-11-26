@@ -47,6 +47,29 @@ def _decimal_to_float(value):
     except (TypeError, ValueError):
         return None
 
+def _to_float(value, default=0.0):
+    """Convert values to float, tolerating Decimal128 and returning a default on failure."""
+    if value is None:
+        return default
+    if Decimal128 and isinstance(value, Decimal128):
+        try:
+            return float(value.to_decimal())
+        except Exception:
+            return default
+    try:
+        return float(value)
+    except (TypeError, ValueError):
+        return default
+
+def _to_price_master_level(level_value):
+    """Map job-friendly level values to PriceMaster stored values."""
+    if not level_value:
+        return None
+    normalized = str(level_value).strip().lower()
+    if normalized == 'advanced':
+        return 'advance'
+    return normalized
+
 def _normalize_word_count(value):
     """Coerce word count into an integer. If a range is given, pick the max."""
     if value is None:
@@ -142,6 +165,8 @@ def marketing_dashboard(request):
         'draft_jobs': draft_jobs,
         'recent_activities': recent_activities,
         'today_date': timezone.now(),
+        'status_choices': Job.STATUS_CHOICES,
+        'category_choices': Job.CATEGORY_CHOICES,
     }
     
     logger.info(f"Marketing dashboard accessed by: {user.email}")
@@ -208,7 +233,9 @@ def _render_job_list(request, queryset, page_title, filter_description=None,
             'description': empty_description or 'Try adjusting the filters or create a new job to get started.',
             'cta_url': reverse('create_job'),
             'cta_label': 'Create Job'
-        }
+        },
+        'status_choices': Job.STATUS_CHOICES,
+        'category_choices': Job.CATEGORY_CHOICES,
     }
     return render(request, template_name, context)
 def validate_file(file):
@@ -301,32 +328,32 @@ def save_initial_form(request):
                 'message': f'Instruction must be at least 50 characters. Current: {len(instruction)}'
             }, status=400)
         
-        if not files:
-            return JsonResponse({'success': False, 'message': 'At least one attachment is required'}, status=400)
-        
+        # Validate each new file
         if len(files) > 10:
             return JsonResponse({'success': False, 'message': 'Maximum 10 files allowed'}, status=400)
-        
-        # Validate each file
         for file in files:
             is_valid, msg = validate_file(file)
             if not is_valid:
                 return JsonResponse({'success': False, 'message': msg}, status=400)
-		# Determine attachment counts
+
+        # Determine attachment counts (existing + new) based on requested operations
         existing_remaining = 0
         if system_id:
             job = Job.objects.get(system_id=system_id, created_by=request.user)
             if replace_flag:
+                # Replace wipes all existing, so only new uploads remain
                 existing_remaining = 0
             else:
-                # Exclude removals
+                # Keep everything except the ones explicitly marked for removal
                 existing_remaining = job.attachments.exclude(id__in=remove_ids).count()
         else:
             job = None
 
         total_after = existing_remaining + len(files)
         if total_after <= 0:
-            return JsonResponse({'success': False, 'message': 'At least one attachment is required'}, status=400)
+            return JsonResponse({'success': False, 'message': 'At least one attachment is required (keep existing or upload new files).'}, status=400)
+        if total_after > 10:
+            return JsonResponse({'success': False, 'message': 'Maximum 10 attachments allowed including existing and new.'}, status=400)
         
         with transaction.atomic():
             # Create or update job
@@ -1132,13 +1159,19 @@ def final_job_form(request, system_id):
         if not getattr(writing, 'is_deleted', False)
     ]
     price_entries = [
-        entry for entry in PriceMaster.objects.filter(level='basic')
+        entry for entry in PriceMaster.objects.all()
         if not getattr(entry, 'is_deleted', False)
     ]
-    price_map = {
-        entry.category: (_decimal_to_float(entry.price_per_word) or 0.0)
-        for entry in price_entries
-    }
+    price_map = {}
+    for entry in price_entries:
+        category_key = str(entry.category).upper()
+        level_key = str(entry.level).lower()
+        level_label = entry.get_level_display() if hasattr(entry, 'get_level_display') else level_key.title()
+        price_map.setdefault(category_key, {})[level_key] = {
+            'price': _to_float(entry.price_per_word),
+            'label': level_label,
+        }
+    selected_price_level = _to_price_master_level(job.level)
         
     # Get existing attachments
     existing_attachments = job.attachments.all()
@@ -1154,6 +1187,7 @@ def final_job_form(request, system_id):
         'referencing_choices': Job.REFERENCING_STYLE_CHOICES,
         'writing_choices': Job.WRITING_STYLE_CHOICES,
         'price_map': json.dumps(price_map),
+        'selected_price_level': selected_price_level or '',
     }
     
     return render(request, 'marketing/final_job_form.html', context)
@@ -1165,6 +1199,7 @@ def _process_final_form_submission(request, job):
         # Extract form data
         topic = request.POST.get('topic', '').strip() or job.topic
         category = request.POST.get('category', '').strip()
+        level = request.POST.get('level', '').strip()
         word_count = request.POST.get('word_count', '').strip()
         referencing_style = request.POST.get('referencing_style', '').strip()
         writing_style = request.POST.get('writing_style', '').strip()
@@ -1181,6 +1216,9 @@ def _process_final_form_submission(request, job):
         
         if not category:
             errors.append('Category is required.')
+        
+        if not level:
+            errors.append('Level is required.')
         
         if not word_count or not word_count.isdigit():
             errors.append('Valid word count is required.')
@@ -1257,38 +1295,30 @@ def _process_final_form_submission(request, job):
         # Calculate system expected amount
         system_expected = None
         normalized_category = category.upper()
+        price_level = _to_price_master_level(level)
         price_entry = next(
             (
                 item for item in PriceMaster.objects.filter(
                     category=normalized_category,
-                    level='basic'  # Default level
+                    level=price_level
                 )
                 if not getattr(item, 'is_deleted', False)
             ),
             None
         )
-        if price_entry:
-            # Use the _to_float helper function to handle Decimal128
-            def _to_float(value):
-                try:
-                    from bson.decimal128 import Decimal128
-                except ImportError:
-                    Decimal128 = None
-
-                if value is None:
-                    return 0.0
-                if Decimal128 and isinstance(value, Decimal128):
-                    return float(value.to_decimal())
-                return float(value)
-            
-            system_expected = _to_float(price_entry.price_per_word) * float(word_count)
-        else:
-            logger.warning(f"Price not found for category {category}, level basic")
+        if not price_entry:
+            messages.error(request, 'Pricing not configured for the selected category and level.')
+            return redirect('final_job_form', system_id=job.system_id)
+        
+        price_per_word = _to_float(price_entry.price_per_word)
+        system_expected = price_per_word * float(word_count)
+        normalized_level = _normalize_level(level)
         
         with transaction.atomic():
             # Update job with final form data
             job.topic = topic
             job.category = category
+            job.level = normalized_level
             job.word_count = word_count
             job.referencing_style = referencing_style or None
             job.writing_style = writing_style or None
@@ -1397,6 +1427,7 @@ def _process_final_form_submission(request, job):
                     'template': template.template_name,
                     'project_group': project_group.project_group_name,
                     'category': category,
+                    'level': normalized_level,
                 }
             )
         
@@ -1418,9 +1449,10 @@ def _process_final_form_submission(request, job):
 def get_system_expected_amount(request):
     """Return system expected amount based on category and word count"""
     category = request.GET.get('category', '').strip()
+    level = request.GET.get('level', '').strip()
     word_count = request.GET.get('word_count', '').strip()
 
-    if not category or not word_count or not word_count.isdigit():
+    if not category or not level or not word_count or not word_count.isdigit():
         return JsonResponse({'success': False, 'message': 'Invalid inputs'}, status=400)
 
     word_count = int(word_count)
@@ -1428,11 +1460,12 @@ def get_system_expected_amount(request):
         return JsonResponse({'success': False, 'message': 'Invalid word count'}, status=400)
 
     normalized_category = category.upper()
+    price_level = _to_price_master_level(level)
     price_entry = next(
         (
             item for item in PriceMaster.objects.filter(
                 category=normalized_category,
-                level='basic'
+                level=price_level
             )
             if not getattr(item, 'is_deleted', False)
         ),
@@ -1443,10 +1476,11 @@ def get_system_expected_amount(request):
         return JsonResponse({'success': False, 'message': 'Pricing not configured'}, status=404)
 
     # Use _to_float here too
-    amount = _to_float(price_entry.price_per_word) * word_count
+    price_per_word = _to_float(price_entry.price_per_word)
+    amount = price_per_word * word_count
     return JsonResponse({
         'success': True,
-        'price_per_word': _to_float(price_entry.price_per_word),
+        'price_per_word': price_per_word,
         'amount': amount,
     })
 
@@ -1498,8 +1532,25 @@ def view_job_details(request, system_id):
         job_template = job.job_template
         tasks = job_template.tasks.all().order_by('task_number')
     
-    # Get all attachments
+    # Get all attachments with existence check (avoid broken links)
     attachments = job.attachments.all()
+    attachments_display = []
+    for att in attachments:
+        exists = False
+        url = None
+        try:
+            exists = att.file and att.file.storage.exists(att.file.name)
+            if exists:
+                url = att.file.url
+        except Exception as e:
+            logger.warning(f"Attachment missing or unreadable ({att.original_filename}): {e}")
+            exists = False
+            url = None
+        attachments_display.append({
+            'obj': att,
+            'exists': exists,
+            'url': url,
+        })
     
     # Get all summary versions
     summary_versions = job.summary_versions.all().order_by('version_number')
@@ -1622,6 +1673,7 @@ def view_job_details(request, system_id):
         'job_template': job_template,
         'tasks': tasks,
         'attachments': attachments,
+        'attachments_display': attachments_display,
         'summary_versions': summary_versions,
         'timeline_events': timeline_events,
         'job_amount_display': _format_currency(job.amount),

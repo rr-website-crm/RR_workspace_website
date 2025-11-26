@@ -118,11 +118,18 @@
                 
                 <div class="form-group">
                     <label>Category <span style="color: red;">*</span></label>
-                    <select name="category" id="category" class="form-control" required onchange="calculateSystemAmount()">
+                    <select name="category" id="category" class="form-control" required onchange="updateLevelOptions()">
                         <option value="">Select Category</option>
                         {% for value, label in category_choices %}
                         <option value="{{ value }}" {% if job.category == value %}selected{% endif %}>{{ label }}</option>
                         {% endfor %}
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Level <span style="color: red;">*</span></label>
+                    <select name="level" id="level" class="form-control" data-prefill-level="{{ selected_price_level }}" required onchange="calculateSystemAmount()">
+                        <option value="">Select Level</option>
                     </select>
                 </div>
                 
@@ -196,10 +203,15 @@
                     <label>Software (if applicable)</label>
                     <textarea name="software" class="form-control" rows="2" placeholder="e.g., Python 3.9, MATLAB R2021b, etc."></textarea>
                 </div>
+
+                <div class="form-group">
+                    <label>Price Per Word (from Price Master)</label>
+                    <input type="text" id="price_per_word_display" class="form-control" readonly placeholder="Select category and level">
+                </div>
                 
                 <div class="form-group">
                     <label>System Expected Amount (Auto-calculated)</label>
-                    <input type="text" id="system_expected_amount_display" class="form-control" readonly placeholder="Select category and word count" value="{% if job.system_expected_amount %}₹{{ job.system_expected_amount|floatformat:2 }}{% endif %}">
+                    <input type="text" id="system_expected_amount_display" class="form-control" readonly placeholder="Select category and word count" value="{% if job.system_expected_amount %}INR {{ job.system_expected_amount|floatformat:2 }}{% endif %}">
                 </div>
                 
                 <div class="form-group">
@@ -268,6 +280,7 @@
 <script>
     const CSRF_TOKEN = '{{ csrf_token }}';
     const PRICE_MAP = {{ price_map|safe }};
+    const PREFILL_LEVEL = '{{ selected_price_level }}';
     
     function copySummaryToForm() {
         // Copy values from summary to form
@@ -302,22 +315,74 @@
             showNotification('Failed to copy summary', 'error');
         });
     }
+
+    function getCategoryKey(value) {
+        return (value || '').toUpperCase();
+    }
+
+    function getLevelKey(value) {
+        return (value || '').toLowerCase();
+    }
+
+    function updateLevelOptions() {
+        const category = document.getElementById('category').value;
+        const levelSelect = document.getElementById('level');
+        const priceDisplay = document.getElementById('price_per_word_display');
+        const categoryKey = getCategoryKey(category);
+        const levelMap = PRICE_MAP[categoryKey] || {};
+        const currentValue = levelSelect.value;
+        const prefillValue = levelSelect.dataset.prefillLevel || PREFILL_LEVEL || '';
+
+        levelSelect.innerHTML = '<option value="">Select Level</option>';
+        levelSelect.disabled = Object.keys(levelMap).length === 0;
+        priceDisplay.value = '';
+
+        Object.entries(levelMap).forEach(([levelKey, info]) => {
+            const option = document.createElement('option');
+            option.value = levelKey;
+            option.textContent = info.label || levelKey;
+            levelSelect.appendChild(option);
+        });
+
+        let targetLevel = '';
+        if (levelMap[getLevelKey(prefillValue)]) {
+            targetLevel = getLevelKey(prefillValue);
+        } else if (levelMap[getLevelKey(currentValue)]) {
+            targetLevel = getLevelKey(currentValue);
+        } else if (Object.keys(levelMap).length === 1) {
+            targetLevel = Object.keys(levelMap)[0];
+        }
+
+        levelSelect.value = targetLevel;
+        levelSelect.dataset.prefillLevel = '';
+        calculateSystemAmount();
+    }
     
     function calculateSystemAmount() {
         const category = document.getElementById('category').value;
+        const level = document.getElementById('level').value;
         const wordCount = document.getElementById('word_count').value;
         const displayEl = document.getElementById('system_expected_amount_display');
+        const priceDisplayEl = document.getElementById('price_per_word_display');
         
-        if (!category || !wordCount || parseInt(wordCount, 10) <= 0) {
+        if (!category) {
+            priceDisplayEl.value = '';
             displayEl.value = '';
             return;
         }
-        
-        const normalizedCategory = category.toUpperCase();
-        const pricePerWord = PRICE_MAP[normalizedCategory];
-        
-        if (!pricePerWord) {
-            displayEl.value = 'Unavailable';
+
+        const levelData = (PRICE_MAP[getCategoryKey(category)] || {})[getLevelKey(level)];
+        if (!levelData) {
+            priceDisplayEl.value = 'Unavailable';
+            displayEl.value = '';
+            return;
+        }
+
+        const pricePerWord = Number(levelData.price) || 0;
+        priceDisplayEl.value = pricePerWord ? `${formatCurrency(pricePerWord)} / word` : 'Unavailable';
+
+        if (!wordCount || parseInt(wordCount, 10) <= 0) {
+            displayEl.value = '';
             return;
         }
         
@@ -362,11 +427,7 @@
     }
     
     document.addEventListener('DOMContentLoaded', function() {
-        const initialCategory = document.getElementById('category').value;
-        const initialWordCount = document.getElementById('word_count').value;
-        if (initialCategory && initialWordCount) {
-            calculateSystemAmount();
-        }
+        updateLevelOptions();
     });
     
     // Form validation

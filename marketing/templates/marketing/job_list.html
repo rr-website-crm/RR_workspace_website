@@ -59,7 +59,7 @@
                                 {% if job.word_count %}
                                     {{ job.word_count|floatformat:0 }}
                                 {% else %}
-                                    —
+                                    -
                                 {% endif %}
                             </td>
                             <td>
@@ -71,7 +71,7 @@
                                 {% if job.deadline %}
                                     {{ job.deadline|date:"d M Y" }}
                                 {% else %}
-                                    —
+                                    -
                                 {% endif %}
                             </td>
                             <td>
@@ -91,7 +91,7 @@
             {% if jobs.has_other_pages %}
             <div class="pagination">
                 {% if jobs.has_previous %}
-                    <a class="page-link" href="?page={{ jobs.previous_page_number }}">Previous</a>
+                    <a class="page-link" href="-page={{ jobs.previous_page_number }}">Previous</a>
                 {% else %}
                     <span class="page-link disabled">Previous</span>
                 {% endif %}
@@ -99,7 +99,7 @@
                 <span class="page-indicator">Page {{ jobs.number }} of {{ jobs.paginator.num_pages }}</span>
                 
                 {% if jobs.has_next %}
-                    <a class="page-link" href="?page={{ jobs.next_page_number }}">Next</a>
+                    <a class="page-link" href="-page={{ jobs.next_page_number }}">Next</a>
                 {% else %}
                     <span class="page-link disabled">Next</span>
                 {% endif %}
@@ -122,7 +122,7 @@
     <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
         <div>
             <h3 class="card-title">{{ page_title }}</h3>
-            <p class="dashboard-subtitle">Showing {{ jobs|length }} of {{ total_jobs }} jobs</p>
+            <p class="dashboard-subtitle">Showing <span id="visibleCount">{{ jobs|length }}</span> of {{ total_jobs }} jobs</p>
         </div>
 
         <div class="total-chip">
@@ -133,6 +133,25 @@
 
     <div class="card-body">
         {% if jobs %}
+        <div class="table-filters" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 0.75rem; margin-bottom: 1rem;">
+            <input type="text" id="jobSearch" class="form-control" placeholder="Search by System ID, Job ID, or Topic">
+            <select id="jobStatus" class="form-control">
+                <option value="">All Statuses</option>
+                {% for value, label in status_choices %}
+                <option value="{{ value }}">{{ label }}</option>
+                {% endfor %}
+            </select>
+            <select id="jobCategory" class="form-control">
+                <option value="">All Categories</option>
+                {% for value, label in category_choices %}
+                <option value="{{ value }}">{{ label }}</option>
+                {% endfor %}
+            </select>
+            <div style="display: flex; gap: 0.5rem; align-items: center;">
+                <button class="btn btn-primary" type="button" onclick="applyJobFilters()">Search</button>
+                <button class="btn btn-outline" type="button" onclick="resetJobFilters()">Reset</button>
+            </div>
+        </div>
         <div class="table-container table-scroll-lock">
             <table class="data-table">
                 <thead>
@@ -141,17 +160,19 @@
                         <th>System ID</th>
                         <th>Job ID</th>
                         <th>Topic</th>
+                        <th>Category</th>
                         <th>Word Count</th>
                         <th>Status</th>
                         <th>Deadline</th>
                         <th>Allocated To</th>
                         <th>Last Updated</th>
+                        <th>Actions</th>
                     </tr>
                 </thead>
 
                 <tbody>
                     {% for job in jobs %}
-                    <tr>
+                    <tr data-job-row data-status="{{ job.status|default:'' }}" data-category="{{ job.category|default:'' }}" data-search="{{ job.system_id|default:'' }} {{ job.job_id|default:'' }} {{ job.topic|default:'' }}">
                         <td>{{ forloop.counter }}</td>
 
                         <td>{{ job.system_id }}</td>
@@ -162,11 +183,13 @@
                             {{ job.topic|default:"Awaiting summary" }}
                         </td>
 
+                        <td>{{ job.get_category_display|default:"-" }}</td>
+
                         <td>
                             {% if job.word_count %}
                                 {{ job.word_count|floatformat:0 }}
                             {% else %}
-                                —
+                                -
                             {% endif %}
                         </td>
 
@@ -180,7 +203,7 @@
                             {% if job.deadline %}
                                 {{ job.deadline|date:"d M Y" }}
                             {% else %}
-                                —
+                                -
                             {% endif %}
                         </td>
 
@@ -210,7 +233,7 @@
 
             <div class="table-pagination__controls">
                 {% if jobs.has_previous %}
-                <a href="?page={{ jobs.previous_page_number }}" class="table-pagination__btn">‹</a>
+                <a href="-page={{ jobs.previous_page_number }}" class="table-pagination__btn">‹</a>
                 {% else %}
                 <button class="table-pagination__btn" disabled>‹</button>
                 {% endif %}
@@ -220,7 +243,7 @@
 
             <div class="table-pagination__controls">
                 {% if jobs.has_next %}
-                <a href="?page={{ jobs.next_page_number }}" class="table-pagination__btn">›</a>
+                <a href="-page={{ jobs.next_page_number }}" class="table-pagination__btn">›</a>
                 {% else %}
                 <button class="table-pagination__btn" disabled>›</button>
                 {% endif %}
@@ -253,6 +276,53 @@
         {% endif %}
     </div>
 </div>
+
+<script>
+    // Client-side filters for job list
+    function applyJobFilters() {
+        const searchTerm = (document.getElementById('jobSearch').value || '').toLowerCase();
+        const statusFilter = (document.getElementById('jobStatus').value || '').toLowerCase();
+        const categoryFilter = (document.getElementById('jobCategory').value || '').toLowerCase();
+        const rows = document.querySelectorAll('[data-job-row]');
+        let visible = 0;
+
+        rows.forEach(row => {
+            const rowSearch = (row.dataset.search || '').toLowerCase();
+            const rowStatus = (row.dataset.status || '').toLowerCase();
+            const rowCategory = (row.dataset.category || '').toLowerCase();
+
+            // OR across System ID / Job ID / Topic via combined search text
+            const matchesSearch = !searchTerm || rowSearch.includes(searchTerm);
+            const matchesStatus = !statusFilter || rowStatus === statusFilter;
+            const matchesCategory = !categoryFilter || rowCategory === categoryFilter;
+
+            const show = matchesSearch && matchesStatus && matchesCategory;
+            row.style.display = show ? '' : 'none';
+            if (show) visible += 1;
+        });
+
+        const visibleEl = document.getElementById('visibleCount');
+        if (visibleEl) {
+            visibleEl.textContent = visible;
+        }
+    }
+
+    function resetJobFilters() {
+        document.getElementById('jobSearch').value = '';
+        document.getElementById('jobStatus').value = '';
+        document.getElementById('jobCategory').value = '';
+        applyJobFilters();
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        ['jobSearch', 'jobStatus', 'jobCategory'].forEach(id => {
+            const el = document.getElementById(id);
+            if (!el) return;
+            el.addEventListener('input', applyJobFilters);
+            el.addEventListener('change', applyJobFilters);
+        });
+    });
+</script>
 
 <style>
 .job-list-header {

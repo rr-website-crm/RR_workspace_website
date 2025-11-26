@@ -100,20 +100,26 @@
                     </div>
                     
                     <div class="detail-item full-width">
-                        <label class="detail-label">Attachments ({{ attachments.count }})</label>
+                        <label class="detail-label">Attachments ({{ attachments_display|length }})</label>
                         <div class="detail-value">
-                            {% if attachments %}
+                            {% if attachments_display %}
                                 <ul style="list-style: none; padding: 0; margin: 0;">
-                                    {% for attachment in attachments %}
+                                    {% for attachment in attachments_display %}
                                     <li style="padding: 0.5rem; background: rgba(255,255,255,0.05); border-radius: 4px; margin-bottom: 0.5rem; display: flex; justify-content: space-between; align-items: center;">
                                         <div>
                                             <svg width="16" height="16" style="vertical-align: middle; margin-right: 0.5rem;" viewBox="0 0 24 24" fill="none">
                                                 <path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z" stroke="currentColor" stroke-width="2"/>
                                                 <polyline points="13 2 13 9 20 9" stroke="currentColor" stroke-width="2"/>
                                             </svg>
-                                            {{ attachment.original_filename }}
+                                            {% if attachment.exists and attachment.url %}
+                                                <a href="{{ attachment.url }}" target="_blank" rel="noopener" style="color: inherit; text-decoration: underline;">
+                                                    {{ attachment.obj.original_filename }}
+                                                </a>
+                                            {% else %}
+                                                {{ attachment.obj.original_filename }} <span style="color: #f87171;">(file missing)</span>
+                                            {% endif %}
                                         </div>
-                                        <span style="color: rgba(255,255,255,0.6); font-size: 0.875rem;">{{ attachment.file_size|filesizeformat }}</span>
+                                        <span style="color: rgba(255,255,255,0.6); font-size: 0.875rem;">{{ attachment.obj.file_size|filesizeformat }}</span>
                                     </li>
                                     {% endfor %}
                                 </ul>
@@ -134,17 +140,41 @@
             </div>
             <div class="card-body">
                 <div class="detail-grid">
-                    {% if job_template %}
                     <div class="detail-item">
-                        <label class="detail-label">Masking ID</label>
-                        <div class="detail-value">
-                            <span style="font-family: monospace; background: rgba(139, 92, 246, 0.2); padding: 0.25rem 0.5rem; border-radius: 4px; color: #a78bfa;">
-                                {{ job_template.masking_id }}
-                            </span>
-                        </div>
+                        <label class="detail-label">Topic</label>
+                        <div class="detail-value">{{ job.topic|default:"N/A" }}</div>
                     </div>
-                    {% endif %}
-                    
+
+                    <div class="detail-item">
+                        <label class="detail-label">Category</label>
+                        <div class="detail-value">{{ job.get_category_display|default:"N/A" }}</div>
+                    </div>
+
+                    <div class="detail-item">
+                        <label class="detail-label">Level</label>
+                        <div class="detail-value">{{ job.get_level_display|default:"N/A" }}</div>
+                    </div>
+
+                    <div class="detail-item">
+                        <label class="detail-label">Word Count</label>
+                        <div class="detail-value">{{ job.word_count|default:"N/A" }}</div>
+                    </div>
+
+                    <div class="detail-item">
+                        <label class="detail-label">Referencing Style</label>
+                        <div class="detail-value">{{ job.get_referencing_style_display|default:"N/A" }}</div>
+                    </div>
+
+                    <div class="detail-item">
+                        <label class="detail-label">Writing Style</label>
+                        <div class="detail-value">{{ job.get_writing_style_display|default:"N/A" }}</div>
+                    </div>
+
+                    <div class="detail-item full-width">
+                        <label class="detail-label">Instruction</label>
+                        <div class="detail-value" style="white-space: pre-wrap;">{{ job.instruction }}</div>
+                    </div>
+
                     <div class="detail-item">
                         <label class="detail-label">Template</label>
                         <div class="detail-value">{{ job.template.template_name|default:"N/A" }}</div>
@@ -156,7 +186,7 @@
                     </div>
                     
                     <div class="detail-item">
-                        <label class="detail-label">Expected Deadline</label>
+                        <label class="detail-label">Expected Deadline (IST)</label>
                         <div class="detail-value">
                             {% if job.expected_deadline %}
                                 {{ job.expected_deadline|date:"d M Y, g:i A" }}
@@ -167,7 +197,7 @@
                     </div>
                     
                     <div class="detail-item">
-                        <label class="detail-label">Strict Deadline</label>
+                        <label class="detail-label">Strict Deadline (IST)</label>
                         <div class="detail-value">
                             {% if job.strict_deadline %}
                                 <span style="color: #ef4444;">{{ job.strict_deadline|date:"d M Y, g:i A" }}</span>
@@ -177,6 +207,18 @@
                         </div>
                     </div>
                     
+
+                    <div class="detail-item">
+                        <label class="detail-label">System Expected Amount (Auto-calculated)</label>
+                        <div class="detail-value">
+                            {% if job_system_amount_display is not None %}
+                                ₹{{ job_system_amount_display }}
+                            {% else %}
+                                N/A
+                            {% endif %}
+                        </div>
+                    </div>
+
                     <div class="detail-item">
                         <label class="detail-label">Amount</label>
                         <div class="detail-value">
@@ -188,21 +230,38 @@
                         </div>
                     </div>
                     
-                    <div class="detail-item">
-                        <label class="detail-label">System Expected Amount</label>
-                        <div class="detail-value">
-                            {% if job_system_amount_display is not None %}
-                                ₹{{ job_system_amount_display }}
-                            {% else %}
-                                N/A
-                            {% endif %}
-                        </div>
-                    </div>
-                    
                     {% if job.software %}
                     <div class="detail-item full-width">
-                        <label class="detail-label">Software Requirements</label>
+                        <label class="detail-label">Software (if applicable)</label>
                         <div class="detail-value" style="white-space: pre-wrap;">{{ job.software }}</div>
+                    </div>
+                    {% endif %}
+
+                    {% if attachments_display %}
+                    <div class="detail-item full-width">
+                        <label class="detail-label">All Attachments</label>
+                        <div class="detail-value">
+                            <ul style="list-style: none; padding-left: 0; margin: 0;">
+                                {% for attachment in attachments_display %}
+                                <li style="padding: 0.5rem; background: rgba(255,255,255,0.05); border-radius: 4px; margin-bottom: 0.5rem; display: flex; justify-content: space-between; align-items: center;">
+                                    <div>
+                                        <svg width="16" height="16" style="vertical-align: middle; margin-right: 0.5rem;" viewBox="0 0 24 24" fill="none">
+                                            <path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z" stroke="currentColor" stroke-width="2"/>
+                                            <polyline points="13 2 13 9 20 9" stroke="currentColor" stroke-width="2"/>
+                                        </svg>
+                                        {% if attachment.exists and attachment.url %}
+                                            <a href="{{ attachment.url }}" target="_blank" rel="noopener" style="color: inherit; text-decoration: underline;">
+                                                {{ attachment.obj.original_filename }}
+                                            </a>
+                                        {% else %}
+                                            {{ attachment.obj.original_filename }} <span style="color: #f87171;">(file missing)</span>
+                                        {% endif %}
+                                    </div>
+                                    <span style="color: rgba(255,255,255,0.6); font-size: 0.875rem;">{{ attachment.obj.file_size|filesizeformat }}</span>
+                                </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
                     </div>
                     {% endif %}
                 </div>

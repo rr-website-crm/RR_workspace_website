@@ -88,76 +88,85 @@
 <div class="card mb-4">
     <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
         <h2 class="card-title" style="margin: 0;">Draft Jobs</h2>
-        <span class="status-tag status-pending" style="background: rgba(255, 152, 0, 0.2); color: #FF9800;">{{ draft_jobs.count }} Draft{{ draft_jobs.count|pluralize }}</span>
+        <span class="status-tag status-pending">{{ draft_jobs.count }} Draft{{ draft_jobs.count|pluralize }}</span>
     </div>
+
     <div class="card-body">
-        <div class="table-responsive">
-            <table class="table table-hover">
-                <thead>
-                    <tr>
-                        <th>SL No</th>
-                        <th>System ID</th>
-                        <th>Job ID</th>
-                        <th>Topic</th>
-                        <th>Word Count</th>
-                        <th>Category</th>
-                        <th>Status</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for job in draft_jobs %}
-                    <tr>
-                        <td>{{ forloop.counter }}</td>
-                        <td><strong>{{ job.system_id }}</strong></td>
-                        <td>{{ job.job_id }}</td>
-                        <td>{{ job.topic|default:"Not Generated" }}</td>
-                        <td>{{ job.word_count|default:"-" }}</td>
-                        <td>
-                            {% if job.writing_style %}
-                                {{ job.writing_style|title }}
-                            {% else %}
-                                -
-                            {% endif %}
-                        </td>
-                        <td>
-                            <span class="status-tag status-pending">Draft</span>
-                        </td>
-                        <td>
-                            <div class="btn-group-sm" style="display: flex; gap: 0.5rem;">
-                                <a href="{% url 'view_job_details' job.system_id %}" class="btn btn-sm btn-primary" title="View Details">
-                                    VIEW
-                                </a>
-                                
-                                {% if job.status == 'draft' %}
-                                    <a href="{% url 'create_job' %}?job_id={{ job.system_id }}" class="btn btn-sm btn-warning" title="Edit Initial Form">
-                                        EDIT
-                                    </a>
-                                {% elif job.status == 'pending' %}
-                                    <a href="{% url 'final_job_form' system_id=job.system_id %}" class="btn btn-sm btn-success" title="Complete Final Step">
-                                        COMPLETE
-                                    </a>
-                                {% endif %}
-                            </div>
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
+        {% if draft_jobs %}
+            <div class="table-container">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>SL No</th>
+                            <th>System ID</th>
+                            <th>Job ID</th>
+                            <th>Topic</th>
+                            <th>Word Count</th>
+                            <th>Category</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for job in draft_jobs %}
+                        <tr>
+                            <td>{{ forloop.counter }}</td>
+                            <td><strong>{{ job.system_id }}</strong></td>
+                            <td>#{{ job.job_id }}</td>
+                            <td>{{ job.topic|default:"Not Generated" }}</td>
+                            <td>{{ job.word_count|default:"-" }}</td>
+                            <td>{{ job.writing_style|title|default:"-" }}</td>
+                            <td><span class="status-tag status-pending">Draft</span></td>
+                            <td>
+                                <div style="display: flex; gap: 0.5rem;">
+                                    <a href="{% url 'view_job_details' job.system_id %}" class="btn btn-outline" style="padding: 0.4rem 0.9rem; font-size: 0.85rem;">View</a>
+
+                                    {% if job.status == 'draft' %}
+                                    <a href="{% url 'create_job' %}?job_id={{ job.system_id }}" class="btn btn-primary" style="padding: 0.4rem 0.9rem; font-size: 0.85rem;">Edit</a>
+                                    {% elif job.status == 'pending' %}
+                                    <a href="{% url 'final_job_form' system_id=job.system_id %}" class="btn btn-primary" style="padding: 0.4rem 0.9rem; font-size: 0.85rem;">Complete</a>
+                                    {% endif %}
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% endif %}
     </div>
 </div>
 {% endif %}
 
+
 <!-- Recent Activities -->
 <div class="card mb-4">
-    <div class="card-header">
-        <h2 class="card-title">Recent Activities</h2>
+    <div class="card-header" style="display: flex; justify-content: space-between; align-items: center; gap: 1rem; flex-wrap: wrap;">
+        <h2 class="card-title" style="margin: 0;">Recent Activities</h2>
+        <div class="table-filters" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 0.75rem; width: 100%; margin-top: 0.5rem;">
+            <input type="text" id="recentSearch" class="form-control" placeholder="Search by System ID, Job ID, or Topic">
+            <select id="recentStatus" class="form-control">
+                <option value="">All Statuses</option>
+                {% for value, label in status_choices %}
+                <option value="{{ value }}">{{ label }}</option>
+                {% endfor %}
+            </select>
+            <select id="recentCategory" class="form-control">
+                <option value="">All Categories</option>
+                {% for value, label in category_choices %}
+                <option value="{{ value }}">{{ label }}</option>
+                {% endfor %}
+            </select>
+            <div style="display: flex; gap: 0.5rem; align-items: center;">
+                <button class="btn btn-primary" type="button" onclick="applyRecentFilters()">Search</button>
+                <button class="btn btn-outline" type="button" onclick="resetRecentFilters()">Reset</button>
+            </div>
+        </div>
     </div>
     <div class="card-body">
         {% if recent_activities %}
-            <div class="table-responsive">
-                <table class="table table-hover">
+            <div class="table-container">
+                <table class="data-table">
                     <thead>
                         <tr>
                             <th>SL No</th>
@@ -173,10 +182,10 @@
                     </thead>
                     <tbody>
                         {% for activity in recent_activities %}
-                        <tr>
+                        <tr data-recent-row data-status="{{ activity.status|default:'' }}" data-category="{{ activity.category|default:'' }}" data-search="{{ activity.system_id|default:'' }} {{ activity.job_id|default:'' }} {{ activity.topic|default:'' }}">
                             <td>{{ forloop.counter }}</td>
                             <td><strong>{{ activity.system_id }}</strong></td>
-                            <td>{{ activity.job_id }}</td>
+                            <td>#{{ activity.job_id }}</td>
                             <td>{{ activity.topic|truncatewords:8 }}</td>
                             <td>{{ activity.word_count|default:"-" }}</td>
                             <td>{{ activity.deadline|date:"d/m/Y"|default:"-" }}</td>
@@ -185,38 +194,17 @@
                                     {{ activity.get_status_display }}
                                 </span>
                             </td>
+                            <td>{{ activity.get_category_display|default:"-" }}</td>
                             <td>
-                                {% if activity.writing_style %}
-                                    {{ activity.writing_style|title }}
-                                {% else %}
-                                    -
-                                {% endif %}
-                            </td>
-                            <td>
-                                <div class="btn-group-sm">
+                                <div style="display:flex; gap:0.5rem;">
                                     {% if activity.status == 'draft' %}
-                                        <a href="{% url 'create_job' %}?job_id={{ activity.system_id }}" class="btn btn-sm btn-warning" title="Edit Initial Form">
-                                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                <path d="M17 3L21 7L8 20H4V16L17 3Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                                            </svg>
-                                            EDIT
-                                        </a>
+                                    <a href="{% url 'create_job' %}?job_id={{ activity.system_id }}" class="btn btn-outline" style="padding:0.4rem 0.9rem; font-size:0.85rem;">Edit</a>
+
                                     {% elif activity.status == 'pending' %}
-                                        <a href="{% url 'final_job_form' system_id=activity.system_id %}" class="btn btn-sm btn-success" title="Complete Final Step">
-                                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                <polyline points="9 11 12 14 22 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                                                <path d="M21 12V19C21 19.5304 20.7893 20.0391 20.4142 20.4142C20.0391 20.7893 19.5304 21 19 21H5C4.46957 21 3.96086 20.7893 3.58579 20.4142C3.21071 20.0391 3 19.5304 3 19V5C3 4.46957 3.21071 3.96086 3.58579 3.58579C3.96086 3.21071 4.46957 3 5 3H16" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                                            </svg>
-                                            FINAL STEP
-                                        </a>
+                                    <a href="{% url 'final_job_form' system_id=activity.system_id %}" class="btn btn-outline" style="padding:0.4rem 0.9rem; font-size:0.85rem;">Final Step</a>
+
                                     {% else %}
-                                        <a href="{% url 'view_job_details' activity.system_id %}" class="btn btn-sm btn-primary" title="View Details">
-                                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                <path d="M1 12C1 12 5 4 12 4C19 4 23 12 23 12C23 12 19 20 12 20C5 20 1 12 1 12Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                                                <circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="2"/>
-                                            </svg>
-                                            VIEW
-                                        </a>
+                                    <a href="{% url 'view_job_details' activity.system_id %}" class="btn btn-outline" style="padding:0.4rem 0.9rem; font-size:0.85rem;">View</a>
                                     {% endif %}
                                 </div>
                             </td>
@@ -226,17 +214,53 @@
                 </table>
             </div>
         {% else %}
-            <div style="text-align: center; padding: 3rem; color: var(--text-color); opacity: 0.6;">
-                <svg width="64" height="64" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="margin-bottom: 1rem; opacity: 0.5;">
-                    <path d="M9 11L12 14L22 4" stroke="currentColor" stroke-width="2"/>
-                    <path d="M21 12V19C21 19.5304 20.7893 20.0391 20.4142 20.4142C20.0391 20.7893 19.5304 21 19 21H5C4.46957 21 3.96086 20.7893 3.58579 20.4142C3.21071 20.0391 3 19.5304 3 19V5C3 4.46957 3.21071 3.96086 3.58579 3.58579C3.96086 3.21071 4.46957 3 5 3H16" stroke="currentColor" stroke-width="2"/>
-                </svg>
-                <p style="font-size: 1.1rem; margin-bottom: 0.5rem;">No Recent Activities</p>
-                <p style="font-size: 0.9rem; opacity: 0.7;">Your recent activities will appear here</p>
+            <div style="text-align: center; padding: 4rem 2rem; color: var(--text-color); opacity:0.6;">
+                <h3 style="font-size:1.2rem; margin-bottom:0.5rem;">No Recent Activities</h3>
+                <p style="font-size:0.9rem;">Your recent activities will appear here</p>
             </div>
         {% endif %}
     </div>
 </div>
+
+
+<script>
+    // Recent Activities filter (client-side; no page reload)
+    function applyRecentFilters() {
+        const searchTerm = (document.getElementById('recentSearch').value || '').toLowerCase();
+        const statusFilter = (document.getElementById('recentStatus').value || '').toLowerCase();
+        const categoryFilter = (document.getElementById('recentCategory').value || '').toLowerCase();
+
+        const rows = document.querySelectorAll('[data-recent-row]');
+        rows.forEach(row => {
+            const rowSearch = (row.dataset.search || '').toLowerCase();
+            const rowStatus = (row.dataset.status || '').toLowerCase();
+            const rowCategory = (row.dataset.category || '').toLowerCase();
+
+            // OR across System ID / Job ID / Topic via combined search string
+            const matchesSearch = !searchTerm || rowSearch.includes(searchTerm);
+            const matchesStatus = !statusFilter || rowStatus === statusFilter;
+            const matchesCategory = !categoryFilter || rowCategory === categoryFilter;
+
+            row.style.display = (matchesSearch && matchesStatus && matchesCategory) ? '' : 'none';
+        });
+    }
+
+    function resetRecentFilters() {
+        document.getElementById('recentSearch').value = '';
+        document.getElementById('recentStatus').value = '';
+        document.getElementById('recentCategory').value = '';
+        applyRecentFilters();
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        ['recentSearch', 'recentStatus', 'recentCategory'].forEach(id => {
+            const el = document.getElementById(id);
+            if (!el) return;
+            el.addEventListener('input', applyRecentFilters);
+            el.addEventListener('change', applyRecentFilters);
+        });
+    });
+</script>
 
 <style>
     .stat-card {
