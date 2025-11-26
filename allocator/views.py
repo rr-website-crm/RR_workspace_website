@@ -5,17 +5,148 @@ from django.contrib import messages
 from django.utils import timezone
 from django.utils.dateparse import parse_datetime
 from django.db.models import Q, Count, Sum
-from django.core.paginator import Paginator
 from django.http import JsonResponse
 from django.views.decorators.http import require_http_methods
+from django.urls import reverse
+from django.core.paginator import Paginator
 from accounts.models import CustomUser
+from marketing.models import Job as MarketingJob, log_job_activity
 from .models import (
     Job, TaskAllocation, WriterProfile, ProcessTeamProfile,
     JobQuery, AllocationHistory, CountryBankingResource
 )
-from marketing.models import Job as MarketingJob
 import logging
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, date
+import pytz
+
+
+PORTAL_STATUS_DISPLAY = {
+    'draft': 'Draft',
+    'pending': 'Unallocated',
+    'unallocated': 'Unallocated',
+    'allocated': 'Allocated',
+    'in_progress': 'Allocated',
+    'active': 'Active',
+    'hold': 'Hold',
+    'query': 'Query',
+    'completed': 'Closed',
+    'close': 'Closed',
+    'cancelled': 'Closed',
+    'cancel_complete': 'Closed',
+}
+
+STATUS_FILTER_MAP = {
+    'unallocated': ['pending', 'unallocated', 'draft'],
+    'allocated': ['allocated', 'in_progress', 'active'],
+    'closed': ['completed', 'cancelled', 'close', 'cancel_complete'],
+}
+
+IST_TZ = pytz.timezone('Asia/Kolkata')
+
+
+TASK_CONFIG = {
+    'content_creation': {
+        'label': 'Content Creation',
+        'description': 'Assign writers and manage the content production window.',
+        'status_choices': [
+            ('in_progress', 'In Progress'),
+            ('hold', 'Hold'),
+            ('completed', 'Close'),
+        ],
+        'allowed_roles': ['writer'],
+        'dependent_on': None,
+    },
+    'ai_plag': {
+        'label': 'AI & Plagiarism',
+        'description': 'Process team review after content is produced.',
+        'status_choices': [
+            ('in_progress', 'In Progress'),
+            ('hold', 'Hold'),
+            ('completed', 'Close'),
+        ],
+        'allowed_roles': ['process'],
+        'dependent_on': 'content_creation',
+    },
+    'decoration': {
+        'label': 'Decoration',
+        'description': 'Formatting & delivery polish across teams.',
+        'status_choices': [
+            ('in_progress', 'In Progress'),
+            ('hold', 'Hold'),
+            ('completed', 'Close'),
+        ],
+        'allowed_roles': ['writer', 'process'],
+        'dependent_on': 'ai_plag',
+    },
+}
+
+
+def _parse_datetime_input(value):
+    if not value:
+        return None
+    dt = parse_datetime(value)
+    if not dt:
+        return None
+    if timezone.is_naive(dt):
+        dt = timezone.make_aware(dt)
+    return dt
+
+
+def _recent_load_count(user_id, task_type):
+    threshold = timezone.now() - timedelta(hours=4)
+    return TaskAllocation.objects.filter(
+        allocated_to_id=user_id,
+        task_type=task_type,
+        allocated_at__gte=threshold
+    ).count()
+
+
+def _sync_allocator_status(job):
+    allocations = list(job.task_allocations.all())
+    if not allocations:
+        return
+    if all(
+        alloc.status == 'completed'
+        for alloc in allocations
+        if alloc.allocated_to_id
+    ):
+        new_status = 'completed'
+    elif any(
+        alloc.task_type == 'content_creation' and alloc.status == 'in_progress'
+        for alloc in allocations
+    ):
+        new_status = 'in_progress'
+    elif any(alloc.allocated_to_id for alloc in allocations):
+        new_status = 'allocated'
+    else:
+        new_status = 'pending'
+    if job.status != new_status:
+        job.status = new_status
+        job.save(update_fields=['status'])
+
+
+def _derive_allocator_recent_status(marketing_job, allocator_job):
+    if allocator_job and allocator_job.status == 'cancelled':
+        return 'Cancel'
+    if allocator_job:
+        tasks = list(allocator_job.task_allocations.all())
+        if tasks and all(
+            task.status == 'completed'
+            for task in tasks
+            if task.allocated_to_id
+        ):
+            return 'Close'
+        content_task = next(
+            (task for task in tasks if task.task_type == 'content_creation'),
+            None
+        )
+        if content_task and content_task.status == 'in_progress':
+            return 'InProgress'
+        if any(task.allocated_to_id for task in tasks):
+            return 'Assigned'
+    if marketing_job.status in {'cancelled', 'cancel_complete'}:
+        return 'Cancel'
+    return 'Unallocated'
 
 logger = logging.getLogger('allocator')
 
@@ -30,6 +161,107 @@ def role_required(allowed_roles):
             return view_func(request, *args, **kwargs)
         return wrapper
     return decorator
+
+
+@login_required
+@role_required(['allocator'])
+def all_projects(request):
+    """List all marketing jobs with filters and pagination."""
+    search_query = (request.GET.get('q') or '').strip()
+    status_filter = (request.GET.get('status') or 'all').lower()
+    start_date_str = (request.GET.get('start_date') or '').strip()
+    end_date_str = (request.GET.get('end_date') or '').strip()
+
+    jobs_qs = MarketingJob.objects.filter(
+        status__iexact='unallocated'
+    ).select_related('created_by').order_by('-created_at')
+
+    if search_query:
+        jobs_qs = jobs_qs.filter(
+            Q(job_id__icontains=search_query) |
+            Q(system_id__icontains=search_query) |
+            Q(topic__icontains=search_query)
+        )
+
+    status_values = STATUS_FILTER_MAP.get(status_filter)
+    if status_values:
+        jobs_qs = jobs_qs.filter(status__in=status_values)
+
+    def _parse_date(value, is_end=False):
+        if not value:
+            return None
+        try:
+            date_obj = datetime.strptime(value, '%Y-%m-%d')
+        except ValueError:
+            return None
+        if is_end:
+            date_obj = date_obj.replace(hour=23, minute=59, second=59)
+        aware_dt = IST_TZ.localize(date_obj)
+        return aware_dt.astimezone(timezone.utc)
+
+    start_dt = _parse_date(start_date_str)
+    end_dt = _parse_date(end_date_str, is_end=True)
+
+    if start_dt:
+        jobs_qs = jobs_qs.filter(created_at__gte=start_dt)
+    if end_dt:
+        jobs_qs = jobs_qs.filter(created_at__lte=end_dt)
+
+    paginator = Paginator(jobs_qs, 15)
+    jobs_page = paginator.get_page(request.GET.get('page'))
+
+    for job in jobs_page:
+        job.portal_status = PORTAL_STATUS_DISPLAY.get(
+            job.status,
+            (job.get_status_display() if hasattr(job, 'get_status_display') else job.status.replace('_', ' ')).title()
+        )
+        job.marketing_owner = job.created_by.get_full_name() if job.created_by else 'System'
+
+    preserved_query = request.GET.copy()
+    if 'page' in preserved_query:
+        preserved_query.pop('page')
+
+    context = {
+        'user': request.user,
+        'jobs_page': jobs_page,
+        'filters': {
+            'q': search_query,
+            'status': status_filter,
+            'start_date': start_date_str,
+            'end_date': end_date_str,
+        },
+        'status_options': [
+            ('all', 'All'),
+            ('unallocated', 'Unallocated'),
+            ('allocated', 'Allocated'),
+            ('closed', 'Closed'),
+        ],
+        'preserved_query': preserved_query.urlencode(),
+    }
+
+    return render(request, 'allocator/all_projects.html', context)
+
+
+@login_required
+@role_required(['allocator'])
+def all_projects_detail(request, system_id):
+    """View marketing job details for allocator overview."""
+    job = get_object_or_404(
+        MarketingJob.objects.select_related('created_by').prefetch_related('attachments'),
+        system_id=system_id
+    )
+
+    job.portal_status = PORTAL_STATUS_DISPLAY.get(
+        job.status,
+        (job.get_status_display() if hasattr(job, 'get_status_display') else job.status.replace('_', ' ')).title()
+    )
+
+    context = {
+        'user': request.user,
+        'job': job,
+        'attachments': job.attachments.all(),
+    }
+    return render(request, 'allocator/all_project_detail.html', context)
 
 
 @login_required
@@ -63,11 +295,19 @@ def allocator_dashboard(request):
         if is_active:
             role_counts[role] += 1
 
+    marketing_total_jobs = MarketingJob.objects.count()
+    marketing_pending_jobs = MarketingJob.objects.filter(
+        status__in=['pending', 'unallocated', 'draft']
+    ).count()
+    marketing_new_jobs = MarketingJob.objects.filter(
+        created_at__gte=week_ago
+    ).count()
+
     stats = {
-        'total_jobs': len(jobs_all),
-        'pending_allocation': sum(1 for job in jobs_all if job.status == 'pending'),
+        'total_jobs': marketing_total_jobs,
+        'pending_allocation': marketing_pending_jobs,
         'assigned_jobs': sum(1 for alloc in allocations_raw if alloc['status'] == 'in_progress'),
-        'new_jobs': sum(1 for job in jobs_all if normalize_datetime(job.created_at) >= week_ago),
+        'new_jobs': marketing_new_jobs,
         'in_progress': sum(1 for job in jobs_all if job.status == 'in_progress'),
         'cancelled': sum(1 for job in jobs_all if job.status == 'cancelled'),
         'hold': sum(1 for job in jobs_all if job.status == 'hold'),
@@ -80,38 +320,57 @@ def allocator_dashboard(request):
         'total_process_team': role_counts['process'],
     }
 
-    # Recent marketing jobs (24h, status unallocated/pending)
-    recent_cutoff = now - timedelta(hours=24)
-    marketing_recent = MarketingJob.objects.select_related('created_by').filter(
-        created_at__gte=recent_cutoff
-    ).order_by('-created_at')
+    jobs = sorted(
+        jobs_all,
+        key=lambda job: normalize_datetime(job.created_at),
+        reverse=True
+    )[:10]
 
-    def map_status(marketing_status):
-        val = (marketing_status or '').lower()
-        if val in ('unallocated', 'pending'):
-            return 'Unallocated'
-        if val in ('allocated', 'in_progress'):
-            return 'Assigned'
-        if val in ('completed', 'cancelled', 'close', 'closed'):
-            return 'Close'
-        if val in ('hold',):
-            return 'Hold'
-        if val in ('query',):
-            return 'Query'
-        return marketing_status or 'Unknown'
+    # Recent marketing jobs (24h window, unallocated)
+    recent_window_start = now - timedelta(hours=24)
+    marketing_recent_qs = MarketingJob.objects.filter(
+        created_at__gte=recent_window_start,
+        status__iexact='unallocated'
+    ).select_related('created_by').order_by('-created_at')
+
+    system_ids = [job.system_id for job in marketing_recent_qs]
+    allocator_jobs_map = {
+        item.masking_id: item
+        for item in Job.objects.filter(masking_id__in=system_ids).prefetch_related('task_allocations__allocated_to')
+    }
 
     recent_jobs = []
-    for job in marketing_recent:
+    for idx, marketing_job in enumerate(marketing_recent_qs, 1):
+        allocator_job = allocator_jobs_map.get(marketing_job.system_id)
+        derived_status = _derive_allocator_recent_status(marketing_job, allocator_job)
+        raw_deadline = marketing_job.deadline or marketing_job.strict_deadline or marketing_job.expected_deadline
+        deadline_value = raw_deadline
+        deadline_has_time = isinstance(raw_deadline, datetime)
+        if isinstance(raw_deadline, datetime):
+            if timezone.is_naive(raw_deadline):
+                deadline_value = timezone.make_aware(raw_deadline)
+            deadline_value = timezone.localtime(deadline_value)
+        detail_url = (
+            reverse('view_job_details', args=[allocator_job.id])
+            if allocator_job else
+            reverse('allocator_all_project_detail', args=[marketing_job.system_id])
+        )
+        status_label = derived_status or 'Unallocated'
         recent_jobs.append({
-            'system_id': job.system_id,
-            'job_id': job.job_id,
-            'topic': job.topic,
-            'word_count': job.word_count,
-            'deadline': job.strict_deadline or job.expected_deadline or job.deadline,
-            'created_by': job.created_by.get_full_name() if getattr(job, 'created_by', None) else 'Marketing',
-            'status_display': map_status(job.status),
-            'status_raw': job.status or '',
-            'category': job.category or '-',
+            'sl_no': idx,
+            'system_id': marketing_job.system_id,
+            'job_id': marketing_job.job_id,
+            'topic': marketing_job.topic or '--',
+            'word_count': marketing_job.word_count or '--',
+            'deadline': deadline_value,
+            'deadline_has_time': deadline_has_time,
+            'marketing_owner': marketing_job.created_by.get_full_name() if marketing_job.created_by else 'System',
+            'category': marketing_job.get_category_display() if marketing_job.category else '--',
+            'status': derived_status,
+            'status_display': status_label,
+            'allocator_job_id': getattr(allocator_job, 'id', None),
+            'row_href': detail_url,
+            'view_url': detail_url,
         })
 
     raw_activities = list(
@@ -160,6 +419,7 @@ def allocator_dashboard(request):
     context = {
         'user': user,
         'stats': stats,
+        'jobs': jobs,
         'recent_jobs': recent_jobs,
         'recent_activities': recent_activities,
         'today_date': now,
@@ -216,112 +476,6 @@ def pending_allocation(request):
     }
     
     return render(request, 'allocator/pending_allocation.html', context)
-
-
-@login_required
-@role_required(['allocator'])
-def all_projects(request):
-    """
-    List all marketing jobs for allocator with search, status, and date range filters.
-    """
-    search = request.GET.get('search', '').strip()
-    status_filter = request.GET.get('status', '').strip().lower()
-    start_date = request.GET.get('start_date', '').strip()
-    end_date = request.GET.get('end_date', '').strip()
-
-    status_buckets = {
-        'unallocated': ['unallocated', 'pending'],
-        'allocated': ['allocated', 'in_progress'],
-        'closed': ['completed', 'cancelled'],
-        'hold': ['hold'],
-        'active': ['active'],
-        'query': ['query'],
-        'draft': ['draft'],
-    }
-
-    jobs_qs = MarketingJob.objects.select_related('created_by').all().order_by('-created_at')
-
-    if search:
-        jobs_qs = jobs_qs.filter(
-            Q(system_id__icontains=search)
-            | Q(job_id__icontains=search)
-            | Q(topic__icontains=search)
-        )
-
-    if status_filter:
-        if status_filter in status_buckets:
-            jobs_qs = jobs_qs.filter(status__in=status_buckets[status_filter])
-        else:
-            jobs_qs = jobs_qs.filter(status__iexact=status_filter)
-
-    def parse_date(date_str):
-        try:
-            return datetime.strptime(date_str, '%Y-%m-%d').date()
-        except Exception:
-            return None
-
-    start_dt = parse_date(start_date)
-    end_dt = parse_date(end_date)
-    if start_dt:
-        jobs_qs = jobs_qs.filter(created_at__date__gte=start_dt)
-    if end_dt:
-        jobs_qs = jobs_qs.filter(created_at__date__lte=end_dt)
-
-    paginator = Paginator(jobs_qs, 25)
-    page_number = request.GET.get('page')
-    jobs_page = paginator.get_page(page_number)
-
-    status_options = [
-        ('', 'All Statuses'),
-        ('unallocated', 'Unallocated'),
-        ('allocated', 'Allocated'),
-        ('closed', 'Closed'),
-        ('hold', 'Hold'),
-        ('active', 'Active'),
-        ('cancelled', 'Cancelled'),
-        ('in_progress', 'In Progress'),
-        ('query', 'Query'),
-        ('draft', 'Draft'),
-        ('completed', 'Completed'),
-        ('pending', 'Pending'),
-    ]
-
-    context = {
-        'user': request.user,
-        'jobs': jobs_page,
-        'search': search,
-        'status_filter': status_filter,
-        'start_date': start_date,
-        'end_date': end_date,
-        'status_options': status_options,
-        'total_jobs': jobs_qs.count(),
-    }
-    return render(request, 'allocator/all_projects.html', context)
-
-
-@login_required
-@role_required(['allocator'])
-def all_project_detail(request, system_id):
-    """Simple detail view for marketing job in allocator portal."""
-    job = get_object_or_404(MarketingJob.objects.select_related('created_by'), system_id=system_id)
-
-    def _display_status(value):
-        if not value:
-            return 'Unknown'
-        value_lower = value.lower()
-        if value_lower in ('completed', 'cancelled'):
-            return 'Closed'
-        if value_lower in ('allocated', 'in_progress'):
-            return 'Allocated'
-        if value_lower in ('unallocated', 'pending'):
-            return 'Unallocated'
-        return value.replace('_', ' ').title()
-
-    context = {
-        'job': job,
-        'status_display': _display_status(job.status),
-    }
-    return render(request, 'allocator/all_project_detail.html', context)
 
 
 @login_required
@@ -897,6 +1051,8 @@ def all_writers(request):
     
     writer_data = []
     total_it_writers = 0
+    total_nonit_writers = 0
+    total_finance_writers = 0
     available_writers = 0
     engaged_writers = 0
 
@@ -915,8 +1071,14 @@ def all_writers(request):
                 profile.is_sunday_off or profile.is_on_holiday or profile.is_overloaded
             ) else 'Not Available'
 
-            if specializations['it']:
+            assigned_category = (writer.department or '').strip()
+            normalized_category = assigned_category.lower()
+            if normalized_category == 'it':
                 total_it_writers += 1
+            elif normalized_category in {'non-it', 'nonit'}:
+                total_nonit_writers += 1
+            elif normalized_category == 'finance':
+                total_finance_writers += 1
             if availability_status == 'Available':
                 available_writers += 1
             if engagement.get('engaged_jobs', 0) > 0:
@@ -928,6 +1090,7 @@ def all_writers(request):
                 'engagement': engagement,
                 'specializations': specializations,
                 'availability_status': availability_status,
+                'assigned_category': assigned_category or ''
             })
         except WriterProfile.DoesNotExist:
             # Create profile if doesn't exist
@@ -938,6 +1101,8 @@ def all_writers(request):
         'writer_data': writer_data,
         'writer_stats': {
             'total_it': total_it_writers,
+            'total_nonit': total_nonit_writers,
+            'total_finance': total_finance_writers,
             'available': available_writers,
             'engaged': engaged_writers,
         },
@@ -1054,44 +1219,270 @@ def view_job_details(request, job_id):
     """View detailed job information with all allocations"""
     
     job = get_object_or_404(Job.objects.select_related('created_by', 'allocated_by'), id=job_id)
+    job_category_upper = (job.job_category or '').upper()
 
+    marketing_job = None
+    initial_form_data = []
+    final_form_data = []
+    attachment_entries = []
+
+    if job.masking_id:
+        marketing_job = MarketingJob.objects.filter(
+            system_id=job.masking_id
+        ).select_related('created_by').prefetch_related('attachments').first()
+
+    if marketing_job:
+        initial_form_data = [
+            {'label': 'Instruction', 'value': marketing_job.instruction or '--'},
+            {'label': 'Category', 'value': marketing_job.get_category_display() if marketing_job.category else '--'},
+            {'label': 'Level', 'value': marketing_job.get_level_display() if marketing_job.level else '--'},
+            {'label': 'Created At', 'value': marketing_job.created_at},
+        ]
+        final_form_data = [
+            {'label': 'Topic', 'value': marketing_job.topic or '--'},
+            {'label': 'Word Count', 'value': marketing_job.word_count or '--'},
+            {'label': 'Deadline', 'value': marketing_job.deadline},
+            {'label': 'Writing Style', 'value': marketing_job.get_writing_style_display() if marketing_job.writing_style else '--'},
+            {'label': 'Referencing', 'value': marketing_job.get_referencing_style_display() if marketing_job.referencing_style else '--'},
+        ]
+        for attachment in marketing_job.attachments.all():
+            attachment_entries.append({
+                'source': 'Marketing',
+                'name': attachment.original_filename,
+                'url': attachment.file.url,
+                'uploaded_at': attachment.uploaded_at,
+            })
+
+    if job.attachment:
+        attachment_entries.append({
+            'source': 'Allocator',
+            'name': job.attachment.name.split('/')[-1],
+            'url': job.attachment.url,
+            'uploaded_at': job.created_at,
+        })
+    if job.structure_file:
+        attachment_entries.append({
+            'source': 'Allocator',
+            'name': job.structure_file.name.split('/')[-1],
+            'url': job.structure_file.url,
+            'uploaded_at': job.created_at,
+        })
+
+    # Prepare task data
+    task_allocations = list(
+        TaskAllocation.objects.filter(job=job).select_related('allocated_to').order_by('task_type')
+    )
+    allocation_map = {alloc.task_type: alloc for alloc in task_allocations}
+
+    writer_qs = CustomUser.objects.filter(role='writer', is_active=True).select_related('writer_profile')
+    if job_category_upper == 'IT':
+        writer_qs = writer_qs.filter(writer_profile__is_it_writer=True)
+    writer_options = []
+    for writer in writer_qs:
+        load_count = _recent_load_count(writer.id, 'content_creation')
+        writer_options.append({
+            'id': writer.id,
+            'label': writer.get_full_name() or writer.email,
+            'load': load_count,
+            'available': getattr(writer.writer_profile, 'is_available', True) if hasattr(writer, 'writer_profile') else True,
+        })
+
+    process_qs = CustomUser.objects.filter(role='process', is_active=True).select_related('process_profile')
+    process_options = []
+    for member in process_qs:
+        load_count = _recent_load_count(member.id, 'ai_plag')
+        process_options.append({
+            'id': member.id,
+            'label': member.get_full_name() or member.email,
+            'load': load_count,
+            'available': getattr(member.process_profile, 'is_available', True) if hasattr(member, 'process_profile') else True,
+        })
+
+    decoration_options = process_options + writer_options
+    options_map = {
+        'content_creation': writer_options,
+        'ai_plag': process_options,
+        'decoration': decoration_options,
+    }
+
+    task_panels = []
+    for code, config in TASK_CONFIG.items():
+        allocation = allocation_map.get(code)
+        dependent_ready = True
+        dependent_code = config.get('dependent_on')
+        if dependent_code:
+            dep_alloc = allocation_map.get(dependent_code)
+            dependent_ready = bool(dep_alloc and dep_alloc.allocated_to_id)
+        task_panels.append({
+            'code': code,
+            'label': config['label'],
+            'description': config['description'],
+            'allocation': allocation,
+            'options': options_map.get(code, []),
+            'status_choices': config['status_choices'],
+            'locked': not dependent_ready and code != 'content_creation',
+            'dependent_label': TASK_CONFIG.get(dependent_code, {}).get('label') if dependent_code else None,
+        })
+
+    # GET or POST handling
     if request.method == 'POST':
-        if not job.can_have_query():
-            messages.error(request, 'Queries are not enabled for this job (requires degree 1-5 with software support).')
+        action = request.POST.get('action')
+        if action == 'update_task':
+            if request.user.role != 'allocator':
+                messages.error(request, 'Only allocators can update task assignments.')
+                return redirect('view_job_details', job_id=job_id)
+            task_type = request.POST.get('task_type')
+            config = TASK_CONFIG.get(task_type)
+            if not config:
+                messages.error(request, 'Unknown task type.')
+                return redirect('view_job_details', job_id=job_id)
+
+            dependent_code = config.get('dependent_on')
+            if dependent_code:
+                prerequisite = TaskAllocation.objects.filter(job=job, task_type=dependent_code).first()
+                if not prerequisite or not prerequisite.allocated_to_id:
+                    messages.error(request, f'{config["label"]} unlocks after assigning {TASK_CONFIG[dependent_code]["label"]}.')
+                    return redirect('view_job_details', job_id=job_id)
+
+            status_value = request.POST.get('status')
+            allowed_statuses = {choice[0] for choice in config['status_choices']}
+            if status_value not in allowed_statuses:
+                messages.error(request, 'Invalid status option.')
+                return redirect('view_job_details', job_id=job_id)
+
+            member_ids = request.POST.getlist('assigned_members')
+            member = None
+            if member_ids:
+                try:
+                    member = CustomUser.objects.get(id=int(member_ids[0]))
+                except (ValueError, CustomUser.DoesNotExist):
+                    messages.error(request, 'Selected team member was not found.')
+                    return redirect('view_job_details', job_id=job_id)
+
+                if member.role not in config['allowed_roles']:
+                    messages.error(request, f"{config['label']} can only be assigned to {', '.join(config['allowed_roles'])} roles.")
+                    return redirect('view_job_details', job_id=job_id)
+
+                if task_type == 'content_creation' and job_category_upper == 'IT':
+                    profile = getattr(member, 'writer_profile', None)
+                    if not profile or not profile.is_it_writer:
+                        messages.error(request, 'IT jobs require IT-certified writers.')
+                        return redirect('view_job_details', job_id=job_id)
+
+            start_dt = _parse_datetime_input(request.POST.get('start_datetime')) or timezone.now()
+            end_dt = _parse_datetime_input(request.POST.get('end_datetime')) or (start_dt + timedelta(hours=2))
+            if end_dt <= start_dt:
+                messages.error(request, 'End date must be after start date.')
+                return redirect('view_job_details', job_id=job_id)
+
+            allocation, created = TaskAllocation.objects.get_or_create(
+                job=job,
+                task_type=task_type,
+                defaults={
+                    'allocated_by': request.user,
+                    'allocated_to': member,
+                    'start_date_time': start_dt,
+                    'end_date_time': end_dt,
+                    'status': status_value,
+                }
+            )
+            if not created:
+                allocation.allocated_by = request.user
+                allocation.allocated_to = member
+                allocation.start_date_time = start_dt
+                allocation.end_date_time = end_dt
+                allocation.status = status_value
+            allocation.save()
+            _sync_allocator_status(job)
+            messages.success(request, f'{config["label"]} updated successfully.')
+            logger.info(f"{config['label']} updated for {job.masking_id} by {request.user.email}")
             return redirect('view_job_details', job_id=job_id)
 
-        query_text = (request.POST.get('query_text') or '').strip()
-        if len(query_text) < 10:
-            messages.error(request, 'Please provide a detailed query (minimum 10 characters).')
+        elif action == 'close_job':
+            all_completed = all(
+                panel['allocation'] and panel['allocation'].status == 'completed'
+                for panel in task_panels
+            )
+            if not all_completed:
+                messages.error(request, 'All tasks must be closed before marking the job as complete.')
+                return redirect('view_job_details', job_id=job_id)
+            job.status = 'completed'
+            job.save(update_fields=['status'])
+            if marketing_job:
+                marketing_job.status = 'completed'
+                marketing_job.save(update_fields=['status'])
+                log_job_activity(
+                    marketing_job,
+                    'job.completed',
+                    performed_by=request.user,
+                    metadata={'source': 'allocator_portal'}
+                )
+            messages.success(request, 'Job marked as closed.')
             return redirect('view_job_details', job_id=job_id)
 
-        JobQuery.objects.create(
-            job=job,
-            task_allocation=None,
-            raised_by=request.user,
-            query_text=query_text,
-            status='open'
-        )
-        messages.success(request, 'Query submitted successfully and is now pending review.')
-        logger.info(f"Query raised for job {job.masking_id} by {request.user.email}")
-        return redirect('view_job_details', job_id=job_id)
+        elif action == 'cancel_job':
+            cancel_reason = (request.POST.get('cancel_reason') or '').strip()
+            if len(cancel_reason) < 10:
+                messages.error(request, 'Please provide a brief justification (at least 10 characters).')
+                return redirect('view_job_details', job_id=job_id)
+            job.status = 'cancelled'
+            job.allocator_comment = cancel_reason
+            job.save(update_fields=['status', 'allocator_comment'])
+            if marketing_job:
+                marketing_job.status = 'cancelled'
+                marketing_job.save(update_fields=['status'])
+                log_job_activity(
+                    marketing_job,
+                    'job.cancelled',
+                    performed_by=request.user,
+                    metadata={'reason': cancel_reason, 'source': 'allocator_portal'}
+                )
+            messages.success(request, 'Job cancelled successfully.')
+            return redirect('view_job_details', job_id=job_id)
 
-    # Get all task allocations for this job
-    task_allocations = TaskAllocation.objects.filter(job=job).select_related(
-        'allocated_to'
-    ).order_by('task_type')
-    
-    # Get queries for this job
+        elif action == 'raise_query':
+            if not job.can_have_query():
+                messages.error(request, 'Queries are not enabled for this job (requires degree 1-5 with software support).')
+                return redirect('view_job_details', job_id=job_id)
+
+            query_text = (request.POST.get('query_text') or '').strip()
+            if len(query_text) < 10:
+                messages.error(request, 'Please provide a detailed query (minimum 10 characters).')
+                return redirect('view_job_details', job_id=job_id)
+
+            JobQuery.objects.create(
+                job=job,
+                task_allocation=None,
+                raised_by=request.user,
+                query_text=query_text,
+                status='open'
+            )
+            messages.success(request, 'Query submitted successfully and is now pending review.')
+            logger.info(f"Query raised for job {job.masking_id} by {request.user.email}")
+            return redirect('view_job_details', job_id=job_id)
+
     queries = JobQuery.objects.filter(job=job).select_related(
         'raised_by', 'resolved_by'
     ).order_by('-created_at')
-    
+
+    all_tasks_completed = all(
+        panel['allocation'] and panel['allocation'].status == 'completed'
+        for panel in task_panels
+    )
+
     context = {
         'user': request.user,
         'job': job,
-        'task_allocations': task_allocations,
+        'marketing_job': marketing_job,
+        'initial_form_data': initial_form_data,
+        'final_form_data': final_form_data,
+        'attachments': attachment_entries,
+        'task_panels': task_panels,
         'queries': queries,
         'can_have_query': job.can_have_query(),
+        'today_date': timezone.now(),
+        'all_tasks_completed': all_tasks_completed,
+        'job_category_upper': job_category_upper,
     }
     
     return render(request, 'allocator/view_job_details.html', context)
@@ -1119,3 +1510,116 @@ def approve_comment(request, job_id):
         
     except Job.DoesNotExist:
         return JsonResponse({'success': False, 'error': 'Job not found'}, status=404)
+
+
+
+
+@login_required
+@role_required(['allocator'])
+def all_project_detail(request, system_id):
+    """Simple detail view for marketing job in allocator portal."""
+    job = get_object_or_404(MarketingJob.objects.select_related('created_by'), system_id=system_id)
+
+    def _display_status(value):
+        if not value:
+            return 'Unknown'
+        value_lower = value.lower()
+        if value_lower in ('completed', 'cancelled'):
+            return 'Closed'
+        if value_lower in ('allocated', 'in_progress'):
+            return 'Allocated'
+        if value_lower in ('unallocated', 'pending'):
+            return 'Unallocated'
+        return value.replace('_', ' ').title()
+
+    context = {
+        'job': job,
+        'status_display': _display_status(job.status),
+    }
+    return render(request, 'allocator/all_project_detail.html', context)
+
+
+
+
+
+
+
+@login_required
+@role_required(['allocator'])
+def all_projects(request):
+    """
+    List all marketing jobs for allocator with search, status, and date range filters.
+    """
+    search = request.GET.get('search', '').strip()
+    status_filter = request.GET.get('status', '').strip().lower()
+    start_date = request.GET.get('start_date', '').strip()
+    end_date = request.GET.get('end_date', '').strip()
+
+    status_buckets = {
+        'unallocated': ['unallocated', 'pending'],
+        'allocated': ['allocated', 'in_progress'],
+        'closed': ['completed', 'cancelled'],
+        'hold': ['hold'],
+        'active': ['active'],
+        'query': ['query'],
+        'draft': ['draft'],
+    }
+
+    jobs_qs = MarketingJob.objects.select_related('created_by').all().order_by('-created_at')
+
+    if search:
+        jobs_qs = jobs_qs.filter(
+            Q(system_id__icontains=search)
+            | Q(job_id__icontains=search)
+            | Q(topic__icontains=search)
+        )
+
+    if status_filter:
+        if status_filter in status_buckets:
+            jobs_qs = jobs_qs.filter(status__in=status_buckets[status_filter])
+        else:
+            jobs_qs = jobs_qs.filter(status__iexact=status_filter)
+
+    def parse_date(date_str):
+        try:
+            return datetime.strptime(date_str, '%Y-%m-%d').date()
+        except Exception:
+            return None
+
+    start_dt = parse_date(start_date)
+    end_dt = parse_date(end_date)
+    if start_dt:
+        jobs_qs = jobs_qs.filter(created_at__date__gte=start_dt)
+    if end_dt:
+        jobs_qs = jobs_qs.filter(created_at__date__lte=end_dt)
+
+    paginator = Paginator(jobs_qs, 25)
+    page_number = request.GET.get('page')
+    jobs_page = paginator.get_page(page_number)
+
+    status_options = [
+        ('', 'All Statuses'),
+        ('unallocated', 'Unallocated'),
+        ('allocated', 'Allocated'),
+        ('closed', 'Closed'),
+        ('hold', 'Hold'),
+        ('active', 'Active'),
+        ('cancelled', 'Cancelled'),
+        ('in_progress', 'In Progress'),
+        ('query', 'Query'),
+        ('draft', 'Draft'),
+        ('completed', 'Completed'),
+        ('pending', 'Pending'),
+    ]
+
+    context = {
+        'user': request.user,
+        'jobs': jobs_page,
+        'search': search,
+        'status_filter': status_filter,
+        'start_date': start_date,
+        'end_date': end_date,
+        'status_options': status_options,
+        'total_jobs': jobs_qs.count(),
+    }
+    return render(request, 'allocator/all_projects.html', context)

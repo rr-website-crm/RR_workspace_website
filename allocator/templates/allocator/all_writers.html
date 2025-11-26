@@ -37,17 +37,13 @@
                         <td>{{ writer.user.email }}</td>
                         <td>{{ writer.user.employee_id|default:"N/A" }}</td>
                         <td>
-                            <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
-                                {% if writer.specializations.it %}
-                                    <span class="status-tag" style="background-color: rgba(33, 150, 243, 0.2); color: #2196F3; font-size: 0.75rem;">IT</span>
-                                {% endif %}
-                                {% if writer.specializations.non_it %}
-                                    <span class="status-tag" style="background-color: rgba(156, 39, 176, 0.2); color: #9C27B0; font-size: 0.75rem;">Non-IT</span>
-                                {% endif %}
-                                {% if writer.specializations.finance %}
-                                    <span class="status-tag" style="background-color: rgba(76, 175, 80, 0.2); color: #4CAF50; font-size: 0.75rem;">Finance</span>
-                                {% endif %}
-                            </div>
+                            {% if writer.assigned_category %}
+                                <span class="status-tag" style="text-transform:uppercase;font-size:0.8rem;">
+                                    {{ writer.assigned_category }}
+                                </span>
+                            {% else %}
+                                <span style="opacity:0.6;">Not set</span>
+                            {% endif %}
                         </td>
                         <td>
                             <strong>{{ writer.engagement.engaged_jobs }}</strong> / {{ writer.profile.max_jobs }}
@@ -105,7 +101,35 @@
                 {{ writer_stats.total_it }}
             </div>
             <div style="text-align: center; margin-top: 0.5rem; opacity: 0.8;">
-                Total IT Specialist Writers
+                Total IT Specialists
+            </div>
+        </div>
+    </div>
+    
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">Non-IT Writers</h3>
+        </div>
+        <div class="card-body">
+            <div style="font-size: 2rem; font-weight: 700; color: #9C27B0; text-align: center;">
+                {{ writer_stats.total_nonit }}
+            </div>
+            <div style="text-align: center; margin-top: 0.5rem; opacity: 0.8;">
+                Total Non-IT Specialists
+            </div>
+        </div>
+    </div>
+    
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">Finance Writers</h3>
+        </div>
+        <div class="card-body">
+            <div style="font-size: 2rem; font-weight: 700; color: #4CAF50; text-align: center;">
+                {{ writer_stats.total_finance }}
+            </div>
+            <div style="text-align: center; margin-top: 0.5rem; opacity: 0.8;">
+                Total Finance Specialists
             </div>
         </div>
     </div>
@@ -115,7 +139,7 @@
             <h3 class="card-title">Available Writers</h3>
         </div>
         <div class="card-body">
-            <div style="font-size: 2rem; font-weight: 700; color: #4CAF50; text-align: center;">
+            <div style="font-size: 2rem; font-weight: 700; color: #00BCD4; text-align: center;">
                 {{ writer_stats.available }}
             </div>
             <div style="text-align: center; margin-top: 0.5rem; opacity: 0.8;">
