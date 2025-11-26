@@ -47,7 +47,80 @@ def _decimal_to_float(value):
     except (TypeError, ValueError):
         return None
 
+def _to_float(value, default=0.0):
+    """Convert values to float, tolerating Decimal128 and returning a default on failure."""
+    if value is None:
+        return default
+    if Decimal128 and isinstance(value, Decimal128):
+        try:
+            return float(value.to_decimal())
+        except Exception:
+            return default
+    try:
+        return float(value)
+    except (TypeError, ValueError):
+        return default
 
+def _to_price_master_level(level_value):
+    """Map job-friendly level values to PriceMaster stored values."""
+    if not level_value:
+        return None
+    normalized = str(level_value).strip().lower()
+    if normalized == 'advanced':
+        return 'advance'
+    return normalized
+
+def _normalize_word_count(value):
+    """Coerce word count into an integer. If a range is given, pick the max."""
+    if value is None:
+        return None
+    # Already numeric
+    if isinstance(value, (int, float)):
+        return int(value)
+    # Extract digits from strings like "3500-4000" and use the maximum
+    import re
+    numbers = re.findall(r'\d+', str(value))
+    if not numbers:
+        return None
+    return max(int(n) for n in numbers)
+
+def _normalize_level(value):
+    """Normalize level to allowed choices."""
+    if not value:
+        return None
+    normalized = str(value).strip().lower()
+    mapping = {
+        'basic': 'basic',
+        'beginner': 'basic',
+        'intermediate': 'intermediate',
+        'mid': 'intermediate',
+        'middle': 'intermediate',
+        'advanced': 'advanced',
+        'advance': 'advanced',
+    }
+    return mapping.get(normalized, None)
+
+def _infer_level(word_count=None, instruction_text=None, category=None):
+    """Heuristic fallback to guess level when model does not specify."""
+    wc = _normalize_word_count(word_count)
+    text = (instruction_text or "").lower()
+    # Keyword cues
+    advanced_keywords = ['phd', 'doctoral', 'masters', 'master', 'dissertation', 'thesis', 'capstone']
+    intermediate_keywords = ['case study', 'critical analysis', 'research', 'evaluation']
+    if any(k in text for k in advanced_keywords):
+        return 'advanced'
+    if any(k in text for k in intermediate_keywords):
+        return 'intermediate'
+    # Word-count heuristic
+    if wc is not None:
+        if wc >= 4000:
+            return 'advanced'
+        if wc >= 2000:
+            return 'intermediate'
+    # Category heuristic (finance/it often mid+)
+    if category and str(category).upper() in ('FINANCE', 'IT'):
+        return 'intermediate'
+    return 'basic'
 def role_required(allowed_roles):
     """Decorator to restrict access based on user role"""
     def decorator(view_func):
@@ -92,6 +165,8 @@ def marketing_dashboard(request):
         'draft_jobs': draft_jobs,
         'recent_activities': recent_activities,
         'today_date': timezone.now(),
+        'status_choices': Job.STATUS_CHOICES,
+        'category_choices': Job.CATEGORY_CHOICES,
     }
     
     logger.info(f"Marketing dashboard accessed by: {user.email}")
@@ -158,7 +233,9 @@ def _render_job_list(request, queryset, page_title, filter_description=None,
             'description': empty_description or 'Try adjusting the filters or create a new job to get started.',
             'cta_url': reverse('create_job'),
             'cta_label': 'Create Job'
-        }
+        },
+        'status_choices': Job.STATUS_CHOICES,
+        'category_choices': Job.CATEGORY_CHOICES,
     }
     return render(request, template_name, context)
 def validate_file(file):
@@ -238,6 +315,8 @@ def save_initial_form(request):
         instruction = request.POST.get('instruction', '').strip()
         files = request.FILES.getlist('attachments')
         system_id = request.POST.get('system_id')  # If editing existing
+        remove_ids = request.POST.getlist('remove_attachments')
+        replace_flag = request.POST.get('replace_attachments') == 'true'
         
         # Validation
         if not job_id:
@@ -249,30 +328,49 @@ def save_initial_form(request):
                 'message': f'Instruction must be at least 50 characters. Current: {len(instruction)}'
             }, status=400)
         
-        if not files:
-            return JsonResponse({'success': False, 'message': 'At least one attachment is required'}, status=400)
-        
+        # Validate each new file
         if len(files) > 10:
             return JsonResponse({'success': False, 'message': 'Maximum 10 files allowed'}, status=400)
-        
-        # Validate each file
         for file in files:
             is_valid, msg = validate_file(file)
             if not is_valid:
                 return JsonResponse({'success': False, 'message': msg}, status=400)
+
+        # Determine attachment counts (existing + new) based on requested operations
+        existing_remaining = 0
+        if system_id:
+            job = Job.objects.get(system_id=system_id, created_by=request.user)
+            if replace_flag:
+                # Replace wipes all existing, so only new uploads remain
+                existing_remaining = 0
+            else:
+                # Keep everything except the ones explicitly marked for removal
+                existing_remaining = job.attachments.exclude(id__in=remove_ids).count()
+        else:
+            job = None
+
+        total_after = existing_remaining + len(files)
+        if total_after <= 0:
+            return JsonResponse({'success': False, 'message': 'At least one attachment is required (keep existing or upload new files).'}, status=400)
+        if total_after > 10:
+            return JsonResponse({'success': False, 'message': 'Maximum 10 attachments allowed including existing and new.'}, status=400)
         
         with transaction.atomic():
             # Create or update job
             if system_id:
-                job = Job.objects.get(system_id=system_id, created_by=request.user)
+                job = Job.objects.filter(system_id=system_id, created_by=request.user).order_by('-created_at').first()
+                if not job:
+                    return JsonResponse({'success': False, 'message': 'Job not found'}, status=404)
                 job.job_id = job_id
                 job.instruction = instruction
                 job.initial_form_last_saved_at = timezone.now()
                 
                 # Delete old attachments if replacing
-                if request.POST.get('replace_attachments') == 'true':
+                if replace_flag:
                     job.attachments.all().delete()
-                
+                else:
+                    if remove_ids:
+                        job.attachments.filter(id__in=remove_ids).delete()                
                 log_action = 'initial_form_saved'
                 event_key = JOB_EVENTS['initial_saved']
             else:
@@ -288,6 +386,10 @@ def save_initial_form(request):
                 )
                 log_action = 'created'
                 event_key = JOB_EVENTS['created']
+            
+            # Ensure the job is saved before related objects
+            job.save()
+            job.refresh_from_db()
             
             # Save attachments
             for file in files:
@@ -308,7 +410,7 @@ def save_initial_form(request):
                 details={
                     'job_id': job_id,
                     'instruction_length': len(instruction),
-                    'attachments_count': len(files)
+                    'attachments_count': total_after
                 }
             )
             
@@ -322,7 +424,7 @@ def save_initial_form(request):
                     'job_system_id': system_id,
                     'job_id': job_id,
                     'instruction_length': len(instruction),
-                    'attachments_count': len(files),
+                    'attachments_count': total_after,
                     'status': 'draft'
                 }
             )
@@ -371,95 +473,132 @@ def generate_ai_summary(request):
         # UPDATED: Extract REAL TEXT from PDF, DOCX and Image OCR
         # -------------------------------------------------------------------
         attachments_text = []
+        attachments_summary = []
         for attachment in job.attachments.all():
             try:
                 ext = attachment.get_file_extension().lower()
                 file_path = attachment.file.path
-
-                # -------- PDF Extraction --------
+                file_name = attachment.original_filename
+			 # -------- PDF Extraction --------
                 if ext == ".pdf":
                     try:
-                        from pdfminer.high_level import extract_text
-                        pdf_text = extract_text(file_path)
-
+                        pdf_text = ""
+                        try:
+                            from pdfminer.high_level import extract_text
+                            pdf_text = extract_text(file_path) or ""
+                        except ImportError:
+                            # Fallback to PyPDF2 if pdfminer not installed
+                            try:
+                                import PyPDF2
+                                with open(file_path, "rb") as fh:
+                                    reader = PyPDF2.PdfReader(fh)
+                                    pdf_text = "\n".join(page.extract_text() or "" for page in reader.pages)
+                            except Exception as e_fallback:
+                                logger.warning(f"PDF fallback extraction error for {file_name}: {e_fallback}")
+                                pdf_text = ""
                         if pdf_text.strip():
                             attachments_text.append(
-                                f"[PDF TEXT - {attachment.original_filename}]\n{pdf_text}"
+                                f"=== FILE: {file_name} (PDF) ===\n{pdf_text}\n=== END OF {file_name} ===\n"
                             )
+                            attachments_summary.append(f"✓ {file_name} (PDF - {len(pdf_text)} chars)")
                         else:
-                            attachments_text.append(
-                                f"[PDF - {attachment.original_filename}] (No extractable text)"
-                            )
-                    except Exception:
-                        attachments_text.append(
-                            f"[PDF - {attachment.original_filename}] (Unable to extract text)"
-                        )
+                            attachments_text.append(f"[PDF - {file_name}] (No extractable text)")
+                            attachments_summary.append(f"⚠ {file_name} (PDF - No text)")
+                    except Exception as e:
+                        logger.warning(f"PDF extraction error for {file_name}: {str(e)}")
+                        attachments_text.append(f"[PDF - {file_name}] (Extraction failed: {str(e)})")
+                        attachments_summary.append(f"✗ {file_name} (PDF - Failed)")
+                
 
-                # -------- DOCX Extraction --------
+				# -------- DOCX Extraction --------
                 elif ext == ".docx":
                     try:
                         import docx
                         doc = docx.Document(file_path)
-
-                        docx_text = "\n".join(
-                            [p.text for p in doc.paragraphs if p.text.strip()]
-                        )
-
+                        
+                        # Extract paragraphs
+                        paragraphs = [p.text for p in doc.paragraphs if p.text.strip()]
+                        
+                        # Extract tables
+                        tables_text = []
+                        for table in doc.tables:
+                            for row in table.rows:
+                                row_text = ' | '.join([cell.text.strip() for cell in row.cells])
+                                if row_text.strip():
+                                    tables_text.append(row_text)
+                        
+                        docx_text = "\n".join(paragraphs)
+                        if tables_text:
+                            docx_text += "\n\nTABLES:\n" + "\n".join(tables_text)
+                        
                         if docx_text.strip():
                             attachments_text.append(
-                                f"[DOCX TEXT - {attachment.original_filename}]\n{docx_text}"
+                                f"=== FILE: {file_name} (DOCX) ===\n{docx_text}\n=== END OF {file_name} ===\n"
                             )
+                            attachments_summary.append(f"✓ {file_name} (DOCX - {len(docx_text)} chars)")
                         else:
-                            attachments_text.append(
-                                f"[DOCX - {attachment.original_filename}] (Empty or unreadable)"
-                            )
-                    except:
-                        attachments_text.append(
-                            f"[DOCX - {attachment.original_filename}] (Unable to extract text)"
-                        )
-
+                            attachments_text.append(f"[DOCX - {file_name}] (Empty or unreadable)")
+                            attachments_summary.append(f"⚠ {file_name} (DOCX - Empty)")
+                    except Exception as e:
+                        logger.error(f"DOCX extraction error for {file_name}: {str(e)}")
+                        attachments_text.append(f"[DOCX - {file_name}] (Extraction failed: {str(e)})")
+                        attachments_summary.append(f"✗ {file_name} (DOCX - Failed)")
+                
                 # -------- IMAGE OCR --------
                 elif ext in ['.png', '.jpg', '.jpeg']:
                     try:
                         from PIL import Image
                         import pytesseract
-
-                        img_text = pytesseract.image_to_string(Image.open(file_path))
-
+                        
+                        img = Image.open(file_path)
+                        # Try OCR with better configuration
+                        img_text = pytesseract.image_to_string(
+                            img,
+                            config='--psm 6'  # Assume uniform block of text
+                        )
+                        
                         if img_text.strip():
                             attachments_text.append(
-                                f"[IMAGE OCR - {attachment.original_filename}]\n{img_text}"
+                                f"=== FILE: {file_name} (IMAGE OCR) ===\n{img_text}\n=== END OF {file_name} ===\n"
                             )
+                            attachments_summary.append(f"✓ {file_name} (Image - {len(img_text)} chars OCR)")
                         else:
-                            attachments_text.append(
-                                f"[IMAGE - {attachment.original_filename}] (No readable text)"
-                            )
-                    except Exception:
-                        attachments_text.append(
-                            f"[IMAGE - {attachment.original_filename}] (OCR not available)"
-                        )
-
+                            attachments_text.append(f"[IMAGE - {file_name}] (No readable text)")
+                            attachments_summary.append(f"⚠ {file_name} (Image - No text)")
+                    except Exception as e:
+                        logger.error(f"OCR error for {file_name}: {str(e)}")
+                        attachments_text.append(f"[IMAGE - {file_name}] (OCR failed: {str(e)})")
+                        attachments_summary.append(f"✗ {file_name} (Image - OCR failed)")
                 else:
-                    attachments_text.append(
-                        f"[Unsupported File - {attachment.original_filename}]"
-                    )
-
+                    attachments_text.append(f"[Unsupported File Type - {file_name}]")
+                    attachments_summary.append(f"⚠ {file_name} (Unsupported type)")
+                    
             except Exception as e:
-                logger.error(f"Error processing attachment: {str(e)}")
-                attachments_text.append(
-                    f"[Error reading {attachment.original_filename}]"
-                )
+                logger.error(f"Error processing attachment {attachment.original_filename}: {str(e)}")
+                attachments_text.append(f"[Error reading {attachment.original_filename}: {str(e)}]")
+                attachments_summary.append(f"✗ {attachment.original_filename} (Error)")
+        
+        # Create attachment summary for logging
+        attachment_info = "\n".join(attachments_summary) if attachments_summary else "No attachments processed"
+        logger.info(f"Attachment processing summary for {system_id}:\n{attachment_info}")
 
         # -------------------------------------------------------------------
         # OpenAI Prompt (UNCHANGED BY REQUEST)
         # -------------------------------------------------------------------
+        attachments_content = "\n\n".join(attachments_text) if attachments_text else "No attachments or no readable content found in attachments."
+        
         prompt = f"""You are an Assignment Analysis Agent for a technical academic writing and student assignment support company. Your role is to carefully analyze the job instruction and any attachments provided.
-
+			CRITICAL INSTRUCTIONS:
+			1. Read and analyze ALL provided content thoroughly - both instruction text AND all attachment contents
+			2. Extract information from EVERY file provided in the attachments section
+			3. If multiple files are provided, synthesize information from ALL of them
+			4. Pay special attention to requirements, specifications, learning outcomes, rubrics, and technical details in attachments
+			5. If attachments contain assignment briefs, rubrics, or requirements - USE THEM as primary source
             RULE FOR ANALYSIS:
             - If attachments are available, analyze BOTH the instruction and the attachment content.
             - If attachments are NOT available or contain no readable text, analyze ONLY the instruction.
             - Do NOT generate any default summary; base all analysis strictly on the given content.
-
+			TASK: Analyze the job instruction and ALL attachments to extract the following information:
             Your tasks include:
             - Identifying whether the assignment requires the use of any specific software; if yes, specify the exact software name and version (if mentioned or typically required).
             - Providing a detailed task breakdown for any software-related work.
@@ -477,40 +616,67 @@ def generate_ai_summary(request):
             {job.instruction}
 
             ATTACHMENTS:
-            {chr(10).join(attachments_text) if attachments_text else 'No text content available'}
+            {attachments_content}
 
             Generate a detailed JSON response with the following fields:
 
-            1. **topic**: Extract or generate a clear, specific topic. If mentioned in instruction, use it. Otherwise, create based on content.
 
-            2. **word_count**: use the word count that provide in the instruction or attachment , dont assume any wordcount.
+            1. **Topic**: Extract the exact topic/title from instruction or attachments. If not explicitly stated, create a clear, specific topic based on the content.
 
-            3. **referencing_style**: use the referencing style  that provide in the instruction or attachment , dont assume any referencing style.
+			2. **Word Count**: Extract the EXACT word count mentioned in instruction or attachments. If not specified, DO NOT assume - leave as null.And check if there is a limit or range (e.g., "3000-3500 words") and extract the maximum number in that case. Check all attachments for this info. and check all words related to word count like "length", "words", "pages", etc.
 
-            4. **writing_style**: Identify the writing style required. Choose from: proposal, report, essay, dissertation, business_report, personal_development, reflection_writing, case_study from attachment or instrution , if there is not present dont assume any.
+			3. **Referencing Style**: Extract the EXACT referencing style mentioned (Harvard, APA, MLA, IEEE, Vancouver, Chicago). If not specified, leave as null. DO NOT assume.
 
-            5. **job_summary**: Write a DETAILED summary (minimum 200 words) that includes:
-            - Full analysis of assignment requirements based on instruction and attachments
-            - Whether any software is required (with software name and version if relevant)
-            - If software is required, provide a detailed breakdown of software-based tasks
-            - Whether a PowerPoint is needed, number of slides, and estimated words per slide
-            - Whether a LaTeX file or poster is needed
-            - Specific tools, frameworks, or technical environments required
-            - Any case studies, companies, datasets, or examples referenced
-            - Key deliverables and expected outputs
-            - Structure, format, and academic expectations
-            - Any timelines, milestones, or special notes
+			4. **Writing Style**: Identify the writing style from: proposal, report, essay, dissertation, business_report, personal_development, reflection_writing, case_study. If not specified, leave as null.
 
-            IMPORTANT: Never generate the actual solution. Only analyze the requirements clearly and professionally.
+			5. **Category**: Determine if this is IT, NON-IT, or FINANCE based on:
+			   - IT: Programming, software development, databases, networks, web development, apps, algorithms, data structures, cybersecurity
+			   - FINANCE: Accounting, financial analysis, investment, banking, economics, financial management, budgeting
+			   - NON-IT: All other subjects (business, marketing, HR, psychology, nursing, etc.)
 
-            Return ONLY valid JSON in this format:
-            {{
-                "topic": "...",
-                "word_count": 0,
-                "referencing_style": "...",
-                "writing_style": "...",
-                "job_summary": "..."
-            }}"""
+			6. **Level**: Determine the academic/complexity level using cues from learning outcomes, grading rubrics, and task complexity:
+			   - Basic: Undergraduate level 1-2, simple concepts, basic analysis
+			   - Intermediate: Undergraduate level 3-4, moderate complexity, good analysis required
+			   - Advanced: Masters/PhD level, complex analysis, research-oriented, critical evaluation
+
+			7. **Software**: If ANY specific software, tools, or programming languages are mentioned or required, list them. Examples:
+			   - Programming: Python, Java, C++, JavaScript, R, MATLAB etc.
+			   - Data Analysis: SPSS, Excel, Tableau, Power BI
+			   - Design: AutoCAD, SolidWorks, Adobe Suite
+			   - Other: Any specific tools mentioned
+			   If NO software is mentioned or required, leave as null.
+
+			8. **Job Summary**: Write a COMPREHENSIVE summary (minimum 250 words) that includes:
+			   - Complete overview of what needs to be done
+			   - Key requirements from ALL attachments
+			   - Structure and format expectations
+			   - Software-related tasks (if applicable) - describe what needs to be built/analyzed
+			   - Deliverables expected
+			   - Any specific guidelines, rubrics, or marking criteria mentioned
+			   - Special requirements or constraints
+			   - Academic expectations and standards required
+   
+			   IMPORTANT: Your summary should prove you read ALL attachments by referencing specific details from them.
+
+			CRITICAL RULES:
+			- ONLY extract information that is EXPLICITLY stated or clearly evident
+			- If something is not mentioned, use null (not a guess)
+			- For word count: ONLY use exact numbers stated, never estimate
+			- For referencing/writing style: ONLY use exact matches from the allowed options
+			- For software: ONLY list if explicitly mentioned or clearly required for the task
+			- Be thorough in the summary - this is your chance to show you read everything
+
+			Return ONLY valid JSON in this exact format:
+			{{
+			    "topic": "extracted or created topic",
+			    "word_count": 2000 or null,
+			    "referencing_style": "harvard" or null,
+			    "writing_style": "report" or null,
+			    "category": "IT" or "NON-IT" or "FINANCE",
+			    "level": "basic" or "intermediate" or "advanced",
+			    "software": ["Python", "Excel"] or null,
+			    "job_summary": "comprehensive summary here..."
+			}}"""
 
         # -------------------------------------------------------------------
         # OpenAI CLIENT (UNCHANGED)
@@ -527,18 +693,24 @@ def generate_ai_summary(request):
         from openai import OpenAI
         client = OpenAI(
             api_key=api_key,
-            timeout=60.0,
+            timeout=90.0,
             max_retries=2
         )
         
         response = client.chat.completions.create(
-            model="gpt-4o-mini",
+            model="gpt-4o",
             messages=[
-                {"role": "system", "content": "You are an expert academic job analyzer. Always return valid JSON."},
-                {"role": "user", "content": prompt}
+                {
+                    "role": "system", 
+                    "content": "You are an expert academic assignment analyzer. You MUST read and analyze ALL provided content including every attachment. Always return valid JSON. Be thorough and accurate."
+                },
+                {
+                    "role": "user", 
+                    "content": prompt
+                }
             ],
-            temperature=0.7,
-            max_tokens=2000
+            temperature=0.3,
+            max_tokens=3000
         )
         
         ai_response = response.choices[0].message.content.strip()
@@ -557,10 +729,22 @@ def generate_ai_summary(request):
         # -------------------------------------------------------------------
         with transaction.atomic():
             job.topic = summary_data.get('topic')
-            job.word_count = summary_data.get('word_count')
+            job.word_count = _normalize_word_count(summary_data.get('word_count'))
             job.referencing_style = summary_data.get('referencing_style')
             job.writing_style = summary_data.get('writing_style')
             job.job_summary = summary_data.get('job_summary')
+            job.category = summary_data.get('category')
+            
+            # Store level and software in job_summary metadata or as JSON field
+            level = _normalize_level(summary_data.get('level'))
+            software_list = summary_data.get('software')
+            
+            # Format software as string
+            if software_list and isinstance(software_list, list):
+                job.software = ", ".join(software_list)
+            else:
+                job.software = None
+            job.level = level or _infer_level(job.word_count, job.instruction, job.category)
             
             # Increment version
             job.ai_summary_version += 1
@@ -581,7 +765,7 @@ def generate_ai_summary(request):
                 job_summary=job.job_summary,
                 degree=degree,
                 performed_by='system',
-                ai_model_used='gpt-4o-mini'
+                ai_model_used='gpt-4o'
             )
             
             JobActionLog.objects.create(
@@ -592,7 +776,11 @@ def generate_ai_summary(request):
                 details={
                     'version': job.ai_summary_version,
                     'degree': degree,
-                    'model': 'gpt-4o-mini'
+                    'model': 'gpt-4o',
+                    'category': job.category,
+                    'level': level,
+                    'software': job.software,
+                    'attachments_processed': len(attachments_text)
                 }
             )
 
@@ -657,7 +845,8 @@ def generate_ai_summary(request):
                         'job_id': job.job_id,
                         'version': job.ai_summary_version,
                         'degree': degree,
-                        'model': 'gpt-4o-mini'
+                        'model': 'gpt-4o',
+                        'attachments_processed': len(attachments_text)
                     }
                 )
             
@@ -672,18 +861,22 @@ def generate_ai_summary(request):
                     'referencing_style': job.referencing_style,
                     'writing_style': job.writing_style,
                     'job_summary': job.job_summary,
+					'category': job.category,
+                    'level': level,
+                    'software': job.software,
                     'version': job.ai_summary_version,
                     'degree': degree,
                     'auto_accepted': auto_accept,
                     'auto_redirect': auto_redirect,
-                    'can_regenerate': job.can_regenerate_summary()
-
+                    'can_regenerate': job.can_regenerate_summary(),
+					'attachments_processed': len(attachments_text)
                 }
             })
 
     except Job.DoesNotExist:
         return JsonResponse({'success': False, 'message': 'Job not found'}, status=404)
-    except json.JSONDecodeError:
+    except json.JSONDecodeError as e:
+        logger.error(f"JSON decode error: {str(e)}\nAI Response: {ai_response}")
         return JsonResponse({'success': False, 'message': 'Error parsing AI response'}, status=500)
     except Exception as e:
         logger.error(f"Error generating AI summary: {str(e)}")
@@ -966,13 +1159,19 @@ def final_job_form(request, system_id):
         if not getattr(writing, 'is_deleted', False)
     ]
     price_entries = [
-        entry for entry in PriceMaster.objects.filter(level='basic')
+        entry for entry in PriceMaster.objects.all()
         if not getattr(entry, 'is_deleted', False)
     ]
-    price_map = {
-        entry.category: (_decimal_to_float(entry.price_per_word) or 0.0)
-        for entry in price_entries
-    }
+    price_map = {}
+    for entry in price_entries:
+        category_key = str(entry.category).upper()
+        level_key = str(entry.level).lower()
+        level_label = entry.get_level_display() if hasattr(entry, 'get_level_display') else level_key.title()
+        price_map.setdefault(category_key, {})[level_key] = {
+            'price': _to_float(entry.price_per_word),
+            'label': level_label,
+        }
+    selected_price_level = _to_price_master_level(job.level)
         
     # Get existing attachments
     existing_attachments = job.attachments.all()
@@ -988,6 +1187,7 @@ def final_job_form(request, system_id):
         'referencing_choices': Job.REFERENCING_STYLE_CHOICES,
         'writing_choices': Job.WRITING_STYLE_CHOICES,
         'price_map': json.dumps(price_map),
+        'selected_price_level': selected_price_level or '',
     }
     
     return render(request, 'marketing/final_job_form.html', context)
@@ -999,6 +1199,7 @@ def _process_final_form_submission(request, job):
         # Extract form data
         topic = request.POST.get('topic', '').strip() or job.topic
         category = request.POST.get('category', '').strip()
+        level = request.POST.get('level', '').strip()
         word_count = request.POST.get('word_count', '').strip()
         referencing_style = request.POST.get('referencing_style', '').strip()
         writing_style = request.POST.get('writing_style', '').strip()
@@ -1015,6 +1216,9 @@ def _process_final_form_submission(request, job):
         
         if not category:
             errors.append('Category is required.')
+        
+        if not level:
+            errors.append('Level is required.')
         
         if not word_count or not word_count.isdigit():
             errors.append('Valid word count is required.')
@@ -1091,38 +1295,30 @@ def _process_final_form_submission(request, job):
         # Calculate system expected amount
         system_expected = None
         normalized_category = category.upper()
+        price_level = _to_price_master_level(level)
         price_entry = next(
             (
                 item for item in PriceMaster.objects.filter(
                     category=normalized_category,
-                    level='basic'  # Default level
+                    level=price_level
                 )
                 if not getattr(item, 'is_deleted', False)
             ),
             None
         )
-        if price_entry:
-            # Use the _to_float helper function to handle Decimal128
-            def _to_float(value):
-                try:
-                    from bson.decimal128 import Decimal128
-                except ImportError:
-                    Decimal128 = None
-
-                if value is None:
-                    return 0.0
-                if Decimal128 and isinstance(value, Decimal128):
-                    return float(value.to_decimal())
-                return float(value)
-            
-            system_expected = _to_float(price_entry.price_per_word) * float(word_count)
-        else:
-            logger.warning(f"Price not found for category {category}, level basic")
+        if not price_entry:
+            messages.error(request, 'Pricing not configured for the selected category and level.')
+            return redirect('final_job_form', system_id=job.system_id)
+        
+        price_per_word = _to_float(price_entry.price_per_word)
+        system_expected = price_per_word * float(word_count)
+        normalized_level = _normalize_level(level)
         
         with transaction.atomic():
             # Update job with final form data
             job.topic = topic
             job.category = category
+            job.level = normalized_level
             job.word_count = word_count
             job.referencing_style = referencing_style or None
             job.writing_style = writing_style or None
@@ -1227,17 +1423,18 @@ def _process_final_form_submission(request, job):
                 performed_by=request.user,
                 performed_by_type='user',
                 details={
-                    'masking_id': masking_id,
+                    'system_id': job.system_id,
                     'template': template.template_name,
                     'project_group': project_group.project_group_name,
                     'category': category,
+                    'level': normalized_level,
                 }
             )
         
         messages.success(
             request,
             f'Job "{job.job_id}" has been successfully finalized! '
-            f'Masking ID: {masking_id}'
+            f'System ID: {job.system_id}'
         )
         return redirect('marketing_dashboard')
         
@@ -1252,9 +1449,10 @@ def _process_final_form_submission(request, job):
 def get_system_expected_amount(request):
     """Return system expected amount based on category and word count"""
     category = request.GET.get('category', '').strip()
+    level = request.GET.get('level', '').strip()
     word_count = request.GET.get('word_count', '').strip()
 
-    if not category or not word_count or not word_count.isdigit():
+    if not category or not level or not word_count or not word_count.isdigit():
         return JsonResponse({'success': False, 'message': 'Invalid inputs'}, status=400)
 
     word_count = int(word_count)
@@ -1262,11 +1460,12 @@ def get_system_expected_amount(request):
         return JsonResponse({'success': False, 'message': 'Invalid word count'}, status=400)
 
     normalized_category = category.upper()
+    price_level = _to_price_master_level(level)
     price_entry = next(
         (
             item for item in PriceMaster.objects.filter(
                 category=normalized_category,
-                level='basic'
+                level=price_level
             )
             if not getattr(item, 'is_deleted', False)
         ),
@@ -1277,10 +1476,11 @@ def get_system_expected_amount(request):
         return JsonResponse({'success': False, 'message': 'Pricing not configured'}, status=404)
 
     # Use _to_float here too
-    amount = _to_float(price_entry.price_per_word) * word_count
+    price_per_word = _to_float(price_entry.price_per_word)
+    amount = price_per_word * word_count
     return JsonResponse({
         'success': True,
-        'price_per_word': _to_float(price_entry.price_per_word),
+        'price_per_word': price_per_word,
         'amount': amount,
     })
 
@@ -1332,8 +1532,25 @@ def view_job_details(request, system_id):
         job_template = job.job_template
         tasks = job_template.tasks.all().order_by('task_number')
     
-    # Get all attachments
+    # Get all attachments with existence check (avoid broken links)
     attachments = job.attachments.all()
+    attachments_display = []
+    for att in attachments:
+        exists = False
+        url = None
+        try:
+            exists = att.file and att.file.storage.exists(att.file.name)
+            if exists:
+                url = att.file.url
+        except Exception as e:
+            logger.warning(f"Attachment missing or unreadable ({att.original_filename}): {e}")
+            exists = False
+            url = None
+        attachments_display.append({
+            'obj': att,
+            'exists': exists,
+            'url': url,
+        })
     
     # Get all summary versions
     summary_versions = job.summary_versions.all().order_by('version_number')
@@ -1349,7 +1566,7 @@ def view_job_details(request, system_id):
         timeline_events.append({
             'timestamp': job.created_at,
             'title': 'Job Created',
-            'description': f'Job ID: {job.job_id}',
+            'description': f'System ID: {job.system_id} | Job ID: {job.job_id}',
             'icon': 'plus-circle',
             'color': 'blue'
         })
@@ -1427,7 +1644,7 @@ def view_job_details(request, system_id):
         timeline_events.append({
             'timestamp': job.final_form_submitted_at,
             'title': 'Final Form Submitted',
-            'description': f'Status changed to {job.get_status_display()}',
+             'description': f'Status changed to {job.get_status_display()} | System ID: {job.system_id}',
             'icon': 'send',
             'color': 'blue'
         })
@@ -1456,6 +1673,7 @@ def view_job_details(request, system_id):
         'job_template': job_template,
         'tasks': tasks,
         'attachments': attachments,
+        'attachments_display': attachments_display,
         'summary_versions': summary_versions,
         'timeline_events': timeline_events,
         'job_amount_display': _format_currency(job.amount),

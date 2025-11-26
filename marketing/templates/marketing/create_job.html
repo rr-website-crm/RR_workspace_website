@@ -351,6 +351,31 @@
                     >
                 </div>
                 <div class="file-list" id="fileList"></div>
+				{% if job and job.attachments.all %}
+                <div class="summary-field" style="margin-top: 1rem;">
+                    <div class="summary-field-label">Existing Attachments</div>
+                    <div class="summary-field-value">
+                        <ul style="margin: 0; padding-left: 1.5rem;">
+                            {% for attachment in job.attachments.all %}
+                            <li>
+                                <a href="{{ attachment.file.url }}" target="_blank" rel="noopener" style="color: inherit; text-decoration: underline;">
+                                    {{ attachment.original_filename }}
+                                </a>
+                                ({{ attachment.file_size|filesizeformat }})
+                                <label style="margin-left: 0.5rem; font-size: 0.9rem;">
+                                    <input type="checkbox" name="remove_attachments" value="{{ attachment.id }}" style="width: auto;">
+                                    Remove
+                                </label>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                        <label style="display: flex; align-items: center; gap: 0.5rem; margin-top: 0.5rem;">
+                            <input type="checkbox" id="replaceAttachments" name="replace_attachments" value="true" style="width: auto;">
+                            <span>Replace existing attachments with new uploads</span>
+                        </label>
+                    </div>
+                </div>
+                {% endif %}
             </div>
             
             <div class="btn-group">
@@ -410,6 +435,21 @@
                 <div class="summary-field">
                     <div class="summary-field-label">Writing Style</div>
                     <div class="summary-field-value" id="summaryWritingStyle">-</div>
+				</div>
+
+                <div class="summary-field">
+                    <div class="summary-field-label">Category</div>
+                    <div class="summary-field-value" id="summaryCategory">-</div>
+                </div>
+
+                <div class="summary-field">
+                    <div class="summary-field-label">Level</div>
+                    <div class="summary-field-value" id="summaryLevel">-</div>
+                </div>
+
+                <div class="summary-field">
+                    <div class="summary-field-label">Software</div>
+                    <div class="summary-field-value" id="summarySoftware" style="white-space: pre-wrap;">-</div>
                 </div>
                 
                 <div class="summary-field">
@@ -508,6 +548,12 @@ function handleFileSelect(e) {
     
     files.forEach(file => {
         const ext = file.name.split('.').pop().toLowerCase();
+        
+ // Prevent duplicate attachments by filename
+        if (uploadedFiles.some(f => f.name === file.name)) {
+            showNotification(`${file.name} already added`, 'error');
+            return;
+        }
         
         if (!allowedTypes.includes(ext)) {
             showNotification(`File type .${ext} not allowed`, 'error');
@@ -654,8 +700,10 @@ async function saveInitialForm(continueToSummary) {
         return;
     }
     
-    if (uploadedFiles.length === 0) {
-        showNotification('At least one attachment is required', 'error');
+    // Allow saving with only existing attachments when editing; require at least one overall
+    const hasExisting = document.querySelectorAll('input[name="remove_attachments"]').length > 0 && !document.getElementById('replaceAttachments')?.checked;
+    if (uploadedFiles.length === 0 && !hasExisting) {
+        showNotification('At least one attachment is required (keep existing or upload new)', 'error');
         return;
     }
     
@@ -666,9 +714,13 @@ async function saveInitialForm(continueToSummary) {
         formData.append('job_id', jobId);
         formData.append('instruction', instruction);
         formData.append('system_id', currentSystemId);
+        formData.append('replace_attachments', document.getElementById('replaceAttachments')?.checked ? 'true' : 'false');
         
         uploadedFiles.forEach(file => {
             formData.append('attachments', file);
+        });
+        document.querySelectorAll('input[name="remove_attachments"]:checked').forEach(el => {
+            formData.append('remove_attachments', el.value);
         });
         
         const response = await fetch('{% url "save_initial_form" %}', {
@@ -754,6 +806,9 @@ function displaySummary(data) {
     document.getElementById('summaryWordCount').textContent = data.word_count || '-';
     document.getElementById('summaryReferencingStyle').textContent = data.referencing_style?.toUpperCase() || '-';
     document.getElementById('summaryWritingStyle').textContent = formatWritingStyle(data.writing_style) || '-';
+	document.getElementById('summaryCategory').textContent = data.category || '-';
+    document.getElementById('summaryLevel').textContent = data.level ? formatWritingStyle(data.level) : '-';
+    document.getElementById('summarySoftware').textContent = data.software || '-';
     document.getElementById('summaryJobSummary').textContent = data.job_summary || '-';
     
     // Update version

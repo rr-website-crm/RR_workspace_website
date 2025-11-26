@@ -5,6 +5,7 @@ from django.contrib import messages
 from django.utils import timezone
 from django.utils.dateparse import parse_datetime
 from django.db.models import Q, Count, Sum
+from django.core.paginator import Paginator
 from django.http import JsonResponse
 from django.views.decorators.http import require_http_methods
 from accounts.models import CustomUser
@@ -12,6 +13,7 @@ from .models import (
     Job, TaskAllocation, WriterProfile, ProcessTeamProfile,
     JobQuery, AllocationHistory, CountryBankingResource
 )
+from marketing.models import Job as MarketingJob
 import logging
 from datetime import datetime, timedelta
 
@@ -78,11 +80,39 @@ def allocator_dashboard(request):
         'total_process_team': role_counts['process'],
     }
 
-    jobs = sorted(
-        jobs_all,
-        key=lambda job: normalize_datetime(job.created_at),
-        reverse=True
-    )[:10]
+    # Recent marketing jobs (24h, status unallocated/pending)
+    recent_cutoff = now - timedelta(hours=24)
+    marketing_recent = MarketingJob.objects.select_related('created_by').filter(
+        created_at__gte=recent_cutoff
+    ).order_by('-created_at')
+
+    def map_status(marketing_status):
+        val = (marketing_status or '').lower()
+        if val in ('unallocated', 'pending'):
+            return 'Unallocated'
+        if val in ('allocated', 'in_progress'):
+            return 'Assigned'
+        if val in ('completed', 'cancelled', 'close', 'closed'):
+            return 'Close'
+        if val in ('hold',):
+            return 'Hold'
+        if val in ('query',):
+            return 'Query'
+        return marketing_status or 'Unknown'
+
+    recent_jobs = []
+    for job in marketing_recent:
+        recent_jobs.append({
+            'system_id': job.system_id,
+            'job_id': job.job_id,
+            'topic': job.topic,
+            'word_count': job.word_count,
+            'deadline': job.strict_deadline or job.expected_deadline or job.deadline,
+            'created_by': job.created_by.get_full_name() if getattr(job, 'created_by', None) else 'Marketing',
+            'status_display': map_status(job.status),
+            'status_raw': job.status or '',
+            'category': job.category or '-',
+        })
 
     raw_activities = list(
         AllocationHistory.objects.values(
@@ -130,7 +160,7 @@ def allocator_dashboard(request):
     context = {
         'user': user,
         'stats': stats,
-        'jobs': jobs,
+        'recent_jobs': recent_jobs,
         'recent_activities': recent_activities,
         'today_date': now,
     }
@@ -186,6 +216,112 @@ def pending_allocation(request):
     }
     
     return render(request, 'allocator/pending_allocation.html', context)
+
+
+@login_required
+@role_required(['allocator'])
+def all_projects(request):
+    """
+    List all marketing jobs for allocator with search, status, and date range filters.
+    """
+    search = request.GET.get('search', '').strip()
+    status_filter = request.GET.get('status', '').strip().lower()
+    start_date = request.GET.get('start_date', '').strip()
+    end_date = request.GET.get('end_date', '').strip()
+
+    status_buckets = {
+        'unallocated': ['unallocated', 'pending'],
+        'allocated': ['allocated', 'in_progress'],
+        'closed': ['completed', 'cancelled'],
+        'hold': ['hold'],
+        'active': ['active'],
+        'query': ['query'],
+        'draft': ['draft'],
+    }
+
+    jobs_qs = MarketingJob.objects.select_related('created_by').all().order_by('-created_at')
+
+    if search:
+        jobs_qs = jobs_qs.filter(
+            Q(system_id__icontains=search)
+            | Q(job_id__icontains=search)
+            | Q(topic__icontains=search)
+        )
+
+    if status_filter:
+        if status_filter in status_buckets:
+            jobs_qs = jobs_qs.filter(status__in=status_buckets[status_filter])
+        else:
+            jobs_qs = jobs_qs.filter(status__iexact=status_filter)
+
+    def parse_date(date_str):
+        try:
+            return datetime.strptime(date_str, '%Y-%m-%d').date()
+        except Exception:
+            return None
+
+    start_dt = parse_date(start_date)
+    end_dt = parse_date(end_date)
+    if start_dt:
+        jobs_qs = jobs_qs.filter(created_at__date__gte=start_dt)
+    if end_dt:
+        jobs_qs = jobs_qs.filter(created_at__date__lte=end_dt)
+
+    paginator = Paginator(jobs_qs, 25)
+    page_number = request.GET.get('page')
+    jobs_page = paginator.get_page(page_number)
+
+    status_options = [
+        ('', 'All Statuses'),
+        ('unallocated', 'Unallocated'),
+        ('allocated', 'Allocated'),
+        ('closed', 'Closed'),
+        ('hold', 'Hold'),
+        ('active', 'Active'),
+        ('cancelled', 'Cancelled'),
+        ('in_progress', 'In Progress'),
+        ('query', 'Query'),
+        ('draft', 'Draft'),
+        ('completed', 'Completed'),
+        ('pending', 'Pending'),
+    ]
+
+    context = {
+        'user': request.user,
+        'jobs': jobs_page,
+        'search': search,
+        'status_filter': status_filter,
+        'start_date': start_date,
+        'end_date': end_date,
+        'status_options': status_options,
+        'total_jobs': jobs_qs.count(),
+    }
+    return render(request, 'allocator/all_projects.html', context)
+
+
+@login_required
+@role_required(['allocator'])
+def all_project_detail(request, system_id):
+    """Simple detail view for marketing job in allocator portal."""
+    job = get_object_or_404(MarketingJob.objects.select_related('created_by'), system_id=system_id)
+
+    def _display_status(value):
+        if not value:
+            return 'Unknown'
+        value_lower = value.lower()
+        if value_lower in ('completed', 'cancelled'):
+            return 'Closed'
+        if value_lower in ('allocated', 'in_progress'):
+            return 'Allocated'
+        if value_lower in ('unallocated', 'pending'):
+            return 'Unallocated'
+        return value.replace('_', ' ').title()
+
+    context = {
+        'job': job,
+        'status_display': _display_status(job.status),
+    }
+    return render(request, 'allocator/all_project_detail.html', context)
 
 
 @login_required
